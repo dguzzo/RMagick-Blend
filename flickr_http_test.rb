@@ -44,7 +44,7 @@ class Flickr_API
 
   def save_favorite(index)
     image_dir = 'images'
-    create_image_dir image_dir
+    create_image_dir(image_dir) unless File.directory?(image_dir)
     
     photo = @faves[index]
     title = photo['title'][0]
@@ -62,11 +62,8 @@ class Flickr_API
   private
   
   def create_image_dir(dir_name)
-    if File.directory?(dir_name)
-    else
       puts "creating directory '#{dir_name}'..."
       Dir.mkdir(dir_name)
-    end
   end
   
   def should_open_files_at_end
