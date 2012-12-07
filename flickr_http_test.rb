@@ -10,36 +10,34 @@ class Flickr_API
 
   attr_reader :faves, :favesXML, :titles
 
-  def initialize
+  def initialize(get_faves = false)
     @titles = []
     @faves = {}
     @favesXML = nil
+    get_flickr_faves if get_faves
   end
 
   def get_flickr_faves
     puts 'accessing api.flickr.com ...'
     @favesXML = Net::HTTP.get('api.flickr.com', '/services/feeds/photos_faves.gne?id=49782305@N02')
     @faves = XmlSimple.xml_in(@favesXML) # converts XML response to a Ruby hash
-    @faves = @faves['entry']
+    @faves = @faves['entry'] # only care about the photos, not the meta data
     
-    #pp faves
     @faves.each do |photo|
       puts "#{ColorPrint::green(photo['title'][0])} by #{photo['author'][0]['name'][0]}" rescue ''
       @titles << photo['title'].first rescue photo['title']
     end
     
     write_titles_to_file
-    open_files_in_browser if should_open_files_at_end
+    should_open_files_at_end
   end
 
-  def open_files_in_browser
-    last_file_href = @faves['entry'].last['link'][0]['href']
-    second_to_last_file_href = @faves['entry'][@faves['entry'].length-2]['link'][0]['href']
-
-    puts "opening: #{ColorPrint::yellow(last_file_href)}"
-    %x(open "#{last_file_href}")
-    puts "opening: #{ColorPrint::yellow(second_to_last_file_href)}"
-    `open "#{second_to_last_file_href}"`
+  def open_files_in_browser(num_to_open)
+    0.upto(num_to_open - 1) do |photo_index|
+      file_href = @faves[photo_index]['link'][0]['href']
+      puts "opening: #{ColorPrint::yellow(file_href)}"
+      %x(open "#{file_href}")
+    end
   end
 
   def save_favorite(index)
@@ -68,8 +66,13 @@ class Flickr_API
   
   def should_open_files_at_end
     puts "\ndo you want files opened in the browser at the end? #{ColorPrint::red('y/n')}"
-    @open_photos_at_end = gets.chomp
-    @open_photos_at_end = !!@open_photos_at_end.match(/^(y|yes)/)
+    open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
+    
+    if open_photos_at_end
+      puts "\nhow many to open?"
+      num_to_open = gets.chomp.to_i || 0 rescue 0
+      open_files_in_browser num_to_open
+    end
   end
 
   def write_titles_to_file
