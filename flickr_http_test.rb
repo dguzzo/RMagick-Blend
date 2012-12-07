@@ -52,7 +52,7 @@ class Flickr_API
     puts 'getting file...'
     response = Net::HTTP.get_response(uri)
     puts 'saving file...'
-    File.open("#{image_dir}/#{title}.jpeg", 'w') do |file|
+    File.open("#{image_dir}/#{title}.jpg", 'w') do |file|
       file.write(response.body)
     end
   end
