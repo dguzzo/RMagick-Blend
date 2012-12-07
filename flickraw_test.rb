@@ -1,11 +1,14 @@
-require_relative 'lib/colorprint'
+require './lib/colorprint'
 require 'flickraw'
 
 class FlickrawBasic
 
+  attr_reader :token, :login
+
   def initialize
     FlickRaw.api_key = "79f2e11b6b4e3213f8971bed7f17b4c4"
     FlickRaw.shared_secret = "ae82cca8fe3ec5e9"
+    @token, @login = nil
   end
 
   def get_recent
@@ -27,24 +30,23 @@ class FlickrawBasic
   end
 
   def get_my_pubic_photos
-    
-    token = flickr.get_request_token
-    auth_url = flickr.get_authorize_url(token['oauth_token'], :perms => 'delete')
+    @token = flickr.get_request_token
+    auth_url = flickr.get_authorize_url(@token['oauth_token'], :perms => 'delete')
 
-    puts "Open this url in your process to complete the authication process : #{auth_url}"
+    puts "Open this url in your process to complete the authication process :\n#{ColorPrint::green(auth_url)}\n"
     puts "Copy here the number given when you complete the process."
     verify = gets.strip
 
     begin
-      flickr.get_access_token(token['oauth_token'], token['oauth_token_secret'], verify)
-      login = flickr.test.login
-      puts "You are now authenticated as #{login.username} with token #{flickr.access_token} and secret #{flickr.access_secret}"
+      flickr.get_access_token(@token['oauth_token'], @token['oauth_token_secret'], verify)
+      @login = flickr.test.login
+      puts "You are now authenticated as #{@login.username} with token #{flickr.access_token} and secret #{flickr.access_secret}"
     rescue FlickRaw::FailedResponse => e
       puts "Authentication failed : #{e.msg}"
     end
     
-    puts login.inspect
-    list = flickr.people.getPublicPhotos(:user_id => login.id)
+    puts @login.inspect
+    list = flickr.people.getPublicPhotos(:user_id => @login.id)
     
     id     = list[0].id
     secret = list[0].secret
@@ -66,6 +68,6 @@ class FlickrawBasic
 
 end
 
-test = FlickrawBasic.new
-# test.get_recent
-test.get_my_pubic_photos
+# test = FlickrawBasic.new
+# # test.get_recent
+# test.get_my_pubic_photos
