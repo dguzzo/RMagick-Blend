@@ -5,6 +5,7 @@ require 'xmlsimple'
 require 'pp'
 require 'json'
 require './lib/colorprint'
+require './lib/utils'
 
 class Flickr_API
 
@@ -40,29 +41,33 @@ class Flickr_API
     end
   end
 
-  def save_favorite(index)
-    image_dir = 'images'
-    create_image_dir(image_dir) unless File.directory?(image_dir)
+  # example usages:
+  #f.save_favorite(3)
+  #f.save_favorite(3, 7, 5)
+  # f.save_favorite(*(16..20).to_a) ## l33t
+  
+  def save_favorite(*index)
+    image_dir = Utils::createDirIfNeeded('images')
     
-    photo = @faves[index]
-    title = photo['title'][0]
-    url = photo['link'][1]['href']
-    uri = URI.parse(url)
+    index.each do |i|
     
-    puts 'getting file...'
-    response = Net::HTTP.get_response(uri)
-    puts 'saving file...'
-    File.open("#{image_dir}/#{title}.jpg", 'w') do |file|
-      file.write(response.body)
+        photo = @faves[i]
+        title = photo['title'][0]
+        url = photo['link'][1]['href']
+        uri = URI.parse(url)
+
+        puts 'getting file...'
+        response = Net::HTTP.get_response(uri)
+        puts 'saving file...'
+        File.open("#{image_dir}/#{title}.jpg", 'w') do |file|
+            file.write(response.body)
+        end
+
     end
+    
   end
 
   private
-  
-  def create_image_dir(dir_name)
-      puts "creating directory '#{dir_name}'..."
-      Dir.mkdir(dir_name)
-  end
   
   def should_open_files_at_end
     puts "\ndo you want files opened in the browser at the end? #{ColorPrint::red('y/n')}"

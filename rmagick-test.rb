@@ -4,7 +4,8 @@
 require 'RMagick'
 
 image_name = "Bookshelves"
-test_image = Magick::Image.read("./images/#{image_name}.jpg").first
+dest_path = Utils::createDirIfNeeded('images')
+test_image = Magick::Image.read("./#{dest_path}/#{image_name}.jpg").first
 cols, rows = test_image.columns, test_image.rows
 
 puts "processing file #{image_name}..."
@@ -16,5 +17,5 @@ test_image.change_geometry!("#{cols}x#{rows}") do |ncols, nrows, img|
 end
 
 puts "writing processed file..."
-test_image.write("./images/#{image_name}_polaroid.png")
+test_image.write("./#{dest_path}/#{image_name}_polaroid.png")
 puts "done!"
