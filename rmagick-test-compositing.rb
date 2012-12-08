@@ -34,15 +34,6 @@ def image_compositing_sample(options={})
     defaults = {num_operations: 5, append_op_to_filename: false, shuffle_composite_operations: false}
     options = defaults.merge!(options)
     
-    images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
-    # dst_name = "circle works-it could go on forever.jpg"
-    # src_name = "day rise over the fort.jpg"
-
-    image_dir = Utils::createDirIfNeeded('images/image-composites')
-    dst_name = images.shuffle!.sample
-    images.delete(dst_name)
-    raise "no images!" if images.length == 0
-    src_name = images.sample
     src, dst = get_image_pair
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
