@@ -41,19 +41,15 @@ def image_compositing_sample(options={})
     image_dir = Utils::createDirIfNeeded('images/image-composites')
     dst_name = images.shuffle!.sample
     images.delete(dst_name)
-    raise if images.length == 0
+    raise "no images!" if images.length == 0
     src_name = images.sample
-    dst = Magick::Image.read("./images/#{dst_name}").first
-    src = Magick::Image.read("./images/#{src_name}").first
-
-    puts "beginning composites processing, using #{options[:num_operations]} different operations"
-    
+    src, dst = get_image_pair
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
-    
     # first two CompositeOperator are basically no-ops, so skip 'em
-    start_val = options[:shuffle_composite_operations] ? 0 : 2
+    range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
     
-    newCompositeArray[start_val..(options[:num_operations]+2)].each_with_index do |composite_style, index|
+    puts "beginning composites processing, using #{options[:num_operations]} different operations"
+    newCompositeArray[range].each_with_index do |composite_style, index|
         print '.'
         append_string = options[:append_op_to_filename] ? composite_style.to_s : index
         result = dst.composite(src, 0, 0, composite_style)
@@ -62,10 +58,27 @@ def image_compositing_sample(options={})
     end
     puts "\ndone!"
     $BatchesRun += 1
-
 end
 
-# gradient_compositing_sample
-2.times {image_compositing_sample(num_operations: 6, append_op_to_filename: true, shuffle_composite_operations: true)}
+def get_image_pair
+    images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
+    # dst_name = "circle works-it could go on forever.jpg"
+    # src_name = "day rise over the fort.jpg"
 
-puts "BatchesRun: #{$BatchesRun}"
+    image_dir = Utils::createDirIfNeeded('images/image-composites')
+    destination_name = images.shuffle!.sample
+    images.delete(destination_name)
+    raise "no images!" if images.length == 0
+    source_name = images.sample
+    source = Magick::Image.read("./images/#{source_name}").first
+    destination = Magick::Image.read("./images/#{destination_name}").first
+    
+    return [source, destination]
+end
+
+start_time = Time.now
+# gradient_compositing_sample
+2.times {image_compositing_sample(num_operations: 9, append_op_to_filename: true, shuffle_composite_operations: true)}
+end_time = Time.now
+
+puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
