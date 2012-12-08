@@ -62,13 +62,13 @@ end
 
 def get_image_pair
     images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
+    raise "need at least two images to begin!" if images.length < 2
     # dst_name = "circle works-it could go on forever.jpg"
     # src_name = "day rise over the fort.jpg"
 
     image_dir = Utils::createDirIfNeeded('images/image-composites')
     destination_name = images.shuffle!.sample
     images.delete(destination_name)
-    raise "no images!" if images.length == 0
     source_name = images.sample
     source = Magick::Image.read("./images/#{source_name}").first
     destination = Magick::Image.read("./images/#{destination_name}").first
