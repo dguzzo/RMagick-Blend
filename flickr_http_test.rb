@@ -48,9 +48,9 @@ class Flickr_API
   
   def save_favorite(*index)
     image_dir = Utils::createDirIfNeeded('images')
-    
+        
     index.each do |i|
-    
+        raise IndexError if i >= @faves.length
         photo = @faves[i]
         title = photo['title'][0]
         url = photo['link'][1]['href']
@@ -64,6 +64,9 @@ class Flickr_API
         end
 
     end
+    
+    rescue IndexError => e
+        puts "past the length of the array--stopping."
     
   end
 

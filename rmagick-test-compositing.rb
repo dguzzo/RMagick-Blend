@@ -61,6 +61,6 @@ def image_compositing_sample(options={})
 end
 
 # gradient_compositing_sample
-4.times {image_compositing_sample(num_operations: 5, append_op_to_filename: true, shuffle_composite_operations: true)}
+4.times {image_compositing_sample(num_operations: 15, append_op_to_filename: true, shuffle_composite_operations: true)}
 
 puts "BatchesRun: #{$BatchesRun}"
