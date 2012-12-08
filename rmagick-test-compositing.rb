@@ -1,3 +1,7 @@
+### TODO: there is a major memory leak somewhere, possibly in the RMagick read() or write() functions. running even a few
+### cycles of compositing on ~3-4MB files will quickly chew up 1.5GB of RAM, which isn't free'd until irb is quit.
+###  this memory is of course freed when the program finishes when run directly with the 'ruby' command
+
 require 'RMagick'
 require './lib/utils'
 
@@ -30,7 +34,7 @@ def image_compositing_sample(options={})
     defaults = {num_operations: 5, append_op_to_filename: false, shuffle_composite_operations: false}
     options = defaults.merge!(options)
     
-    images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/}
+    images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
     # dst_name = "circle works-it could go on forever.jpg"
     # src_name = "day rise over the fort.jpg"
 
@@ -53,7 +57,8 @@ def image_compositing_sample(options={})
         print '.'
         append_string = options[:append_op_to_filename] ? composite_style.to_s : index
         result = dst.composite(src, 0, 0, composite_style)
-        result.write("./#{image_dir}/#{dst_name.gsub('.jpg', '')}--#{src_name.gsub('.jpg', '')}--#{append_string}.jpg")
+        extension_regex = /\.jpg$/i
+        result.write("./#{image_dir}/#{dst_name.gsub(extension_regex, '')}--#{src_name.gsub(extension_regex, '')}--#{append_string}.jpg")
     end
     puts "\ndone!"
     $BatchesRun += 1
@@ -61,6 +66,6 @@ def image_compositing_sample(options={})
 end
 
 # gradient_compositing_sample
-4.times {image_compositing_sample(num_operations: 15, append_op_to_filename: true, shuffle_composite_operations: true)}
+2.times {image_compositing_sample(num_operations: 6, append_op_to_filename: true, shuffle_composite_operations: true)}
 
 puts "BatchesRun: #{$BatchesRun}"
