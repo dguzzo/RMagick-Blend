@@ -21,7 +21,6 @@ def gradient_compositing_sample
     # result = dst.composite(src, 0, 0, Magick::OverCompositeOp)
     # result.write('./images/composites/composite1.gif')
 
-
     print "\nbeginning composites processing"
     Magick::CompositeOperator.values.each_with_index do |composite_style, index|
         print '.'
@@ -35,7 +34,8 @@ def image_compositing_sample(options={})
     defaults = {
         num_operations: 5, 
         append_op_to_filename: false, 
-        shuffle_composite_operations: false
+        shuffle_composite_operations: false,
+        directories: { output_dir: 'images/image-composites' }
     }
     
     options = defaults.merge(options)
@@ -45,11 +45,12 @@ def image_compositing_sample(options={})
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
-    output_dir = Utils::createDirIfNeeded('images/image-composites')
+    output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
     puts "beginning composites processing, using #{options[:num_operations]} different operations"
     newCompositeArray[range].each_with_index do |composite_style, index|
-        print '.'
+        # print '.'
+        puts "#{(index.to_f/options[:num_operations]*100).round}%"
         append_string = options[:append_op_to_filename] ? composite_style.to_s : index
         result = dst.composite(src, 0, 0, composite_style)
         extension_regex = /\.jpg$/i
@@ -99,8 +100,8 @@ start_time = Time.now
 # gradient_compositing_sample
 1.times do 
     image_compositing_sample(
-        num_operations: 26, 
-        directories: { source: "images/portraits_source", destination: "images/portraits_destination" },
+        num_operations: 20, 
+        directories: { source: "images/portraits_source", destination: "images/portraits_destination", output_dir: "images/portraits_output" },
         append_op_to_filename: true, 
         shuffle_composite_operations: true
     )
