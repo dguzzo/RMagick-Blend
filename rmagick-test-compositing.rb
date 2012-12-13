@@ -4,6 +4,7 @@
 
 require 'RMagick'
 require './lib/utils'
+require 'pp'
 
 $BatchesRun = 0
 
@@ -14,7 +15,7 @@ def gradient_compositing_sample
     dst = Magick::Image.new(128, 128, gold_fill)
     src = Magick::Image.new(128, 128, red_fill)
     #src = Magick::Image.read("composite1-src.gif")[0]
-    image_dir = Utils::createDirIfNeeded('images')
+    output_dir = Utils::createDirIfNeeded('images')
     
     # result = dst.composite(src, Magick::CenterGravity, Magick::OverCompositeOp)
     # result = dst.composite(src, 0, 0, Magick::OverCompositeOp)
@@ -25,20 +26,26 @@ def gradient_compositing_sample
     Magick::CompositeOperator.values.each_with_index do |composite_style, index|
         print '.'
         result = dst.composite(src, 0, 0, composite_style)
-        result.write("./#{image_dir}/gradient-composites/composite#{index}.gif")
+        result.write("./#{output_dir}/gradient-composites/composite#{index}.gif")
     end
     puts "\ndone!"
 end
 
 def image_compositing_sample(options={})
-    defaults = {num_operations: 5, append_op_to_filename: false, shuffle_composite_operations: false}
-    options = defaults.merge!(options)
+    defaults = {
+        num_operations: 5, 
+        append_op_to_filename: false, 
+        shuffle_composite_operations: false
+    }
     
-    src, dst = get_image_pair
+    options = defaults.merge(options)
+    
+    src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
+    
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
-    image_dir = Utils::createDirIfNeeded('images/image-composites')
+    output_dir = Utils::createDirIfNeeded('images/image-composites')
     
     puts "beginning composites processing, using #{options[:num_operations]} different operations"
     newCompositeArray[range].each_with_index do |composite_style, index|
@@ -46,11 +53,32 @@ def image_compositing_sample(options={})
         append_string = options[:append_op_to_filename] ? composite_style.to_s : index
         result = dst.composite(src, 0, 0, composite_style)
         extension_regex = /\.jpg$/i
-        result.write("./#{image_dir}/#{dst_name.gsub(extension_regex, '')}--#{src_name.gsub(extension_regex, '')}--#{append_string}.jpg")
+        filename_regex = /\/(\w*)$/i
+        # TODO refactor via a method
+        destination_filename = dst.filename.gsub(extension_regex, '').match(filename_regex)[1]
+        source_filename = src.filename.gsub(extension_regex, '').match(filename_regex)[1]
+        
+        result.write("./#{output_dir}/#{destination_filename}--#{source_filename}--#{append_string}.jpg")
     end
     puts "\ndone!"
     $BatchesRun += 1
 end
+
+# TODO: refactor this all within get_image_pair()
+def get_image_pair_via_directories(directories)
+    source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.jpg$/i}
+    raise "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
+    destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.jpg$/i}
+    raise "need at least one destination image in #{directories[:destination]} to begin!" if source_images.length < 1
+
+    destination_name = destination_images.shuffle!.sample
+    source_name = source_images.shuffle!.sample
+    source = Magick::Image.read("./#{directories[:source]}/#{source_name}").first
+    destination = Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
+    
+    return [source, destination]
+end
+
 
 def get_image_pair
     images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
@@ -69,7 +97,14 @@ end
 
 start_time = Time.now
 # gradient_compositing_sample
-2.times {image_compositing_sample(num_operations: 9, append_op_to_filename: true, shuffle_composite_operations: true)}
+1.times do 
+    image_compositing_sample(
+        num_operations: 26, 
+        directories: { source: "images/portraits_source", destination: "images/portraits_destination" },
+        append_op_to_filename: true, 
+        shuffle_composite_operations: true
+    )
+end
+    
 end_time = Time.now
-
 puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
