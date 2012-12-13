@@ -38,6 +38,7 @@ def image_compositing_sample(options={})
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
+    image_dir = Utils::createDirIfNeeded('images/image-composites')
     
     puts "beginning composites processing, using #{options[:num_operations]} different operations"
     newCompositeArray[range].each_with_index do |composite_style, index|
@@ -57,7 +58,6 @@ def get_image_pair
     # dst_name = "circle works-it could go on forever.jpg"
     # src_name = "day rise over the fort.jpg"
 
-    image_dir = Utils::createDirIfNeeded('images/image-composites')
     destination_name = images.shuffle!.sample
     images.delete(destination_name)
     source_name = images.sample
