@@ -21,28 +21,28 @@ def image_compositing_sample(options={})
     options = defaults.merge(options)
     
     src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
-    
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
     output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
     puts "beginning composites processing, using #{options[:num_operations]} different operations"
+    
     newCompositeArray[range].each_with_index do |composite_style, index|
-        # print '.'
         puts "#{(index.to_f/options[:num_operations]*100).round}%"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         result = dst.composite(src, 0, 0, composite_style)
-        extension_regex = /\.jpg$/i
-        filename_regex = /\/(\w*)$/i
-        # TODO refactor via a method
-        destination_filename = dst.filename.gsub(extension_regex, '').match(filename_regex)[1]
-        source_filename = src.filename.gsub(extension_regex, '').match(filename_regex)[1]
-        
-        result.write("./#{output_dir}/#{destination_filename}--#{source_filename}--#{append_string}.#{options[:file_format]}")
+        result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
     end
-    puts "\ndone!"
+    
     $BatchesRun += 1
+    puts "\ndone!"
+end
+
+def pretty_file_name(image_file)
+    extension_regex = /\.jpg$/i
+    filename_regex = /\/(\w*)$/i
+    image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
 end
 
 # TODO: refactor this all within get_image_pair()
@@ -64,8 +64,6 @@ end
 def get_image_pair
     images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
     raise "need at least two images to begin!" if images.length < 2
-    # dst_name = "circle works-it could go on forever.jpg"
-    # src_name = "day rise over the fort.jpg"
 
     destination_name = images.shuffle!.sample
     images.delete(destination_name)
