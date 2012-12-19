@@ -8,6 +8,7 @@ require './lib/colorprint'
 require 'pp'
 
 $BatchesRun = 0
+NUM_FILES_BEFORE_WARN =  40
 
 def image_compositing_sample(options={})
     defaults = {
@@ -82,6 +83,15 @@ def open_files_at_end?(force = false)
   
       if force || open_photos_at_end
           Dir.chdir($output_dir)
+          
+          num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#{$file_format}$/i }.length
+          
+          if num_files_created > NUM_FILES_BEFORE_WARN
+              puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{ColorPrint::yellow('y/n')}"
+              open_many_files = !!(gets.chomp).match(/^(y|yes)/)
+              return unless open_many_files
+          end
+          
           `open *.#{$file_format}`
       end
 end
@@ -92,7 +102,7 @@ $file_format = 'bmp'
 start_time = Time.now
 1.times do 
     image_compositing_sample(
-        num_operations: 14, 
+        num_operations: 12, 
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
