@@ -14,7 +14,8 @@ def image_compositing_sample(options={})
         num_operations: 5, 
         append_operation_to_filename: false, 
         shuffle_composite_operations: false,
-        directories: { output_dir: 'images/image-composites' }
+        directories: { output_dir: 'images/image-composites' },
+        file_format: 'jpg'
     }
     
     options = defaults.merge(options)
@@ -38,7 +39,7 @@ def image_compositing_sample(options={})
         destination_filename = dst.filename.gsub(extension_regex, '').match(filename_regex)[1]
         source_filename = src.filename.gsub(extension_regex, '').match(filename_regex)[1]
         
-        result.write("./#{output_dir}/#{destination_filename}--#{source_filename}--#{append_string}.jpg")
+        result.write("./#{output_dir}/#{destination_filename}--#{source_filename}--#{append_string}.#{options[:file_format]}")
     end
     puts "\ndone!"
     $BatchesRun += 1
@@ -83,19 +84,21 @@ def open_files_at_end?(force = false)
   
       if force || open_photos_at_end
           Dir.chdir($output_dir)
-          `open *.jpg`
+          `open *.#{$file_format}`
       end
 end
 
 $output_dir = "images/minimal-output"
+$file_format = 'bmp'
 
 start_time = Time.now
 1.times do 
     image_compositing_sample(
-        num_operations: 12, 
+        num_operations: 14, 
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
-        shuffle_composite_operations: true
+        shuffle_composite_operations: true,
+        file_format: $file_format
     )
 end
     
