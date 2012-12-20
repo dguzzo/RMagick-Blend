@@ -9,6 +9,8 @@ require 'yaml'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
+$output_dir = "images/minimal-output"
+$file_format = 'bmp'
 
 def image_compositing_sample(options={})
     defaults = {
@@ -50,8 +52,7 @@ def pretty_file_name(image_file)
 end
 
 def save_history(args)
-    src_name = args[:src].filename.force_encoding("UTF-8")
-    dst_name = args[:dst].filename.force_encoding("UTF-8")
+    src_name, dst_name = [ args[:src], args[:dst] ].map{ |file| file.filename.force_encoding("UTF-8") }
     save_path = "#{args[:options][:directories][:output_dir]}/previous_batch.yml"
 
     puts "writing history file: #{save_path}"
@@ -61,8 +62,7 @@ def save_history(args)
     end
     
     rescue => e
-        msg = Utils::ColorPrint::green("error in save_history #{e.message}")
-        puts msg
+        puts Utils::ColorPrint::green("error in save_history #{e.message}")
 end
 
 # TODO: refactor this all within get_image_pair()
@@ -116,9 +116,6 @@ def open_files_at_end?(force = false, suppress = false)
           `open *.#{$file_format}`
       end
 end
-
-$output_dir = "images/minimal-output"
-$file_format = 'bmp'
 
 start_time = Time.now
 1.times do 
