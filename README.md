@@ -2,11 +2,14 @@
 
 ## Table of Contents
 
-   * [Running flickr](#running)
-   * [Running-blending](#running-blending)
+   * [Accessing flickr API manually](#flickr)
+   * [Accessing flickr API via Flickraw gem](#flickraw)
+   * [Running blending script](#running-blending)
 
-## Running
+## flickr
         ruby flickr_http_test.rb
-## Running-blending
+## flickraw
+        ruby flickraw_test.rb
+## running-blending
 		ruby rmagick-blend.rb
 		
