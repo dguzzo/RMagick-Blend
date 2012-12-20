@@ -9,14 +9,14 @@ require 'yaml'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
-OPTIMIZED_NUM_OPERATION_LARGE = 17
+OPTIMIZED_NUM_OPERATION_LARGE = 15
 OPTIMIZED_NUM_OPERATION_SMALL = 6
 $output_dir = "images/minimal-output"
 $file_format = 'bmp'
 
 def image_compositing_sample(options={})
     defaults = {
-        num_operations: 5, 
+        num_operations: OPTIMIZED_NUM_OPERATION_SMALL, 
         append_operation_to_filename: false, 
         shuffle_composite_operations: false,
         directories: { output_dir: 'images/image-composites' },
@@ -35,6 +35,7 @@ def image_compositing_sample(options={})
     end
 
     if options[:switch_src_dest]
+        puts "swapping source and destination files..."
         temp = src
         src = dst
         dst = temp
@@ -158,20 +159,38 @@ def open_files_at_end?(options = {})
       end
 end
 
-start_time = Time.now
-1.times do 
-    image_compositing_sample(
-        num_operations: OPTIMIZED_NUM_OPERATION_LARGE, 
+
+###
+def run_batch
+    
+    options = {
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         file_format: $file_format,
-        switch_src_dest: false,
-        use_history: true
-    )
-end
-    
-end_time = Time.now
-puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
-open_files_at_end?(force: true, suppress: false)
+        switch_src_dest: true,
+    }
 
+    puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
+    large_batch = !!(gets.chomp).match(/^(y|yes)/)
+
+    if large_batch
+        options.merge!({
+            num_operations: OPTIMIZED_NUM_OPERATION_LARGE,
+            use_history: true
+        })
+        puts "running large batch using history file"
+    end
+
+    start_time = Time.now
+    1.times do 
+        image_compositing_sample(options)
+    end
+
+    end_time = Time.now
+    puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
+    open_files_at_end?(force: true, suppress: false)
+    
+end
+
+run_batch
