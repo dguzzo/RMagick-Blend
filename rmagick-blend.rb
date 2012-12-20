@@ -5,6 +5,7 @@
 require 'RMagick'
 require './lib/utils'
 require 'pp'
+require 'yaml'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
@@ -15,7 +16,8 @@ def image_compositing_sample(options={})
         append_operation_to_filename: false, 
         shuffle_composite_operations: false,
         directories: { output_dir: 'images/image-composites' },
-        file_format: 'jpg'
+        file_format: 'jpg',
+        save_history: true
     }
     
     options = defaults.merge(options)
@@ -35,14 +37,32 @@ def image_compositing_sample(options={})
         result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
     end
     
+    save_history(src: src, dst: dst, options: options) if options[:save_history]
+    
     $BatchesRun += 1
-    puts "\ndone!"
+    puts Utils::ColorPrint::green("\ndone!")
 end
 
 def pretty_file_name(image_file)
     extension_regex = /\.jpg$/i
     filename_regex = /\/(\w*)$/i
     image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
+end
+
+def save_history(args)
+    src_name = args[:src].filename.force_encoding("UTF-8")
+    dst_name = args[:dst].filename.force_encoding("UTF-8")
+    save_path = "#{args[:options][:directories][:output_dir]}/previous_batch.yml"
+
+    puts "writing history file: #{save_path}"
+    File.open(save_path, 'w') do |file|
+        values = { src_name: src_name, dst_name: dst_name, options: args[:options] }
+        file.write(values.to_yaml)
+    end
+    
+    rescue => e
+        msg = Utils::ColorPrint::green("error in save_history #{e.message}")
+        puts msg
 end
 
 # TODO: refactor this all within get_image_pair()
@@ -74,7 +94,9 @@ def get_image_pair
     return [source, destination]
 end
 
-def open_files_at_end?(force = false)
+def open_files_at_end?(force = false, suppress = false)
+    return if suppress
+    
     unless force
         puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
         open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
@@ -111,5 +133,5 @@ end
     
 end_time = Time.now
 puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
-open_files_at_end?()
+open_files_at_end?(false, true)
 
