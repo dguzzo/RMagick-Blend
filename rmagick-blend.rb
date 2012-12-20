@@ -9,6 +9,8 @@ require 'yaml'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
+OPTIMIZED_NUM_OPERATION_LARGE = 17
+OPTIMIZED_NUM_OPERATION_SMALL = 6
 $output_dir = "images/minimal-output"
 $file_format = 'bmp'
 
@@ -159,13 +161,13 @@ end
 start_time = Time.now
 1.times do 
     image_compositing_sample(
-        num_operations: 15, 
+        num_operations: OPTIMIZED_NUM_OPERATION_LARGE, 
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         file_format: $file_format,
         switch_src_dest: false,
-        use_history: false
+        use_history: true
     )
 end
     
