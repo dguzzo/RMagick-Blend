@@ -4,7 +4,6 @@ require 'net/http'
 require 'xmlsimple'
 require 'pp'
 require 'json'
-require './lib/colorprint'
 require './lib/utils'
 
 class Flickr_API
@@ -25,7 +24,7 @@ class Flickr_API
     @faves = @faves['entry'] # only care about the photos, not the meta data
     
     @faves.each do |photo|
-      puts "#{ColorPrint::green(photo['title'][0])} by #{photo['author'][0]['name'][0]}" rescue ''
+      puts "#{Utils::ColorPrint::green(photo['title'][0])} by #{photo['author'][0]['name'][0]}" rescue ''
       @titles << photo['title'].first rescue photo['title']
     end
     
@@ -36,7 +35,7 @@ class Flickr_API
   def open_files_in_browser(num_to_open)
     0.upto(num_to_open - 1) do |photo_index|
       file_href = @faves[photo_index]['link'][0]['href']
-      puts "opening: #{ColorPrint::yellow(file_href)}"
+      puts "opening: #{Utils::ColorPrint::yellow(file_href)}"
       %x(open "#{file_href}")
     end
   end
@@ -73,7 +72,7 @@ class Flickr_API
   private
   
   def should_open_files_at_end
-    puts "\ndo you want files opened in the browser at the end? #{ColorPrint::red('y/n')}"
+    puts "\ndo you want files opened in the browser at the end? #{Utils::ColorPrint::red('y/n')}"
     open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
     
     if open_photos_at_end

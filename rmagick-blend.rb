@@ -4,7 +4,6 @@
 
 require 'RMagick'
 require './lib/utils'
-require './lib/colorprint'
 require 'pp'
 
 $BatchesRun = 0
@@ -77,7 +76,7 @@ end
 
 def open_files_at_end?(force = false)
     unless force
-        puts "\ndo you want to open the files in Preview? #{ColorPrint::green('y/n')}"
+        puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
         open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
     end
   
@@ -87,7 +86,7 @@ def open_files_at_end?(force = false)
           num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#{$file_format}$/i }.length
           
           if num_files_created > NUM_FILES_BEFORE_WARN
-              puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{ColorPrint::yellow('y/n')}"
+              puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
               open_many_files = !!(gets.chomp).match(/^(y|yes)/)
               return unless open_many_files
           end
@@ -102,7 +101,7 @@ $file_format = 'bmp'
 start_time = Time.now
 1.times do 
     image_compositing_sample(
-        num_operations: 12, 
+        num_operations: 3, 
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
@@ -112,5 +111,5 @@ end
     
 end_time = Time.now
 puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
-open_files_at_end?(true)
+open_files_at_end?()
 

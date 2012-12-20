@@ -1,4 +1,3 @@
-require './lib/colorprint'
 require 'flickraw'
 
 class FlickrawBasic
@@ -33,7 +32,7 @@ class FlickrawBasic
     @token = flickr.get_request_token
     auth_url = flickr.get_authorize_url(@token['oauth_token'], :perms => 'delete')
 
-    puts "Open this url in your process to complete the authication process :\n#{ColorPrint::green(auth_url)}\n"
+    puts "Open this url in your process to complete the authication process :\n#{Utils::ColorPrint::green(auth_url)}\n"
     puts "Copy here the number given when you complete the process."
     verify = gets.strip
 
