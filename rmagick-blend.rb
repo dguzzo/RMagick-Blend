@@ -19,12 +19,18 @@ def image_compositing_sample(options={})
         shuffle_composite_operations: false,
         directories: { output_dir: 'images/image-composites' },
         file_format: 'jpg',
-        save_history: true
+        save_history: true,
+        use_history: false
     }
     
     options = defaults.merge(options)
     
-    src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
+    if options[:use_history]
+        src, dst = get_image_pair_from_history(options)
+    else
+        src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
+    end
+    
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
@@ -94,15 +100,37 @@ def get_image_pair
     return [source, destination]
 end
 
-def open_files_at_end?(force = false, suppress = false)
-    return if suppress
+def get_image_pair_from_history(options)
     
-    unless force
+    begin
+        history = File.read("#{options[:directories][:output_dir]}/previous_batch.yml")
+    rescue => e
+        puts e.message
+    end
+    
+    history_hash = YAML.load(history)
+    source = history_hash[:src_name]
+    destination = history_hash[:dst_name]
+    puts "loading source: #{Utils::ColorPrint::yellow( source )}"
+    puts "loading destination: #{Utils::ColorPrint::yellow( destination )}"
+    
+    source = Magick::Image.read(source).first
+    destination = Magick::Image.read(destination).first
+    
+    return [source, destination]
+end
+
+def open_files_at_end?(options = {})
+    options = { force: false, suppress: false }.merge(options)
+    
+    return if options[:suppress]
+    
+    unless options[:force]
         puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
         open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
     end
   
-      if force || open_photos_at_end
+      if options[:force] || open_photos_at_end
           Dir.chdir($output_dir)
           
           num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#{$file_format}$/i }.length
@@ -120,15 +148,16 @@ end
 start_time = Time.now
 1.times do 
     image_compositing_sample(
-        num_operations: 3, 
+        num_operations: 19, 
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
-        file_format: $file_format
+        file_format: $file_format,
+        use_history: true
     )
 end
     
 end_time = Time.now
 puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
-open_files_at_end?(false, true)
+open_files_at_end?(force: true, suppress: false)
 
