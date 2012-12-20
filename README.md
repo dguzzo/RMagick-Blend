@@ -2,8 +2,11 @@
 
 ## Table of Contents
 
-   * [Running](#running)
+   * [Running flickr](#running)
+   * [Running-blending](#running-blending)
 
 ## Running
-
         ruby flickr_http_test.rb
+## Running-blending
+		ruby rmagick-blend.rb
+		

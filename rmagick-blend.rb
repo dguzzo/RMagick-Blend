@@ -168,7 +168,7 @@ def run_batch
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         file_format: $file_format,
-        switch_src_dest: true,
+        switch_src_dest: false, # todo: make this a bool from user input
     }
 
     puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
