@@ -20,7 +20,8 @@ def image_compositing_sample(options={})
         directories: { output_dir: 'images/image-composites' },
         file_format: 'jpg',
         save_history: true,
-        use_history: false
+        use_history: false,
+        switch_src_dest: false
     }
     
     options = defaults.merge(options)
@@ -30,13 +31,19 @@ def image_compositing_sample(options={})
     else
         src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
     end
+
+    if options[:switch_src_dest]
+        temp = src
+        src = dst
+        dst = temp
+    end
     
     newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
     output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
-    puts "beginning composites processing, using #{options[:num_operations]} different operations"
+    puts "beginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
     
     newCompositeArray[range].each_with_index do |composite_style, index|
         puts "#{(index.to_f/options[:num_operations]*100).round}%"
@@ -103,20 +110,24 @@ end
 def get_image_pair_from_history(options)
     
     begin
-        history = File.read("#{options[:directories][:output_dir]}/previous_batch.yml")
+        file_path = "#{options[:directories][:output_dir]}/previous_batch.yml"
+        raise "Can't find #{file_path}; exiting." unless File.exists?(file_path) # don't rescue, cuz not sure how i want the program to fail gracefully yet
     rescue => e
-        puts e.message
+        puts Utils::ColorPrint.red(e.message)
+        exit
     end
     
+    history = File.read(file_path)
     history_hash = YAML.load(history)
     source = history_hash[:src_name]
     destination = history_hash[:dst_name]
+
     puts "loading source: #{Utils::ColorPrint::yellow( source )}"
     puts "loading destination: #{Utils::ColorPrint::yellow( destination )}"
-    
+
     source = Magick::Image.read(source).first
     destination = Magick::Image.read(destination).first
-    
+
     return [source, destination]
 end
 
@@ -148,12 +159,13 @@ end
 start_time = Time.now
 1.times do 
     image_compositing_sample(
-        num_operations: 19, 
+        num_operations: 15, 
         directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         file_format: $file_format,
-        use_history: true
+        switch_src_dest: false,
+        use_history: false
     )
 end
     
