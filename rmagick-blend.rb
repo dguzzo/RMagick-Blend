@@ -42,8 +42,8 @@ def image_compositing_sample(options={})
     end
     
     compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.shuffle : Magick::CompositeOperator.values
-    # first two CompositeOperator are basically no-ops, so skip 'em
-    range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
+    # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
+    range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
     output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
     puts "beginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
@@ -51,8 +51,16 @@ def image_compositing_sample(options={})
     compositeArray[range].each_with_index do |composite_style, index|
         puts "#{(index.to_f/options[:num_operations]*100).round}%"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
+        start_time = Time.now
         result = dst.composite(src, 0, 0, composite_style)
+        end_time = Time.now
+        puts "TEMP PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds."
+
+        start_time = Time.now
         result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
+        end_time = Time.now
+        puts "TEMP PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds."
+        
     end
     
     save_history(src: src, dst: dst, options: options) if options[:save_history]
