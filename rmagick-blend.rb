@@ -172,7 +172,7 @@ def run_batch
     }
 
     puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
-    large_batch = !!(gets.chomp).match(/^(y|yes)/)
+    large_batch = !!(gets.strip =~ /^(y|yes|)/)
 
     if large_batch
         options.merge!({
