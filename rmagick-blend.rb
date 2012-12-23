@@ -41,14 +41,14 @@ def image_compositing_sample(options={})
         dst = temp
     end
     
-    newCompositeArray = Magick::CompositeOperator.values.shuffle if options[:shuffle_composite_operations]
+    compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.shuffle : Magick::CompositeOperator.values
     # first two CompositeOperator are basically no-ops, so skip 'em
     range = options[:shuffle_composite_operations] ? 0...options[:num_operations] : 2...(options[:num_operations]+2)
     output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
     puts "beginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
     
-    newCompositeArray[range].each_with_index do |composite_style, index|
+    compositeArray[range].each_with_index do |composite_style, index|
         puts "#{(index.to_f/options[:num_operations]*100).round}%"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         result = dst.composite(src, 0, 0, composite_style)
