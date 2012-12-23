@@ -189,7 +189,7 @@ def run_batch
     end
 
     end_time = Time.now
-    puts "BatchesRun: #{$BatchesRun} in #{end_time-start_time} seconds."
+    puts "BatchesRun: #{$BatchesRun} in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     open_files_at_end?(force: true, suppress: false)
     
 end
