@@ -12,9 +12,9 @@ require 'pry-nav'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
-OPTIMIZED_NUM_OPERATION_LARGE = 15
+OPTIMIZED_NUM_OPERATION_LARGE = 16
 OPTIMIZED_NUM_OPERATION_SMALL = 6
-$output_dir = "images/minimal-output"
+$output_dir = "images/batch-3-output"
 $file_format = 'bmp'
 $options = {}
 
@@ -22,6 +22,7 @@ OptionParser.new do |opts|
   opts.banner = "Usage: rmagick-blend.rb [options]"
 
   opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $options[:num_operations] = v }
+  opts.on('-p', '--profile', "show timing profile debug info") { |v| $options[:perf_profile] = v }
   opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
       $options[:help] = v 
       puts "\n#{opts}"
@@ -74,12 +75,12 @@ def image_compositing_sample(options={})
         start_time = Time.now
         result = dst.composite(src, 0, 0, composite_style)
         end_time = Time.now
-        puts "TEMP PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds."
+        puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $options[:perf_profile]
 
         start_time = Time.now
         result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
         end_time = Time.now
-        puts "TEMP PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds."
+        puts "TEMP PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $options[:perf_profile]
         
     end
     
@@ -196,7 +197,7 @@ end
 def run_batch
     
     options = {
-        directories: { source: "images/minimal-source", destination: "images/minimal-destination", output_dir: $output_dir },
+        directories: { source: "images/batch-3-source", destination: "images/batch-3-destination", output_dir: $output_dir },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         file_format: $file_format,
