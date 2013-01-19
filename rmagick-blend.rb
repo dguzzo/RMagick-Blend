@@ -6,6 +6,7 @@ require 'RMagick'
 require './lib/utils'
 require 'pp'
 require 'yaml'
+require 'optparse'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
@@ -13,6 +14,19 @@ OPTIMIZED_NUM_OPERATION_LARGE = 15
 OPTIMIZED_NUM_OPERATION_SMALL = 6
 $output_dir = "images/minimal-output"
 $file_format = 'bmp'
+$options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: rmagick-blend.rb [options]"
+
+  opts.on('-o', '--operations NUM', 'number of blend operations to run') { |v| $options[:num_operations] = v }
+  opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') { |v| $options[:help] = v; puts opts}
+  # opts.on('-p', '--sourceport PORT', 'Source port') { |v| $options[:source_port] = v }
+
+end.parse!
+
+# puts "YOUVE ACHEIVED HELP!\n #{$options}" if $options[:help]
+#return
 
 def image_compositing_sample(options={})
     defaults = {
@@ -27,6 +41,7 @@ def image_compositing_sample(options={})
     }
     
     options = defaults.merge(options)
+    options[:num_operations] = $options[:num_operations].to_i if $options[:num_operations]
     
     if options[:use_history]
         src, dst = get_image_pair_from_history(options)
@@ -46,7 +61,7 @@ def image_compositing_sample(options={})
     range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
     output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
-    puts "beginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
+    puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
     
     compositeArray[range].each_with_index do |composite_style, index|
         puts "#{(index.to_f/options[:num_operations]*100).round}%"
