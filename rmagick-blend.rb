@@ -16,23 +16,24 @@ OPTIMIZED_NUM_OPERATION_LARGE = 16
 OPTIMIZED_NUM_OPERATION_SMALL = 6
 $output_dir = "images/batch-3-output"
 $file_format = 'bmp'
-$options = {}
+$flags = {}
 
 OptionParser.new do |opts|
   opts.banner = "Usage: rmagick-blend.rb [options]"
 
-  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $options[:num_operations] = v }
-  opts.on('-p', '--profile', "show timing profile debug info") { |v| $options[:perf_profile] = v }
+  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $flags[:num_operations] = v }
+  opts.on('-p', '--profile', "show timing profile debug info") { |v| $flags[:perf_profile] = v }
+  opts.on('-s', '--swap', "swap the destination image and the source image") { |v| $flags[:switch_src_dest] = v }
   opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
-      $options[:help] = v 
+      $flags[:help] = v 
       puts "\n#{opts}"
       exit
   end
-  # opts.on('-p', '--sourceport PORT', 'Source port') { |v| $options[:source_port] = v }
+  # opts.on('-p', '--sourceport PORT', 'Source port') { |v| $flags[:source_port] = v }
 
 end.parse!
 
-# puts "YOUVE ACHEIVED HELP!\n #{$options}" if $options[:help]
+# puts "YOUVE ACHEIVED HELP!\n #{$flags}" if $flags[:help]
 
 def image_compositing_sample(options={})
     defaults = {
@@ -47,7 +48,8 @@ def image_compositing_sample(options={})
     }
     
     options = defaults.merge(options)
-    options[:num_operations] = $options[:num_operations].to_i if $options[:num_operations]
+    options[:num_operations] = $flags[:num_operations].to_i if $flags[:num_operations]
+    options[:switch_src_dest] = $flags[:switch_src_dest] if $flags[:switch_src_dest]
     
     if options[:use_history]
         src, dst = get_image_pair_from_history(options)
@@ -75,12 +77,12 @@ def image_compositing_sample(options={})
         start_time = Time.now
         result = dst.composite(src, 0, 0, composite_style)
         end_time = Time.now
-        puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $options[:perf_profile]
+        puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
 
         start_time = Time.now
         result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
         end_time = Time.now
-        puts "TEMP PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $options[:perf_profile]
+        puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
         
     end
     
