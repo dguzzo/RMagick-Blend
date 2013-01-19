@@ -7,6 +7,8 @@ require './lib/utils'
 require 'pp'
 require 'yaml'
 require 'optparse'
+require 'pry'
+require 'pry-nav'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
@@ -19,14 +21,17 @@ $options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: rmagick-blend.rb [options]"
 
-  opts.on('-o', '--operations NUM', 'number of blend operations to run') { |v| $options[:num_operations] = v }
-  opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') { |v| $options[:help] = v; puts opts}
+  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $options[:num_operations] = v }
+  opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
+      $options[:help] = v 
+      puts "\n#{opts}"
+      exit
+  end
   # opts.on('-p', '--sourceport PORT', 'Source port') { |v| $options[:source_port] = v }
 
 end.parse!
 
 # puts "YOUVE ACHEIVED HELP!\n #{$options}" if $options[:help]
-#return
 
 def image_compositing_sample(options={})
     defaults = {
@@ -86,8 +91,12 @@ end
 
 def pretty_file_name(image_file)
     extension_regex = /\.jpg$/i
-    filename_regex = /\/(\w*)$/i
-    image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
+    filename_regex = /\/([^\/]*)$/i
+    begin
+        image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
+    rescue
+        "improper-filename-#{Time.now.asctime}"
+    end
 end
 
 def save_history(args)
