@@ -24,6 +24,10 @@ OptionParser.new do |opts|
   opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $flags[:num_operations] = v }
   opts.on('-p', '--profile', "show timing profile debug info") { |v| $flags[:perf_profile] = v }
   opts.on('-s', '--swap', "swap the destination image and the source image") { |v| $flags[:switch_src_dest] = v }
+  opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file") do 
+      $file_format = "jpg"
+      OPTIMIZED_NUM_OPERATION_LARGE += 10
+  end
   opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
       $flags[:help] = v 
       puts "\n#{opts}"
