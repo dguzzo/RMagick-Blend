@@ -6,6 +6,13 @@ module Utils
     end
     image_dir_name
   end
+
+  def self.output_all_composite_ops
+      File.open('all_ops.yml', 'w') do |file|
+          all_ops = Magick::CompositeOperator.values.map{|op| op.to_s.force_encoding("UTF-8")}
+          file.write(all_ops.to_yaml)
+      end
+  end
   
   module ColorPrint
     def self.green(message)

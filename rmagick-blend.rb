@@ -13,10 +13,14 @@ require 'pry-nav'
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
 $optimized_num_operation_large = 16
-OPTIMIZED_NUM_OPERATION_SMALL = 6
+OPTIMIZED_NUM_OPERATION_SMALL = 8
 $output_dir = "images/batch-3-output"
 $file_format = 'bmp'
 $flags = {}
+$specific_comps_to_run = nil
+$COPY_COMPS = %w(CopyBlackCompositeOp CopyBlueCompositeOp CopyCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyOpacityCompositeOp CopyRedCompositeOp CopyYellowCompositeOp)
+$SET1_COMPS = %w(BlendCompositeOp HardLightCompositeOp)
+# $specific_comps_to_run = $COPY_COMPS
 
 OptionParser.new do |opts|
   opts.banner = "Usage: rmagick-blend.rb [options]"
@@ -69,14 +73,24 @@ def image_compositing_sample(options={})
     end
     
     compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.shuffle : Magick::CompositeOperator.values
-    # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
-    range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
+    
+    if $specific_comps_to_run
+        range = 0...compositeArray.length
+        options[:num_operations] = $specific_comps_to_run.length
+    else
+        # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
+        range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
+    end
+    
     output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
     puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
     
     compositeArray[range].each_with_index do |composite_style, index|
-        puts "#{(index.to_f/options[:num_operations]*100).round}%"
+        next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
+        
+        puts "#{(index.to_f/options[:num_operations]*100).round}%" unless $specific_comps_to_run
+        puts "#{Utils::ColorPrint::green(composite_style.to_s)}"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         start_time = Time.now
         result = dst.composite(src, 0, 0, composite_style)
@@ -87,7 +101,6 @@ def image_compositing_sample(options={})
         result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
         end_time = Time.now
         puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
-        
     end
     
     save_history(src: src, dst: dst, options: options) if options[:save_history]
