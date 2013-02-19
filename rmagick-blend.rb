@@ -18,9 +18,14 @@ $output_dir = "images/batch-3-output"
 $file_format = 'bmp'
 $flags = {}
 $specific_comps_to_run = nil
-$COPY_COMPS = %w(CopyBlackCompositeOp CopyBlueCompositeOp CopyCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyOpacityCompositeOp CopyRedCompositeOp CopyYellowCompositeOp)
-$SET1_COMPS = %w(BlendCompositeOp HardLightCompositeOp)
-# $specific_comps_to_run = $COPY_COMPS
+$COMP_SETS = {
+    copy_color: %w(CopyBlackCompositeOp CopyBlueCompositeOp CopyCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyOpacityCompositeOp CopyRedCompositeOp CopyYellowCompositeOp),
+    set1: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp),
+    crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp),
+    specific: %w(OverlayCompositeOp)
+}
+
+# $specific_comps_to_run = $COMP_SETS[:specific]
 
 OptionParser.new do |opts|
   opts.banner = "Usage: rmagick-blend.rb [options]"
