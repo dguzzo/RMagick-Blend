@@ -12,7 +12,7 @@ require 'pry-nav'
 
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
-OPTIMIZED_NUM_OPERATION_LARGE = 16
+$optimized_num_operation_large = 16
 OPTIMIZED_NUM_OPERATION_SMALL = 6
 $output_dir = "images/batch-3-output"
 $file_format = 'bmp'
@@ -26,7 +26,7 @@ OptionParser.new do |opts|
   opts.on('-s', '--swap', "swap the destination image and the source image") { |v| $flags[:switch_src_dest] = v }
   opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file") do 
       $file_format = "jpg"
-      OPTIMIZED_NUM_OPERATION_LARGE += 10
+      $optimized_num_operation_large += 10
   end
   opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
       $flags[:help] = v 
@@ -216,7 +216,7 @@ def run_batch
 
     if large_batch
         options.merge!({
-            num_operations: OPTIMIZED_NUM_OPERATION_LARGE,
+            num_operations: $optimized_num_operation_large,
             use_history: true
         })
         puts "running large batch using history file"
