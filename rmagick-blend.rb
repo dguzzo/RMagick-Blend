@@ -14,7 +14,9 @@ $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
 $optimized_num_operation_large = 16
 OPTIMIZED_NUM_OPERATION_SMALL = 8
-$output_dir = "images/batch-3-output"
+$OUTPUT_DIR = "images/batch-4-output"
+$SOURCE_DIR = "images/batch-4-source"
+$DESTINATION_DIR = "images/batch-4-destination"
 $file_format = 'bmp'
 $flags = {}
 $specific_comps_to_run = nil
@@ -202,7 +204,7 @@ def open_files_at_end?(options = {})
     end
   
       if options[:force] || open_photos_at_end
-          Dir.chdir($output_dir)
+          Dir.chdir($OUTPUT_DIR)
           
           num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#{$file_format}$/i }.length
           
@@ -221,11 +223,10 @@ end
 def run_batch
     
     options = {
-        directories: { source: "images/batch-3-source", destination: "images/batch-3-destination", output_dir: $output_dir },
+        directories: { source: $SOURCE_DIR, destination: $DESTINATION_DIR, output_dir: $OUTPUT_DIR },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
-        file_format: $file_format,
-        switch_src_dest: false, # todo: make this a bool from user input
+        file_format: $file_format
     }
 
     puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
