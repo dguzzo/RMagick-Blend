@@ -13,7 +13,7 @@ require 'pry-nav'
 $BatchesRun = 0
 NUM_FILES_BEFORE_WARN =  40
 $optimized_num_operation_large = 16
-OPTIMIZED_NUM_OPERATION_SMALL = 8
+OPTIMIZED_NUM_OPERATION_SMALL = 9
 $OUTPUT_DIR = "images/batch-4-output"
 $SOURCE_DIR = "images/batch-4-source"
 $DESTINATION_DIR = "images/batch-4-destination"
@@ -22,9 +22,10 @@ $flags = {}
 $specific_comps_to_run = nil
 $COMP_SETS = {
     copy_color: %w(CopyBlackCompositeOp CopyBlueCompositeOp CopyCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyOpacityCompositeOp CopyRedCompositeOp CopyYellowCompositeOp),
-    set1: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp),
-    crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp),
-    specific: %w(OverlayCompositeOp)
+    reliable_quality: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp),
+    crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp),
+    specific: %w(OverlayCompositeOp),
+    avoid: %w(NoCompositeOp)
 }
 
 # $specific_comps_to_run = $COMP_SETS[:specific]
@@ -95,6 +96,7 @@ def image_compositing_sample(options={})
     
     compositeArray[range].each_with_index do |composite_style, index|
         next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
+        next if $COMP_SETS[:avoid].include?(composite_style.to_s)
         
         puts "#{(index.to_f/options[:num_operations]*100).round}%" unless $specific_comps_to_run
         puts "#{Utils::ColorPrint::green(composite_style.to_s)}"
