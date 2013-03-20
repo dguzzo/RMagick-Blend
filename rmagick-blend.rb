@@ -149,10 +149,8 @@ def get_image_pair_via_directories(directories)
     destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.jpg$/i}
     raise "need at least one destination image in #{directories[:destination]} to begin!" if source_images.length < 1
 
-    destination_name = destination_images.shuffle!.sample
-    source_name = source_images.shuffle!.sample
-    source = Magick::Image.read("./#{directories[:source]}/#{source_name}").first
-    destination = Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
+    destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
+    source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
     
     return [source, destination]
 end
@@ -165,8 +163,7 @@ def get_image_pair
     destination_name = images.shuffle!.sample
     images.delete(destination_name)
     source_name = images.sample
-    source = Magick::Image.read("./images/#{source_name}").first
-    destination = Magick::Image.read("./images/#{destination_name}").first
+    source, destination = Magick::Image.read("./images/#{source_name}").first, Magick::Image.read("./images/#{destination_name}").first
     
     return [source, destination]
 end
@@ -183,14 +180,12 @@ def get_image_pair_from_history(options)
     
     history = File.read(file_path)
     history_hash = YAML.load(history)
-    source = history_hash[:src_name]
-    destination = history_hash[:dst_name]
+    source, destination = history_hash[:src_name], history_hash[:dst_name]
 
     puts "loading source: #{Utils::ColorPrint::yellow( source )}"
     puts "loading destination: #{Utils::ColorPrint::yellow( destination )}"
 
-    source = Magick::Image.read(source).first
-    destination = Magick::Image.read(destination).first
+    source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
 
     return [source, destination]
 end
