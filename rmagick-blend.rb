@@ -22,10 +22,10 @@ $flags = {}
 $specific_comps_to_run = nil
 $COMP_SETS = {
     copy_color: %w(CopyBlackCompositeOp CopyBlueCompositeOp CopyCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyOpacityCompositeOp CopyRedCompositeOp CopyYellowCompositeOp),
-    reliable_quality: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp),
+    reliable_quality: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp DarkenCompositeOp),
     crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp),
     specific: %w(OverlayCompositeOp),
-    avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp)
+    avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp)
 }
 
 # $specific_comps_to_run = $COMP_SETS[:specific]
