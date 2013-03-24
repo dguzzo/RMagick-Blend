@@ -23,9 +23,9 @@ $specific_comps_to_run = nil
 $COMP_SETS = {
     copy_color: %w(CopyBlackCompositeOp CopyBlueCompositeOp CopyCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyOpacityCompositeOp CopyRedCompositeOp CopyYellowCompositeOp),
     reliable_quality: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp),
-    crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp),
+    crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp),
     specific: %w(OverlayCompositeOp),
-    avoid: %w(NoCompositeOp)
+    avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp)
 }
 
 # $specific_comps_to_run = $COMP_SETS[:specific]
