@@ -107,7 +107,7 @@ def image_compositing_sample(options={})
         puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
 
         start_time = Time.now
-        result.write("./#{output_dir}/#{pretty_file_name(dst)}--#{pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
+        result.write("./#{output_dir}/#{Utils::pretty_file_name(dst)}--#{Utils::pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
         end_time = Time.now
         puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
     end
@@ -116,16 +116,6 @@ def image_compositing_sample(options={})
     
     $batches_run += 1
     puts Utils::ColorPrint::green("\ndone!")
-end
-
-def pretty_file_name(image_file)
-    extension_regex = /\.jpg$/i
-    filename_regex = /\/([^\/]*)$/i
-    begin
-        image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
-    rescue
-        "improper-filename-#{Time.now.asctime}"
-    end
 end
 
 def save_history(args)
