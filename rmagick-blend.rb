@@ -10,7 +10,7 @@ require 'optparse'
 require 'pry'
 require 'pry-nav'
 
-$BatchesRun = 0
+$batches_run = 0
 NUM_FILES_BEFORE_WARN =  40
 $optimized_num_operation_large = 16
 OPTIMIZED_NUM_OPERATION_SMALL = 9
@@ -25,7 +25,7 @@ $COMP_SETS = {
     reliable_quality: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp),
     crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp),
     specific: %w(OverlayCompositeOp),
-    avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp)
+    avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp)
 }
 
 # $specific_comps_to_run = $COMP_SETS[:specific]
@@ -74,7 +74,7 @@ def image_compositing_sample(options={})
     end
 
     if options[:switch_src_dest]
-        puts "swapping source and destination files..."
+        puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
         temp = src
         src = dst
         dst = temp
@@ -114,7 +114,7 @@ def image_compositing_sample(options={})
     
     save_history(src: src, dst: dst, options: options) if options[:save_history]
     
-    $BatchesRun += 1
+    $batches_run += 1
     puts Utils::ColorPrint::green("\ndone!")
 end
 
@@ -244,7 +244,7 @@ def run_batch
     end
 
     end_time = Time.now
-    puts "BatchesRun: #{$BatchesRun} in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
+    puts "BatchesRun: #{$batches_run} in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     open_files_at_end?(force: true, suppress: false)
     
 end
