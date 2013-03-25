@@ -80,7 +80,8 @@ def image_compositing_sample(options={})
         dst = temp
     end
     
-    compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.shuffle : Magick::CompositeOperator.values
+    compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
+    compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
     
     if $specific_comps_to_run
         range = 0...compositeArray.length
@@ -96,7 +97,6 @@ def image_compositing_sample(options={})
     
     compositeArray[range].each_with_index do |composite_style, index|
         next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
-        next if $COMP_SETS[:avoid].include?(composite_style.to_s)
         
         puts "#{(index.to_f/options[:num_operations]*100).round}%" unless $specific_comps_to_run
         puts "#{Utils::ColorPrint::green(composite_style.to_s)}"
