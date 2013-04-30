@@ -3,21 +3,21 @@
 ###  this memory is of course freed when the program finishes when run directly with the 'ruby' command
 
 require 'RMagick'
-require './lib/utils'
+require './lib/utils.rb'
+require './lib/deep_symbolize.rb'
+require './lib/settings.rb'
 require 'pp'
 require 'yaml'
 require 'optparse'
 require 'pry'
 require 'pry-nav'
 
+Settings.load!("config/settings.yml")
+
 $batches_run = 0
-NUM_FILES_BEFORE_WARN =  40
-$optimized_num_operation_large = 16
-OPTIMIZED_NUM_OPERATION_SMALL = 9
-$OUTPUT_DIR = "images/batch-5-output"
-$SOURCE_DIR = "images/batch-5-source"
-$DESTINATION_DIR = "images/batch-5-destination"
-$file_format = 'bmp'
+$optimized_num_operation_large = 18
+OPTIMIZED_NUM_OPERATION_SMALL = 12
+$file_format = Settings.default_image_format
 $flags = {}
 $specific_comps_to_run = nil
 $COMP_SETS = {
@@ -191,11 +191,11 @@ def open_files_at_end?(options = {})
     end
   
       if options[:force] || open_photos_at_end
-          Dir.chdir($OUTPUT_DIR)
+          Dir.chdir(Settings.directories[:output_dir])
           
           num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#{$file_format}$/i }.length
           
-          if num_files_created > NUM_FILES_BEFORE_WARN
+          if num_files_created > Settings.constant_values[:num_files_before_warn]
               puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
               open_many_files = !!(gets.chomp).match(/^(y|yes)/)
               return unless open_many_files
@@ -210,7 +210,7 @@ end
 def run_batch
     
     options = {
-        directories: { source: $SOURCE_DIR, destination: $DESTINATION_DIR, output_dir: $OUTPUT_DIR },
+        directories: { source: Settings.directories[:source_dir], destination: Settings.directories[:destination_dir], output_dir: Settings.directories[:output_dir] },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         file_format: $file_format

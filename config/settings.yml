@@ -1,0 +1,12 @@
+# todo note: can't use reserved words as keys; seems limiting, as i want 'constants' as a top-level container.
+# perhaps could request of the folks that wrote what's in settings.rb to make this possible...
+---
+constant_values:
+    num_files_before_warn: 40
+
+directories:
+    output_dir: "images/batch-5-output"
+    source_dir: "images/batch-5-source"
+    destination_dir: "images/batch-5-destination"
+
+default_image_format: 'bmp'
