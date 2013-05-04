@@ -27,7 +27,6 @@ $COMP_SETS = {
     specific: %w(OverlayCompositeOp),
     avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp)
 }
-
 # $specific_comps_to_run = $COMP_SETS[:specific]
 
 OptionParser.new do |opts|
@@ -90,10 +89,9 @@ def image_compositing_sample(options={})
         # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
         range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
     end
-    
-    output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
-    
+
     puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
+    output_dir = Utils::createDirIfNeeded(options[:directories][:output_dir])
     
     compositeArray[range].each_with_index do |composite_style, index|
         next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
@@ -142,7 +140,7 @@ def get_image_pair_via_directories(directories)
     destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
     source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
     
-    return [source, destination]
+    [source, destination]
 end
 
 
@@ -155,11 +153,10 @@ def get_image_pair
     source_name = image_names.sample
     source, destination = Magick::Image.read("./images/#{source_name}").first, Magick::Image.read("./images/#{destination_name}").first
     
-    return [source, destination]
+    [source, destination]
 end
 
 def get_image_pair_from_history(options)
-    
     begin
         file_path = "#{options[:directories][:output_dir]}/previous_batch.yml"
         raise "Can't find #{file_path}; exiting." unless File.exists?(file_path) # don't rescue, cuz not sure how i want the program to fail gracefully yet
@@ -172,17 +169,14 @@ def get_image_pair_from_history(options)
     history_hash = YAML.load(history)
     source, destination = history_hash[:src_name], history_hash[:dst_name]
 
-    puts "loading source: #{Utils::ColorPrint::yellow( source )}"
-    puts "loading destination: #{Utils::ColorPrint::yellow( destination )}"
-
+    puts "loading source: #{Utils::ColorPrint::yellow( source )}\nloading destination: #{Utils::ColorPrint::yellow( destination )}"
     source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
 
-    return [source, destination]
+    [source, destination]
 end
 
 def open_files_at_end?(options = {})
     options = { force: false, suppress: false }.merge(options)
-    
     return if options[:suppress]
     
     unless options[:force]
@@ -215,7 +209,6 @@ end
 
 ###
 def run_batch
-    
     options = {
         directories: { source: Settings.directories[:source_dir], destination: Settings.directories[:destination_dir], output_dir: Settings.directories[:output_dir] },
         append_operation_to_filename: true, 
@@ -245,7 +238,6 @@ def run_batch
     end_time = Time.now
     puts "BatchesRun: #{$batches_run} in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     open_files_at_end?(force: true, suppress: false)
-    
 end
 
 run_batch
