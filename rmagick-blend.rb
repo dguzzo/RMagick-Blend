@@ -119,15 +119,15 @@ end
 def save_history(args)
     src_name, dst_name = [ args[:src], args[:dst] ].map{ |file| file.filename.force_encoding("UTF-8") }
     save_path = "#{args[:options][:directories][:output_dir]}/previous_batch.yml"
-
     puts "writing history file: #{save_path}"
+    
     File.open(save_path, 'w') do |file|
         values = { src_name: src_name, dst_name: dst_name, options: args[:options] }
         file.write(values.to_yaml)
     end
     
     rescue => e
-        puts Utils::ColorPrint::green("error in save_history #{e.message}")
+        puts Utils::ColorPrint::red("error in save_history #{e.message}")
 end
 
 # TODO: refactor this all within get_image_pair()
@@ -142,7 +142,6 @@ def get_image_pair_via_directories(directories)
     
     [source, destination]
 end
-
 
 def get_image_pair
     image_names = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
