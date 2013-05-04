@@ -147,12 +147,12 @@ end
 
 
 def get_image_pair
-    images = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
-    raise "need at least two images to begin!" if images.length < 2
+    image_names = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
+    raise "need at least two images to begin!" if image_names.length < 2
 
-    destination_name = images.shuffle!.sample
-    images.delete(destination_name)
-    source_name = images.sample
+    destination_name = image_names.shuffle!.sample
+    image_names.delete(destination_name)
+    source_name = image_names.sample
     source, destination = Magick::Image.read("./images/#{source_name}").first, Magick::Image.read("./images/#{destination_name}").first
     
     return [source, destination]
@@ -205,6 +205,13 @@ def open_files_at_end?(options = {})
       end
 end
 
+def delete_last_batch
+    image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp)$/i}
+    image_names.map! {|name| "#{Settings.directories[:output_dir]}/#{name}" }
+    puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
+    
+    File.delete(*image_names)
+end
 
 ###
 def run_batch
@@ -219,6 +226,8 @@ def run_batch
     puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
     user_input = gets.strip
     large_batch = !!(user_input =~ /^(y|yes)/) || user_input.empty?
+
+    delete_last_batch if Settings.behavior[:delete_last_batch]
 
     if large_batch
         options.merge!({
