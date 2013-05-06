@@ -28,7 +28,8 @@ $COMP_SETS = {
     avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp)
 }
 
-$COMP_SETS[:avoid].push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
+$COMP_SETS[:avoid].clear.push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
+$COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source_dir] == "images/batch-7-source" ### TEMP for blind drawing proj only
 # $specific_comps_to_run = $COMP_SETS[:specific]
 
 OptionParser.new do |opts|
@@ -74,12 +75,7 @@ def image_compositing_sample(options={})
         src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
     end
 
-    if options[:switch_src_dest]
-        puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
-        temp = src
-        src = dst
-        dst = temp
-    end
+    src, dst = swap_directories(src, dst) if options[:switch_src_dest]
     
     compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
     compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
@@ -88,7 +84,7 @@ def image_compositing_sample(options={})
         range = 0...compositeArray.length
         options[:num_operations] = $specific_comps_to_run.length
     else
-        # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
+            # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
         range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
     end
 
@@ -113,9 +109,16 @@ def image_compositing_sample(options={})
     end
     
     save_history(src: src, dst: dst, options: options) if options[:save_history]
-    
     $batches_run += 1
     puts Utils::ColorPrint::green("\ndone!")
+end
+
+def swap_directories(src, dst)
+        puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
+        temp = src
+        src = dst
+        dst = temp
+        [src, dst]
 end
 
 def save_history(args)

@@ -12,4 +12,4 @@ directories:
 default_image_format: 'bmp'
 behavior:
     delete_last_batch: true
-    specific_avoid_ops: "HueCompositeOp MinusCompositeOp ScreenCompositeOp BlendCompositeOp"
+    specific_avoid_ops: "HueCompositeOp MinusCompositeOp ScreenCompositeOp BlendCompositeOp PinLightCompositeOp HardLightCompositeOp ColorBurnCompositeOp LightenCompositeOp PegtopLightCompositeOp SoftLightCompositeOp DisplaceCompositeOp DistortCompositeOp VividLightCompositeOp LuminizeCompositeOp ColorDodgeCompositeOp OverlayCompositeOp ColorizeCompositeOp SaturateCompositeOp BumpmapCompositeOp ThresholdCompositeOp PlusCompositeOp LinearDodgeCompositeOp MultiplyCompositeOp BlurCompositeOp ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp"
