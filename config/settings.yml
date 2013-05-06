@@ -12,4 +12,4 @@ directories:
 default_image_format: 'bmp'
 behavior:
     delete_last_batch: true
-    specific_avoid_ops: "HueCompositeOp"
+    specific_avoid_ops: "HueCompositeOp MinusCompositeOp ScreenCompositeOp BlendCompositeOp"
