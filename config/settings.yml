@@ -5,10 +5,11 @@ constant_values:
     num_files_before_warn: 40
 
 directories:
-    output_dir: "images/batch-6-output"
-    source_dir: "images/batch-6-source"
-    destination_dir: "images/batch-6-destination"
+    output_dir: "images/batch-7-output"
+    source_dir: "images/batch-7-source"
+    destination_dir: "images/batch-7-destination"
 
 default_image_format: 'bmp'
 behavior:
     delete_last_batch: true
+    specific_avoid_ops: "HueCompositeOp"

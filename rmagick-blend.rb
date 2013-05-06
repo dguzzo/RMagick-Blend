@@ -16,7 +16,7 @@ Settings.load!("config/settings.yml")
 
 $batches_run = 0
 $optimized_num_operation_large = 18
-OPTIMIZED_NUM_OPERATION_SMALL = 12
+OPTIMIZED_NUM_OPERATION_SMALL = 14
 $file_format = Settings.default_image_format
 $flags = {}
 $specific_comps_to_run = nil
@@ -27,6 +27,8 @@ $COMP_SETS = {
     specific: %w(OverlayCompositeOp),
     avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp)
 }
+
+$COMP_SETS[:avoid] << Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
 # $specific_comps_to_run = $COMP_SETS[:specific]
 
 OptionParser.new do |opts|
@@ -200,6 +202,7 @@ end
 
 def delete_last_batch
     image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp)$/i}
+    return if image_names.empty?
     image_names.map! {|name| "#{Settings.directories[:output_dir]}/#{name}" }
     puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
     
