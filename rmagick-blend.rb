@@ -15,8 +15,8 @@ require 'pry-nav'
 Settings.load!("config/settings.yml")
 
 $batches_run = 0
-$optimized_num_operation_large = 18
-OPTIMIZED_NUM_OPERATION_SMALL = 14
+$optimized_num_operation_large = 20
+OPTIMIZED_NUM_OPERATION_SMALL = 18
 $file_format = Settings.default_image_format
 $flags = {}
 $specific_comps_to_run = nil
@@ -51,7 +51,7 @@ OptionParser.new do |opts|
 
 end.parse!
 
-# puts "YOUVE ACHEIVED HELP!\n #{$flags}" if $flags[:help]
+# puts "YOUVE ACHEIVED HELP!\n #$flags" if $flags[:help]
 
 def image_compositing_sample(options={})
     defaults = {
@@ -114,11 +114,11 @@ def image_compositing_sample(options={})
 end
 
 def swap_directories(src, dst)
-        puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
-        temp = src
-        src = dst
-        dst = temp
-        [src, dst]
+    puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
+    temp = src
+    src = dst
+    dst = temp
+    [src, dst]
 end
 
 def save_history(args)
@@ -191,7 +191,7 @@ def open_files_at_end?(options = {})
       if options[:force] || open_photos_at_end
           Dir.chdir(Settings.directories[:output_dir])
           
-          num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#{$file_format}$/i }.length
+          num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$file_format$/i }.length
           
           if num_files_created > Settings.constant_values[:num_files_before_warn]
               puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
@@ -199,7 +199,7 @@ def open_files_at_end?(options = {})
               return unless open_many_files
           end
           
-          `open *.#{$file_format}`
+          `open *.#$file_format`
       end
 end
 
@@ -241,7 +241,7 @@ def run_batch
     end
 
     end_time = Time.now
-    puts "BatchesRun: #{$batches_run} in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
+    puts "BatchesRun: #$batches_run in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     open_files_at_end?(force: true, suppress: false)
 end
 
