@@ -1,6 +1,7 @@
 # todo note: can't use reserved words as keys; seems limiting, as i want 'constants' as a top-level container.
 # perhaps could request of the folks that wrote what's in settings.rb to make this possible...
 ---
+preset_name: "batch 7"
 constant_values:
     num_files_before_warn: 40
 

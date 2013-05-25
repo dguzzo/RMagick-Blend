@@ -13,6 +13,8 @@ require 'pry'
 require 'pry-nav'
 
 Settings.load!("config/settings.yml")
+$SETTINGS_NAME = Settings.preset_name
+puts "loaded \"#{Utils::ColorPrint::green($SETTINGS_NAME)}\" settings"
 
 $batches_run = 0
 $optimized_num_operation_large = 20
