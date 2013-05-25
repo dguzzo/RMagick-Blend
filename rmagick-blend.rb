@@ -86,7 +86,7 @@ def image_compositing_sample(options={})
         range = 0...compositeArray.length
         options[:num_operations] = $specific_comps_to_run.length
     else
-            # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
+        # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
         range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
     end
 
@@ -182,25 +182,23 @@ end
 def open_files_at_end?(options = {})
     options = { force: false, suppress: false }.merge(options)
     return if options[:suppress]
-    
+
     unless options[:force]
         puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
         open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
     end
-  
-      if options[:force] || open_photos_at_end
-          Dir.chdir(Settings.directories[:output_dir])
-          
-          num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$file_format$/i }.length
-          
-          if num_files_created > Settings.constant_values[:num_files_before_warn]
-              puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
-              open_many_files = !!(gets.chomp).match(/^(y|yes)/)
-              return unless open_many_files
-          end
-          
-          `open *.#$file_format`
-      end
+
+    if options[:force] || open_photos_at_end
+        Dir.chdir(Settings.directories[:output_dir])
+
+        num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$file_format$/i }.length
+
+        if num_files_created > Settings.constant_values[:num_files_before_warn]
+            puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
+            open_many_files = !!(gets.chomp).match(/^(y|yes)/)
+            return unless open_many_files
+        end
+    end
 end
 
 def delete_last_batch
@@ -242,7 +240,7 @@ def run_batch
 
     end_time = Time.now
     puts "BatchesRun: #$batches_run in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
-    open_files_at_end?(force: true, suppress: false)
+    `open *.#$file_format` if open_files_at_end?(force: true, suppress: false)
 end
 
 run_batch
