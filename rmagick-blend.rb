@@ -117,9 +117,7 @@ end
 
 def swap_directories(src, dst)
     puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
-    temp = src
-    src = dst
-    dst = temp
+    src, dst = dst, src
     [src, dst]
 end
 
