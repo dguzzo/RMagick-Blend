@@ -4,8 +4,8 @@
 
 require 'RMagick'
 require './lib/utils.rb'
-require './lib/deep_symbolize.rb'
-require './lib/settings.rb'
+require './vendor/deep_symbolize.rb'
+require './vendor/settings.rb'
 require 'pp'
 require 'yaml'
 require 'optparse'
