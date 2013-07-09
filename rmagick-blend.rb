@@ -137,9 +137,9 @@ end
 
 # TODO: refactor this all within get_image_pair()
 def get_image_pair_via_directories(directories)
-    source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.jpg$/i}
+    source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.#{$file_format}/i}
     raise "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
-    destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.jpg$/i}
+    destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.#{$file_format}$/i}
     raise "need at least one destination image in #{directories[:destination]} to begin!" if source_images.length < 1
 
     destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
