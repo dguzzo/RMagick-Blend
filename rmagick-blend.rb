@@ -137,9 +137,9 @@ end
 
 # TODO: refactor this all within get_image_pair()
 def get_image_pair_via_directories(directories)
-    source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.#{$file_format}/i}
+    source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.#$file_format/i}
     raise "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
-    destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.#{$file_format}$/i}
+    destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.#$file_format$/i}
     raise "need at least one destination image in #{directories[:destination]} to begin!" if source_images.length < 1
 
     destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
@@ -198,11 +198,12 @@ def open_files_at_end?(options = {})
             open_many_files = !!(gets.chomp).match(/^(y|yes)/)
             return unless open_many_files
         end
+        true
     end
 end
 
 def delete_last_batch
-    image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp)$/i}
+    image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp|tif)$/i}
     return if image_names.empty?
     image_names.map! {|name| "#{Settings.directories[:output_dir]}/#{name}" }
     puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
