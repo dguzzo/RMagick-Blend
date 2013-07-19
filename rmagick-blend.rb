@@ -72,9 +72,9 @@ def image_compositing_sample(options={})
     options[:switch_src_dest] = $flags[:switch_src_dest] if $flags[:switch_src_dest]
     
     if options[:use_history]
-        src, dst = get_image_pair_from_history(options)
+        src, dst = Utils::get_image_pair_from_history(options)
     else
-        src, dst = options[:directories] ? get_image_pair_via_directories(options[:directories]) : get_image_pair
+        src, dst = options[:directories] ? Utils::get_image_magick_pair(options[:directories], $file_format) : Utils::get_image_pair
     end
 
     src, dst = swap_directories(src, dst) if options[:switch_src_dest]
@@ -133,50 +133,6 @@ def save_history(args)
     
     rescue => e
         puts Utils::ColorPrint::red("error in save_history #{e.message}")
-end
-
-# TODO: refactor this all within get_image_pair()
-def get_image_pair_via_directories(directories)
-    source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.#$file_format/i}
-    raise "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
-    destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.#$file_format$/i}
-    raise "need at least one destination image in #{directories[:destination]} to begin!" if source_images.length < 1
-
-    destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
-    source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
-    
-    [source, destination]
-end
-
-def get_image_pair
-    image_names = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
-    raise "need at least two images to begin!" if image_names.length < 2
-
-    destination_name = image_names.shuffle!.sample
-    image_names.delete(destination_name)
-    source_name = image_names.sample
-    source, destination = Magick::Image.read("./images/#{source_name}").first, Magick::Image.read("./images/#{destination_name}").first
-    
-    [source, destination]
-end
-
-def get_image_pair_from_history(options)
-    begin
-        file_path = "#{options[:directories][:output_dir]}/previous_batch.yml"
-        raise "Can't find #{file_path}; exiting." unless File.exists?(file_path) # don't rescue, cuz not sure how i want the program to fail gracefully yet
-    rescue => e
-        puts Utils::ColorPrint.red(e.message)
-        exit
-    end
-    
-    history = File.read(file_path)
-    history_hash = YAML.load(history)
-    source, destination = history_hash[:src_name], history_hash[:dst_name]
-
-    puts "loading source: #{Utils::ColorPrint::yellow( source )}\nloading destination: #{Utils::ColorPrint::yellow( destination )}"
-    source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
-
-    [source, destination]
 end
 
 def open_files_at_end?(options = {})

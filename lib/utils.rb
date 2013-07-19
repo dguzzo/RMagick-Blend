@@ -1,3 +1,6 @@
+require 'pry'
+require 'pry-nav'
+
 module Utils
 
     def self.createDirIfNeeded(image_dir_name)
@@ -25,6 +28,46 @@ module Utils
         end
     end
 
+    # TODO: refactor this all within get_image_pair()
+    def self.get_image_magick_pair(directories, file_format)
+        destination_name, source_name = get_image_pair_via_directories(directories, file_format)
+        source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
+
+        [source, destination]
+    end
+    
+    def self.get_image_pair
+        image_names = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
+        raise "need at least two images to begin!" if image_names.length < 2
+
+        destination_name = image_names.shuffle!.sample
+        image_names.delete(destination_name)
+        source_name = image_names.sample
+        source, destination = Magick::Image.read("./images/#{source_name}").first, Magick::Image.read("./images/#{destination_name}").first
+
+        [source, destination]
+    end
+
+    def self.get_image_pair_from_history(options)
+        begin
+            file_path = "#{options[:directories][:output_dir]}/previous_batch.yml"
+            raise "Can't find #{file_path}; exiting." unless File.exists?(file_path) # don't rescue, cuz not sure how i want the program to fail gracefully yet
+        rescue => e
+            puts Utils::ColorPrint.red(e.message)
+            exit
+        end
+
+        history = File.read(file_path)
+        history_hash = YAML.load(history)
+        source, destination = history_hash[:src_name], history_hash[:dst_name]
+
+        puts "loading source: #{Utils::ColorPrint::yellow( source )}\nloading destination: #{Utils::ColorPrint::yellow( destination )}"
+        source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
+
+        [source, destination]
+    end
+
+
     module ColorPrint
         def self.green(message)
             "\e[1;32m#{message}\e[0m"
@@ -37,6 +80,16 @@ module Utils
         def self.red(message)
             "\e[1;31m#{message}\e[0m"
         end
+    end
+
+    def self.get_image_pair_via_directories(directories, file_format)
+        source_images = Dir.entries(directories[:source]).keep_if{|i| i =~ /\.#{file_format}$/i}
+        raise RuntimeError, "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
+        destination_images = Dir.entries(directories[:destination]).keep_if{|i| i =~ /\.#{file_format}$/i}
+        raise RuntimeError, "need at least one destination image in #{directories[:destination]} to begin!" if destination_images.length < 1
+
+        destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
+        [destination_name, source_name]
     end
 
 end
