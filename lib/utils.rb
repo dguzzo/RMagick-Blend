@@ -19,7 +19,7 @@ module Utils
     end
 
     def self.pretty_file_name(image_file)
-        extension_regex = /\.jpg$/i
+        extension_regex = /\.[a-zA-Z]+$/i
         filename_regex = /\/([^\/]*)$/i
         begin
             image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]

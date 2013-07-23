@@ -26,6 +26,24 @@ describe "Utils" do
             expect {Utils::get_image_pair_via_directories({ source: "#{Dir.getwd}/spec/assets/#{source}", destination: "#{Dir.getwd}/spec/assets/#{destination}" }, 'jpg')}.to_not raise_error(RuntimeError)
         end
         
+        describe 'pretty_file_name' do
+            
+            it "pretty_file_name should not fail with a bad file" do
+                expect {Utils::pretty_file_name(nil)}.to_not raise_error
+                expect {Utils::pretty_file_name({filename: "blah"})}.to_not raise_error
+            end
+
+            it "pretty_file_name should prettify a proper jpg filename" do
+                image_file = double("image", :filename => "/some_dir/cool_image.jpg")
+                Utils::pretty_file_name(image_file).should eql "cool_image"
+            end
+
+            it "pretty_file_name should prettify a proper tif filename" do
+                image_file = double("image", :filename => "/some_dir/cool_image.tif")
+                Utils::pretty_file_name(image_file).should eql "cool_image"
+            end
+        end
+        
     end
     
 end
