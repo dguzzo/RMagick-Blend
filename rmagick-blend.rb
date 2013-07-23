@@ -74,10 +74,10 @@ def image_compositing_sample(options={})
     if options[:use_history]
         src, dst = Utils::get_image_pair_from_history(options)
     else
-        src, dst = options[:directories] ? Utils::get_image_magick_pair(options[:directories], $file_format) : Utils::get_image_pair
+        src, dst = options[:directories] ? Utils::get_image_magick_pair(options[:directories], $file_format) : Utils::get_image_pair_via_image_pool($file_format, 'images')
     end
 
-    src, dst = swap_directories(src, dst) if options[:switch_src_dest]
+    src, dst = Utils::swap_directories(src, dst) if options[:switch_src_dest]
     
     compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
     compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
@@ -110,53 +110,11 @@ def image_compositing_sample(options={})
         puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
     end
     
-    save_history(src: src, dst: dst, options: options) if options[:save_history]
+    Utils::save_history(src: src, dst: dst, options: options) if options[:save_history]
     $batches_run += 1
     puts Utils::ColorPrint::green("\ndone!")
 end
 
-def swap_directories(src, dst)
-    puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
-    src, dst = dst, src
-    [src, dst]
-end
-
-def save_history(args)
-    src_name, dst_name = [ args[:src], args[:dst] ].map{ |file| file.filename.force_encoding("UTF-8") }
-    save_path = "#{args[:options][:directories][:output_dir]}/previous_batch.yml"
-    puts "writing history file: #{save_path}"
-    
-    File.open(save_path, 'w') do |file|
-        values = { src_name: src_name, dst_name: dst_name, options: args[:options] }
-        file.write(values.to_yaml)
-    end
-    
-    rescue => e
-        puts Utils::ColorPrint::red("error in save_history #{e.message}")
-end
-
-def open_files_at_end?(options = {})
-    options = { force: false, suppress: false }.merge(options)
-    return if options[:suppress]
-
-    unless options[:force]
-        puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
-        open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
-    end
-
-    if options[:force] || open_photos_at_end
-        Dir.chdir(Settings.directories[:output_dir])
-
-        num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$file_format$/i }.length
-
-        if num_files_created > Settings.constant_values[:num_files_before_warn]
-            puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
-            open_many_files = !!(gets.chomp).match(/^(y|yes)/)
-            return unless open_many_files
-        end
-        true
-    end
-end
 
 def delete_last_batch
     image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp|tif)$/i}
@@ -197,7 +155,7 @@ def run_batch
 
     end_time = Time.now
     puts "BatchesRun: #$batches_run in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
-    `open *.#$file_format` if open_files_at_end?(force: true, suppress: false)
+    `open *.#$file_format` if Utils::open_files_at_end?(force: true, suppress: false)
 end
 
 run_batch

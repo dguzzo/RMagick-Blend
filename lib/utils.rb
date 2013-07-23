@@ -28,7 +28,6 @@ module Utils
         end
     end
 
-    # TODO: refactor this all within get_image_pair()
     def self.get_image_magick_pair(directories, file_format)
         destination_name, source_name = get_image_pair_via_directories(directories, file_format)
         source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
@@ -36,14 +35,15 @@ module Utils
         [source, destination]
     end
     
-    def self.get_image_pair
-        image_names = Dir.entries("images").keep_if{|i| i =~ /\.jpg$/i}
+    # provided a directory containing at least two images, pick two separate ones randomly as source image & destination image
+    def self.get_image_pair_via_image_pool(file_format, dir = '.')
+        image_names = Dir.entries("#{dir}").keep_if{ |i| i =~ /\.#{file_format}$/i }
         raise "need at least two images to begin!" if image_names.length < 2
 
         destination_name = image_names.shuffle!.sample
         image_names.delete(destination_name)
         source_name = image_names.sample
-        source, destination = Magick::Image.read("./images/#{source_name}").first, Magick::Image.read("./images/#{destination_name}").first
+        source, destination = Magick::Image.read("#{dir}/#{source_name}").first, Magick::Image.read("#{dir}/#{destination_name}").first
 
         [source, destination]
     end
@@ -67,6 +67,11 @@ module Utils
         [source, destination]
     end
 
+    def self.swap_directories(src, dst)
+        puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
+        src, dst = dst, src
+        [src, dst]
+    end
 
     module ColorPrint
         def self.green(message)
@@ -90,6 +95,44 @@ module Utils
 
         destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
         [destination_name, source_name]
+    end
+
+    def self.save_history(args)
+        src_name, dst_name = [ args[:src], args[:dst] ].map{ |file| file.filename.force_encoding("UTF-8") }
+        save_path = "#{args[:options][:directories][:output_dir]}/previous_batch.yml"
+        puts "writing history file: #{save_path}"
+
+        File.open(save_path, 'w') do |file|
+            values = { src_name: src_name, dst_name: dst_name, options: args[:options] }
+            file.write(values.to_yaml)
+        end
+
+        rescue => e
+            puts Utils::ColorPrint::red("error in save_history #{e.message}")
+    end
+    
+
+    def self.open_files_at_end?(options = {})
+        options = { force: false, suppress: false }.merge(options)
+        return if options[:suppress]
+
+        unless options[:force]
+            puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
+            open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
+        end
+
+        if options[:force] || open_photos_at_end
+            Dir.chdir(Settings.directories[:output_dir])
+
+            num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$file_format$/i }.length
+
+            if num_files_created > Settings.constant_values[:num_files_before_warn]
+                puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
+                open_many_files = !!(gets.chomp).match(/^(y|yes)/)
+                return unless open_many_files
+            end
+            true
+        end
     end
 
 end
