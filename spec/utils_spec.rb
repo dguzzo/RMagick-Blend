@@ -91,6 +91,10 @@ describe "Utils" do
                 Utils::open_files_at_end?(force: true).should be_true
             end
             
+            it "suppress option should override force option" do
+                Utils::open_files_at_end?(suppress: true, force: true).should be_false
+            end
+            
         end
 
     end
