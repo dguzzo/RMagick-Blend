@@ -31,3 +31,7 @@ def clean_assets_directory(dir)
     base_dir = "#{Dir.getwd}/spec/assets"
     File.delete(*Dir["#{base_dir}/#{dir}/*"])
 end
+
+def stub_input_for_gets(input)
+    RMagickBlend::BatchRunner::stub(:gets).and_return(input)
+end

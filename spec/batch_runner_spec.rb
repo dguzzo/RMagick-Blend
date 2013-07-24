@@ -7,28 +7,28 @@ describe "Batch Runner" do
     describe "large_previous_batch?" do
 
         it "returns true with empty input" do
-            RMagickBlend::BatchRunner::stub(:gets).and_return('')
+            stub_input_for_gets('')
             RMagickBlend::BatchRunner::large_previous_batch?.should be_true
         end
 
         it "returns true with a 'y' as input" do
-            RMagickBlend::BatchRunner::stub(:gets).and_return('y')
+            stub_input_for_gets('y')
             RMagickBlend::BatchRunner::large_previous_batch?.should be_true
         end
 
         it "returns true with a 'yes' as input" do
-            RMagickBlend::BatchRunner::stub(:gets).and_return('yes')
+            stub_input_for_gets('yes')
             RMagickBlend::BatchRunner::large_previous_batch?.should be_true
         end
 
         it "returns false otherwise" do
-            RMagickBlend::BatchRunner::stub(:gets).and_return('n')
+            stub_input_for_gets('n')
             RMagickBlend::BatchRunner::large_previous_batch?.should be_false
 
-            RMagickBlend::BatchRunner::stub(:gets).and_return('no')
+            stub_input_for_gets('no')
             RMagickBlend::BatchRunner::large_previous_batch?.should be_false
 
-            RMagickBlend::BatchRunner::stub(:gets).and_return('noyes')
+            stub_input_for_gets('noyes')
             RMagickBlend::BatchRunner::large_previous_batch?.should be_false
         end
 
