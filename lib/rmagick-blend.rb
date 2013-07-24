@@ -2,6 +2,8 @@ require 'pry'
 require 'pry-nav'
 
 module RMagickBlend
+
+    OPTIMIZED_NUM_OPERATION_SMALL = 18
     
     module FileUtils
 
@@ -132,6 +134,79 @@ module RMagickBlend
             !!(user_input =~ /^(y|yes)/) || user_input.empty?
         end
 
+        def self.delete_last_batch
+            image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp|tif)$/i}
+            return if image_names.empty?
+            image_names.map! {|name| "#{Settings.directories[:output_dir]}/#{name}" }
+            puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
+
+            File.delete(*image_names)
+        end
+
+    end
+
+    module Compositing
+
+        def composite_images(options={})
+            defaults = {
+                num_operations: OPTIMIZED_NUM_OPERATION_SMALL, 
+                append_operation_to_filename: false, 
+                shuffle_composite_operations: false,
+                directories: { output_dir: 'images/image-composites' },
+                file_format: 'jpg',
+                save_history: true,
+                use_history: false,
+                switch_src_dest: false
+            }
+
+            options = defaults.merge(options)
+            options[:num_operations] = $flags[:num_operations].to_i if $flags[:num_operations]
+            options[:switch_src_dest] = $flags[:switch_src_dest] if $flags[:switch_src_dest]
+
+            if options[:use_history]
+                src, dst = RMagicBlend::FileUtils::get_image_pair_from_history(options)
+            else
+                src, dst = options[:directories] ? RMagicBlend::FileUtils::get_image_magick_pair(options[:directories], $file_format) : RMagicBlend::FileUtils::get_image_pair_via_image_pool($file_format, 'images')
+            end
+
+            src, dst = RMagicBlend::FileUtils::swap_directories(src, dst) if options[:switch_src_dest]
+
+            compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
+            compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
+
+            if $specific_comps_to_run
+                range = 0...compositeArray.length
+                options[:num_operations] = $specific_comps_to_run.length
+            else
+                # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
+                range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
+            end
+
+            puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
+            output_dir = RMagicBlend::FileUtils::createDirIfNeeded(options[:directories][:output_dir])
+
+            compositeArray[range].each_with_index do |composite_style, index|
+                next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
+
+                puts "#{(index.to_f/options[:num_operations]*100).round}%" unless $specific_comps_to_run
+                puts "#{Utils::ColorPrint::green(composite_style.to_s)}"
+                append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
+                start_time = Time.now
+                result = dst.composite(src, 0, 0, composite_style)
+                end_time = Time.now
+                puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
+
+                start_time = Time.now
+                result.write("./#{output_dir}/#{RMagicBlend::FileUtils::pretty_file_name(dst)}--#{RMagicBlend::FileUtils::pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
+                end_time = Time.now
+                puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
+            end
+
+            RMagicBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
+            $batches_run += 1
+            puts Utils::ColorPrint::green("\ndone!")
+        end
+        
     end
     
 end

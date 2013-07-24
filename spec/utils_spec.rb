@@ -98,8 +98,6 @@ describe "RMagickBlend" do
             
         end
 
-        
-
     end
     
 end
