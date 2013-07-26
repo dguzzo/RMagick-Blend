@@ -147,7 +147,7 @@ module RMagickBlend
 
     module Compositing
 
-        def composite_images(options={})
+        def self.composite_images(options={})
             defaults = {
                 num_operations: OPTIMIZED_NUM_OPERATION_SMALL, 
                 append_operation_to_filename: false, 
@@ -164,12 +164,12 @@ module RMagickBlend
             options[:switch_src_dest] = $flags[:switch_src_dest] if $flags[:switch_src_dest]
 
             if options[:use_history]
-                src, dst = RMagicBlend::FileUtils::get_image_pair_from_history(options)
+                src, dst = RMagickBlend::FileUtils::get_image_pair_from_history(options)
             else
-                src, dst = options[:directories] ? RMagicBlend::FileUtils::get_image_magick_pair(options[:directories], $file_format) : RMagicBlend::FileUtils::get_image_pair_via_image_pool($file_format, 'images')
+                src, dst = options[:directories] ? RMagickBlend::FileUtils::get_image_magick_pair(options[:directories], $file_format) : RMagickBlend::FileUtils::get_image_pair_via_image_pool($file_format, 'images')
             end
 
-            src, dst = RMagicBlend::FileUtils::swap_directories(src, dst) if options[:switch_src_dest]
+            src, dst = RMagickBlend::FileUtils::swap_directories(src, dst) if options[:switch_src_dest]
 
             compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
             compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
@@ -183,7 +183,7 @@ module RMagickBlend
             end
 
             puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
-            output_dir = RMagicBlend::FileUtils::createDirIfNeeded(options[:directories][:output_dir])
+            output_dir = RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output_dir])
 
             compositeArray[range].each_with_index do |composite_style, index|
                 next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
@@ -197,12 +197,12 @@ module RMagickBlend
                 puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
 
                 start_time = Time.now
-                result.write("./#{output_dir}/#{RMagicBlend::FileUtils::pretty_file_name(dst)}--#{RMagicBlend::FileUtils::pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
+                result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
                 end_time = Time.now
                 puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
             end
 
-            RMagicBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
+            RMagickBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
             $batches_run += 1
             puts Utils::ColorPrint::green("\ndone!")
         end

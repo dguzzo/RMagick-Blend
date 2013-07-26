@@ -82,7 +82,7 @@ def run_batch
 
     end_time = Time.now
     puts "BatchesRun: #$batches_run in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
-    `open *.#$file_format` if RMagicBlend::FileUtils::open_files_at_end?(force: true, suppress: false)
+    `open *.#$file_format` if RMagickBlend::FileUtils::open_files_at_end?(force: true, suppress: false)
 end
 
 run_batch
