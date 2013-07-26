@@ -85,6 +85,9 @@ module RMagickBlend
 
             destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
             [destination_name, source_name]
+            rescue Errno::ENOENT => e
+                puts e
+                exit
         end
 
         def self.save_history(args)
@@ -104,6 +107,11 @@ module RMagickBlend
     end
 
     module BatchRunner
+
+        def self.load_settings
+            Settings.load!("config/settings.yml")
+            puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
+        end
 
         def self.open_files_at_end?(options = {})
             options = { force: false, suppress: false }.merge(options)
@@ -141,6 +149,8 @@ module RMagickBlend
             puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
 
             File.delete(*image_names)
+            rescue Errno::ENOENT => e
+                puts Utils::ColorPrint.red("can't delete files in #{Settings.directories[:output_dir]}; make sure that that directory exists.")
         end
 
     end
