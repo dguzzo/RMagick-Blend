@@ -19,7 +19,8 @@ puts "loaded \"#{Utils::ColorPrint::green($SETTINGS_NAME)}\" settings"
 
 $batches_run = 0
 $optimized_num_operation_large = 20
-$file_format = Settings.default_image_format
+$input_file_format = Settings.default_input_image_format
+$output_file_format = Settings.default_output_image_format
 $flags = {}
 $specific_comps_to_run = nil
 $COMP_SETS = {
@@ -41,7 +42,7 @@ OptionParser.new do |opts|
   opts.on('-p', '--profile', "show timing profile debug info") { |v| $flags[:perf_profile] = v }
   opts.on('-s', '--swap', "swap the destination image and the source image") { |v| $flags[:switch_src_dest] = v }
   opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file") do 
-      $file_format = "jpg"
+      $output_file_format = "jpg"
       $optimized_num_operation_large += 10
   end
   opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
@@ -62,7 +63,8 @@ def run_batch
         directories: { source: Settings.directories[:source_dir], destination: Settings.directories[:destination_dir], output_dir: Settings.directories[:output_dir] },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
-        file_format: $file_format
+        input_file_format: $input_file_format,
+        output_file_format: $output_file_format
     }
 
     if RMagickBlend::BatchRunner::large_previous_batch?
@@ -82,7 +84,7 @@ def run_batch
 
     end_time = Time.now
     puts "BatchesRun: #$batches_run in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
-    `open *.#$file_format` if RMagickBlend::BatchRunner::open_files_at_end?(force: true, suppress: false)
+    `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?(force: true, suppress: false)
 end
 
 run_batch

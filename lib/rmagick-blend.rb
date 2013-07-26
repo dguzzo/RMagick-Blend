@@ -117,7 +117,7 @@ module RMagickBlend
             if options[:force] || open_photos_at_end
                 Dir.chdir(Settings.directories[:output_dir])
 
-                num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$file_format$/i }.length
+                num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$output_file_format$/i }.length
 
                 if num_files_created > Settings.constant_values[:num_files_before_warn]
                     puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
@@ -153,7 +153,8 @@ module RMagickBlend
                 append_operation_to_filename: false, 
                 shuffle_composite_operations: false,
                 directories: { output_dir: 'images/image-composites' },
-                file_format: 'jpg',
+                input_file_format: 'jpg',
+                output_file_format: 'jpg',
                 save_history: true,
                 use_history: false,
                 switch_src_dest: false
@@ -166,7 +167,7 @@ module RMagickBlend
             if options[:use_history]
                 src, dst = RMagickBlend::FileUtils::get_image_pair_from_history(options)
             else
-                src, dst = options[:directories] ? RMagickBlend::FileUtils::get_image_magick_pair(options[:directories], $file_format) : RMagickBlend::FileUtils::get_image_pair_via_image_pool($file_format, 'images')
+                src, dst = options[:directories] ? RMagickBlend::FileUtils::get_image_magick_pair(options[:directories], $input_file_format) : RMagickBlend::FileUtils::get_image_pair_via_image_pool($input_file_format, 'images')
             end
 
             src, dst = RMagickBlend::FileUtils::swap_directories(src, dst) if options[:switch_src_dest]
@@ -197,7 +198,7 @@ module RMagickBlend
                 puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
 
                 start_time = Time.now
-                result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{append_string}.#{options[:file_format]}")
+                result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{append_string}.#{options[:output_file_format]}")
                 end_time = Time.now
                 puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
             end
