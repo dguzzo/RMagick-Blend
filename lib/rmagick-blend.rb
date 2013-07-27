@@ -3,7 +3,7 @@ require 'pry-nav'
 
 module RMagickBlend
 
-    OPTIMIZED_NUM_OPERATION_SMALL = 18
+    OPTIMIZED_NUM_OPERATION_SMALL = 14
     YES_REGEX = /^(y|yes)/
     
     module FileUtils
@@ -215,7 +215,7 @@ module RMagickBlend
             end
 
             RMagickBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
-            $batches_run += 1
+            $batches_ran += 1
             puts Utils::ColorPrint::green("\ndone!")
         end
         

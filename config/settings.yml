@@ -5,6 +5,8 @@ preset_name: "batch 8"
 constant_values:
     num_files_before_warn: 40
 
+batches_to_run: 4
+
 directories:
     output_dir: "images/batch-8-output"
     source_dir: "images/batch-8-source"

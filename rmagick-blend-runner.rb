@@ -14,8 +14,8 @@ require 'pry-nav'
 
 RMagickBlend::BatchRunner::load_settings
 
-$batches_run = 0
-$optimized_num_operation_large = 20
+$batches_ran = 0
+$optimized_num_operation_large = 24
 $input_file_format = Settings.default_input_image_format
 $output_file_format = Settings.default_output_image_format
 $flags = {}
@@ -74,13 +74,15 @@ def run_batch
 
     RMagickBlend::BatchRunner::delete_last_batch if Settings.behavior[:delete_last_batch]
 
+    batches_to_run = Settings.batches_to_run
+    
     start_time = Time.now
-    1.times do 
+    batches_to_run.times do 
         RMagickBlend::Compositing::composite_images(options)
     end
-
     end_time = Time.now
-    puts "BatchesRun: #$batches_run in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
+    
+    puts "ran #$batches_ran batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?(force: true, suppress: false)
 end
 
