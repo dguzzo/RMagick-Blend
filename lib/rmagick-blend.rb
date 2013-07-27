@@ -209,7 +209,7 @@ module RMagickBlend
                 puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
 
                 start_time = Time.now
-                result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{append_string}.#{options[:output_file_format]}")
+                result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{append_string}.#{options[:output_file_format]}")
                 end_time = Time.now
                 puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
             end
