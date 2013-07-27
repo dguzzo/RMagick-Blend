@@ -139,7 +139,7 @@ module RMagickBlend
         def self.large_previous_batch?
             puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
             user_input = gets.strip
-            !!(user_input =~ /^(y|yes)/) || user_input.empty?
+            !!(user_input =~ /^(y|yes)/) # || user_input.empty?
         end
 
         def self.delete_last_batch

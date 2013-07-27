@@ -6,9 +6,9 @@ describe "Batch Runner" do
 
     describe "large_previous_batch?" do
 
-        it "returns true with empty input" do
+        it "returns false with empty input" do
             stub_input_for_gets('')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_true
+            RMagickBlend::BatchRunner::large_previous_batch?.should be_false
         end
 
         it "returns true with a 'y' as input" do
