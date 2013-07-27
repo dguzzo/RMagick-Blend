@@ -4,6 +4,7 @@ require 'pry-nav'
 module RMagickBlend
 
     OPTIMIZED_NUM_OPERATION_SMALL = 18
+    YES_REGEX = /^(y|yes)/
     
     module FileUtils
 
@@ -119,7 +120,7 @@ module RMagickBlend
 
             unless options[:force]
                 puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"
-                open_photos_at_end = !!(gets.chomp).match(/^(y|yes)/)
+                open_photos_at_end = !!(gets.chomp).match(YES_REGEX)
             end
 
             if options[:force] || open_photos_at_end
@@ -129,7 +130,7 @@ module RMagickBlend
 
                 if num_files_created > Settings.constant_values[:num_files_before_warn]
                     puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
-                    open_many_files = !!(gets.chomp).match(/^(y|yes)/)
+                    open_many_files = !!(gets.chomp).match(YES_REGEX)
                     return unless open_many_files
                 end
                 true
@@ -137,9 +138,9 @@ module RMagickBlend
         end
 
         def self.large_previous_batch?
-            puts "\ndo you want to pursue the previous images in depth? #{Utils::ColorPrint::green('y/n')}"
+            puts "\ndo you want to pursue the previous images in depth? (#{Utils::ColorPrint::green('y|yes')})"
             user_input = gets.strip
-            !!(user_input =~ /^(y|yes)/) # || user_input.empty?
+            !!(user_input =~ YES_REGEX) # || user_input.empty?
         end
 
         def self.delete_last_batch
