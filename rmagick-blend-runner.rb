@@ -83,7 +83,12 @@ def run_batch
     end_time = Time.now
     
     puts "ran #$batches_ran batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
-    `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?(force: true, suppress: false)
+    
+    ## TODO
+    ## force & suppress should probably come from settings.yml
+    ##
+    
+    `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?(force: false, suppress: true)
 end
 
 run_batch
