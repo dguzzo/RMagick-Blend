@@ -37,13 +37,13 @@ describe "Batch Runner" do
     describe 'delete_last_batch' do
         
         it 'returns nil if no files found' do
-            Settings = double("directories", directories: { output_dir: '.' } )
+            Settings = double("directories", directories: { output: '.' } )
             RMagickBlend::BatchRunner.delete_last_batch.should be_nil
         end
         
         it 'returns an integer if files are found and then deleted' do
             dir = "#{Dir.getwd}/spec/assets/source"
-            Settings = double("directories", directories: { output_dir: dir } )
+            Settings = double("directories", directories: { output: dir } )
             create_temp_file('source')
             RMagickBlend::BatchRunner.delete_last_batch.should be_a_kind_of(Fixnum)
             clean_assets_directory('source')

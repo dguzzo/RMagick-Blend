@@ -6,9 +6,9 @@ constant_values:
     num_files_before_warn: 40
 
 directories:
-    output_dir: "images/batch-7-output"
-    source_dir: "images/batch-7-source"
-    destination_dir: "images/batch-7-destination"
+    output: "images/batch-7-output"
+    source: "images/batch-7-source"
+    destination: "images/batch-7-destination"
 
 default_image_format: 'bmp'
 behavior:

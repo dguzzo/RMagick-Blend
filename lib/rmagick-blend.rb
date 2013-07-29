@@ -55,7 +55,7 @@ module RMagickBlend
 
         def self.get_image_pair_from_history(options)
             begin
-                file_path = "#{options[:directories][:output_dir]}/previous_batch.yml"
+                file_path = "#{options[:directories][:output]}/previous_batch.yml"
                 raise "Can't find #{file_path}; exiting." unless File.exists?(file_path) # don't rescue, cuz not sure how i want the program to fail gracefully yet
             rescue => e
                 puts Utils::ColorPrint.red(e.message)
@@ -86,14 +86,18 @@ module RMagickBlend
 
             destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
             [destination_name, source_name]
+            
             rescue Errno::ENOENT => e
                 puts e
+                exit
+            rescue RuntimeError => e
+                puts Utils::ColorPrint.red(e.message)
                 exit
         end
 
         def self.save_history(args)
             src_name, dst_name = [ args[:src], args[:dst] ].map{ |file| file.filename.force_encoding("UTF-8") }
-            save_path = "#{args[:options][:directories][:output_dir]}/previous_batch.yml"
+            save_path = "#{args[:options][:directories][:output]}/previous_batch.yml"
             puts "writing history file: #{save_path}"
 
             File.open(save_path, 'w') do |file|
@@ -111,6 +115,8 @@ module RMagickBlend
 
         def self.load_settings
             Settings.load!("config/settings.yml")
+            Settings.behavior[:open_files_at_end_force] ||= false
+            Settings.behavior[:open_files_at_end_suppress] ||= false
             puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
         end
 
@@ -124,7 +130,7 @@ module RMagickBlend
             end
 
             if options[:force] || open_photos_at_end
-                Dir.chdir(Settings.directories[:output_dir])
+                Dir.chdir(Settings.directories[:output])
 
                 num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$output_file_format$/i }.length
 
@@ -144,14 +150,14 @@ module RMagickBlend
         end
 
         def self.delete_last_batch
-            image_names = Dir.entries(Settings.directories[:output_dir]).keep_if{|i| i =~ /\.(jpg|bmp|tif)$/i}
+            image_names = Dir.entries(Settings.directories[:output]).keep_if{|i| i =~ /\.(jpg|bmp|tif)$/i}
             return if image_names.empty?
-            image_names.map! {|name| "#{Settings.directories[:output_dir]}/#{name}" }
+            image_names.map! {|name| "#{Settings.directories[:output]}/#{name}" }
             puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
 
             File.delete(*image_names)
             rescue Errno::ENOENT => e
-                puts Utils::ColorPrint.red("can't delete files in #{Settings.directories[:output_dir]}; make sure that that directory exists.")
+                puts Utils::ColorPrint.yellow("can't delete files in #{Settings.directories[:output]}; make sure that that directory exists.")
         end
 
     end
@@ -163,7 +169,7 @@ module RMagickBlend
                 num_operations: OPTIMIZED_NUM_OPERATION_SMALL, 
                 append_operation_to_filename: false, 
                 shuffle_composite_operations: false,
-                directories: { output_dir: 'images/image-composites' },
+                directories: { output: 'images/image-composites' },
                 input_file_format: 'jpg',
                 output_file_format: 'jpg',
                 save_history: true,
@@ -195,7 +201,7 @@ module RMagickBlend
             end
 
             puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
-            output_dir = RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output_dir])
+            output_dir = RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output])
 
             compositeArray[range].each_with_index do |composite_style, index|
                 next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)

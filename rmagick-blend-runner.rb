@@ -29,7 +29,7 @@ $COMP_SETS = {
 }
 
 $COMP_SETS[:avoid].clear.push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
-$COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source_dir] == "images/batch-7-source" ### TEMP for blind drawing proj only
+$COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source] == "images/batch-7-source" ### TEMP for blind drawing proj only
 # $specific_comps_to_run = $COMP_SETS[:specific]
 
 OptionParser.new do |opts|
@@ -57,7 +57,7 @@ end.parse!
 ###
 def run_batch
     options = {
-        directories: { source: Settings.directories[:source_dir], destination: Settings.directories[:destination_dir], output_dir: Settings.directories[:output_dir] },
+        directories: { source: Settings.directories[:source], destination: Settings.directories[:destination], output: Settings.directories[:output] },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         input_file_format: $input_file_format,
@@ -74,21 +74,14 @@ def run_batch
 
     RMagickBlend::BatchRunner::delete_last_batch if Settings.behavior[:delete_last_batch]
 
-    batches_to_run = Settings.batches_to_run
-    
     start_time = Time.now
-    batches_to_run.times do 
+    Settings.behavior[:batches_to_run].times do 
         RMagickBlend::Compositing::composite_images(options)
     end
     end_time = Time.now
-    
     puts "ran #$batches_ran batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     
-    ## TODO
-    ## force & suppress should probably come from settings.yml
-    ##
-    
-    `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?(force: false, suppress: true)
+    `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?( force: Settings.behavior[:open_files_at_end_force], suppress: Settings.behavior[:open_files_at_end_suppress] )
 end
 
 run_batch

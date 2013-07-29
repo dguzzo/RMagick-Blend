@@ -5,16 +5,17 @@ preset_name: "batch 8"
 constant_values:
     num_files_before_warn: 40
 
-batches_to_run: 4
-
 directories:
-    output_dir: "images/batch-8-output"
-    source_dir: "images/batch-8-source"
-    destination_dir: "images/batch-8-destination"
+    output: "assets/images/batch-8-output"
+    source: "assets/images/batch-8-source"
+    destination: "assets/images/batch-8-destination"
 
 default_input_image_format: 'jpg|tif'
 default_output_image_format: 'tif'
 
 behavior:
+    batches_to_run: 4
     delete_last_batch: true
+    open_files_at_end_force: false
+    open_files_at_end_suppress: true
     specific_avoid_ops: "ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp UndefinedCompositeOp OverCompositeOp SrcOverCompositeOp XorCompositeOp AtopCompositeOp CopyBlackCompositeOp DstCompositeOp DstOutCompositeOp InCompositeOp SrcCompositeOp DstInCompositeOp SrcAtopCompositeOp SrcInCompositeOp ReplaceCompositeOp NoCompositeOp CopyCompositeOp"

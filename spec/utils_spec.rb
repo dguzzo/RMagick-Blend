@@ -14,13 +14,13 @@ describe "RMagickBlend" do
             end
             
             it "get_image_pair_via_directories should raise when it can't find source image files" do
-                expect {RMagickBlend::FileUtils::get_image_pair_via_directories({ source: '.' }, '.jpg')}.to raise_error(RuntimeError)
+                expect {RMagickBlend::FileUtils::get_image_pair_via_directories({ source: '.' }, '.jpg')}.to raise_error()
             end
 
             it "get_image_pair_via_directories should raise when it can't find destination image files" do
                 source = "source"
                 create_temp_file(source)
-                expect {RMagickBlend::FileUtils::get_image_pair_via_directories({ source: "#{Dir.getwd}/spec/assets/#{source}", destination: '.' }, 'jpg')}.to raise_error(RuntimeError)
+                expect {RMagickBlend::FileUtils::get_image_pair_via_directories({ source: "#{Dir.getwd}/spec/assets/#{source}", destination: '.' }, 'jpg')}.to raise_error()
             end
 
             it "should not raise when both source and destination files are present" do
@@ -88,7 +88,7 @@ describe "RMagickBlend" do
             end
 
             it "should return true if force option is set" do
-                Settings = double("directories", directories: { output_dir: '.' }, constant_values: { num_files_before_warn: 10 } )
+                Settings = double("directories", directories: { output: '.' }, constant_values: { num_files_before_warn: 10 } )
                 RMagickBlend::BatchRunner::open_files_at_end?(force: true).should be_true
             end
             
