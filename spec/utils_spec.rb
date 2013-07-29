@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'RMagick'
 require_relative '../lib/utils.rb'
-require_relative '../lib/rmagick-blend.rb'
+require_relative '../lib/file_utils.rb'
 
 describe "RMagickBlend" do
 

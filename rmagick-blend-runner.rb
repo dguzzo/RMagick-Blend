@@ -4,7 +4,9 @@
 
 require 'RMagick'
 require './lib/utils.rb'
-require './lib/rmagick-blend.rb'
+require './lib/file_utils.rb'
+require './lib/compositing.rb'
+require './lib/batch_runner.rb'
 require './vendor/deep_symbolize.rb'
 require './vendor/settings.rb'
 require 'yaml'
@@ -35,7 +37,7 @@ $COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source
 OptionParser.new do |opts|
   opts.banner = "Usage: rmagick-blend.rb [options]"
 
-  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $flags[:num_operations] = v }
+  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::Compositing::OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $flags[:num_operations] = v }
   opts.on('-p', '--profile', "show timing profile debug info") { |v| $flags[:perf_profile] = v }
   opts.on('-s', '--swap', "swap the destination image and the source image") { |v| $flags[:switch_src_dest] = v }
   opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file") do 
@@ -81,7 +83,7 @@ def run_batch
     end_time = Time.now
     puts "ran #$batches_ran batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
     
-    `open *.#$output_file_format` if RMagickBlend::BatchRunner::open_files_at_end?( force: Settings.behavior[:open_files_at_end_force], suppress: Settings.behavior[:open_files_at_end_suppress] )
+    RMagickBlend::BatchRunner::open_files
 end
 
 run_batch
