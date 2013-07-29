@@ -3,7 +3,7 @@ module RMagickBlend
     module Special
         
         def self.distort
-            image = Magick::Image.read('assets/images/batch-8-source/9252445443_5c5c679774_c.jpg').first
+            image = load_image
             
             #[UndefinedDistortion=0, AffineDistortion=1, AffineProjectionDistortion=2, ArcDistortion=9, PolarDistortion=10, DePolarDistortion=11, BarrelDistortion=14, BilinearDistortion=6, BilinearForwardDistortion=6, BilinearReverseDistortion=7, PerspectiveDistortion=4, PerspectiveProjectionDistortion=5, PolynomialDistortion=8, ScaleRotateTranslateDistortion=3, ShepardsDistortion=16, BarrelInverseDistortion=15]
             
@@ -23,6 +23,7 @@ module RMagickBlend
         end
         
         def self.distort_arc(variants)
+            image = load_image
             
             variants.times do |i|
                 #args: arc_angle   rotate_angle   top_radius   bottom_radius
@@ -31,11 +32,21 @@ module RMagickBlend
                     # self.define "distort:scale", i+2
                 end
 
-                path = "assets/images/distort_test/sample_distort_#{i}.jpg"
-                puts "writing file: #{path}"
-                image.write(path)
+                save_image(image)
             end
             
+        end
+        
+        private
+        
+        def load_image
+            Magick::Image.read('assets/images/batch-8-source/9252445443_5c5c679774_c.jpg').first
+        end
+        
+        def save_image
+            path = "assets/images/distort_test/sample_distort_#{i}.jpg"
+            puts "writing file: #{path}"
+            image.write(path)
         end
         
     end
