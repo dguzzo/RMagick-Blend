@@ -1,3 +1,6 @@
+require 'pry'
+require 'pry-nav'
+
 module RMagickBlend
 
     module Special
@@ -27,24 +30,25 @@ module RMagickBlend
             
             variants.times do |i|
                 #args: arc_angle   rotate_angle   top_radius   bottom_radius
-                
-                image = image.distort(Magick::ArcDistortion, 60) do
-                    # self.define "distort:scale", i+2
-                end
-
-                save_image(image)
+                mod_image = image.distort(Magick::ArcDistortion, 60 + 20*i )
+                save_image(mod_image, i)
             end
-            
+        end
+
+        def self.animated_gif_of_dir_images(dir)
+            image_names = RMagickBlend::FileUtils::get_all_images_from_dir(dir, 'jpg')
+            anim = Magick::ImageList.new(*image_names)
+            anim.write("#{dir}/animated.gif")
         end
         
         private
         
-        def load_image
+        def self.load_image
             Magick::Image.read('assets/images/batch-8-source/9252445443_5c5c679774_c.jpg').first
         end
         
-        def save_image
-            path = "assets/images/distort_test/sample_distort_#{i}.jpg"
+        def self.save_image(image, index)
+            path = "assets/images/distort_test/sample_distort_#{index}.jpg"
             puts "writing file: #{path}"
             image.write(path)
         end

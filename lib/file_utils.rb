@@ -103,6 +103,11 @@ module RMagickBlend
                 puts Utils::ColorPrint::red("error in save_history #{e.message}")
         end
 
+        def self.get_all_images_from_dir(dir, file_format)
+            image_names = Dir.entries("#{dir}").keep_if{ |i| i =~ /\.#{file_format}$/i }
+            image_names.map{|name| "#{dir}/#{name}"}
+        end
+
     end
     
 end
