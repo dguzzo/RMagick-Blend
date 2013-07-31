@@ -114,6 +114,11 @@ module RMagickBlend
                 << Magick::Image.read('assets/images/batch-8-source/9255227572_d49d429426_c.jpg').first
         end
 
+        def self.save_image(image, path)
+            puts "writing file: #{path}"
+            image.write(path)
+        end
+
     end
     
 end

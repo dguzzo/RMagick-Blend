@@ -34,7 +34,7 @@ module RMagickBlend
                 arc_angle = options[:arc_angle] || 60
                 #args: arc_angle   rotate_angle   top_radius   bottom_radius
                 mod_image = image.dup.distort(Magick::ArcDistortion, [arc_angle + 20*i, options[:rotate_angle], options[:top_radius], options[:bottom_radius] ])
-                save_image(mod_image, "assets/images/distort_test/sample_distort_#{i}")
+                RMagickBlend::FileUtils::save_image(mod_image, "assets/images/distort_test/sample_distort_#{i}")
             end
         end
 
@@ -47,14 +47,14 @@ module RMagickBlend
         def self.swirl(deg)
             image = RMagickBlend::FileUtils::load_sample_images.first
             mod_image = image.swirl(clamp_degrees(deg))
-            save_image(mod_image, "assets/images/swirl_test.jpg")
+            RMagickBlend::FileUtils::save_image(mod_image, "assets/images/swirl_test.jpg")
         end
         
         def self.preview
             image = RMagickBlend::FileUtils::load_sample_images.first
             Magick::PreviewType.values.each do |op|
                 mod_image = image.dup.preview(op)
-                save_image(mod_image, "assets/images/preview_ops/preview_#{op}_test.jpg")
+                RMagickBlend::FileUtils::save_image(mod_image, "assets/images/preview_ops/preview_#{op}_test.jpg")
             end
         end
         
@@ -63,7 +63,7 @@ module RMagickBlend
             image_left = images.first
             image_right = images[1]
             mod_image = image_left.stereo(image_right)
-            save_image(mod_image, "assets/images/stereo_test.jpg")
+            RMagickBlend::FileUtils::save_image(mod_image, "assets/images/stereo_test.jpg")
         end
         
         def self.contrast(times)
@@ -71,7 +71,7 @@ module RMagickBlend
             times.times do
                 image = image.contrast(true)
             end
-            save_image(image, "assets/images/contrast_test.jpg")
+            RMagickBlend::FileUtils::save_image(image, "assets/images/contrast_test.jpg")
         end
         
         def self.floodfill_pixels_of_color
@@ -88,7 +88,7 @@ module RMagickBlend
                 image = image.color_floodfill(pixel_with_coord.x, pixel_with_coord.y, 'aquamarine')
             end
             
-            save_image(image, "assets/images/floodfill_test.jpg")
+            RMagickBlend::FileUtils::save_image(image, "assets/images/floodfill_test.jpg")
         end
         
         private
@@ -99,11 +99,6 @@ module RMagickBlend
             return max if deg > max #heuristic
             return min if deg < min
             deg
-        end
-        
-        def self.save_image(image, path)
-            puts "writing file: #{path}"
-            image.write(path)
         end
         
     end
