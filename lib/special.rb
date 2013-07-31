@@ -74,11 +74,21 @@ module RMagickBlend
             save_image(image, "assets/images/contrast_test.jpg")
         end
         
-        def self.fill_white_pixels
-            puts 'searching white pixels...'
-            pixel_with_coord = RMagickBlend::PixelLevelOps::find_first_pixel_of_color
-            puts pixel_with_coord
-            # puts "#{pixel} :: #{pixel.to_color}"
+        def self.floodfill_pixels_of_color
+            image = RMagickBlend::FileUtils::load_sample_images.first
+
+            6.times do
+                image = image.contrast(true)
+            end
+            
+            pixels_of_color = RMagickBlend::PixelLevelOps::find_pixels_of_color(image)
+            
+            pixels_of_color.each do |pixel_with_coord|
+                puts "#floodfilling based on #{pixel_with_coord}"
+                image = image.color_floodfill(pixel_with_coord.x, pixel_with_coord.y, 'aquamarine')
+            end
+            
+            save_image(image, "assets/images/floodfill_test.jpg")
         end
         
         private

@@ -31,14 +31,18 @@ module RMagickBlend
             end
         end
 
-        def self.find_first_pixel_of_color(image=nil, color_to_find="black")
-            image ||= RMagickBlend::FileUtils::load_sample_images.first
-            counter, color = 0, nil
+        def self.find_pixels_of_color(image, color_to_find=["black", '#000000'])
+            puts 'searching pixels...'
+            counter, color, found_pixels = 0, nil, []
             image.each_pixel do |pixel, x, y|
-                color = pixel.to_color
-                return PixelWithCoord.new(pixel, x, y) if color == color_to_find
+                color = pixel.to_color(Magick::AllCompliance, false, 8)
+
+                if color_to_find.include?(color)
+                    found_pixels << PixelWithCoord.new(pixel, x, y) 
+                    puts "#{found_pixels.size} found"
+                end
             end
-            nil
+            found_pixels
         end
 
     end
