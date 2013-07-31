@@ -29,25 +29,17 @@ module RMagickBlend
         def self.meme_title(top_text, bottom_text, pointsize=50)
             image = RMagickBlend::FileUtils::load_sample_images[1]
             
-            top_title = Magick::Draw.new
-            top_title.annotate(image, 0,0,0,20, top_text) do
-                self.fill = 'white'
-                self.stroke = 'black'
-                self.stroke_width = 2
-                self.pointsize = pointsize
-                self.font_weight = Magick::BoldWeight
-                self.gravity = Magick::NorthGravity
-            end
+            draw_text = Magick::Draw.new
+            draw_text.fill = 'white'
+            draw_text.stroke = 'black'
+            draw_text.stroke_width = 2
+            draw_text.pointsize = pointsize
+            draw_text.font_weight = Magick::BoldWeight
+            draw_text.gravity = Magick::NorthGravity
             
-            bottom_title = Magick::Draw.new
-            bottom_title.annotate(image, 0,0,0,20, bottom_text) do
-                self.fill = 'white'
-                self.stroke = 'black'
-                self.stroke_width = 2
-                self.pointsize = pointsize
-                self.font_weight = Magick::BoldWeight
-                self.gravity = Magick::SouthGravity
-            end
+            draw_text.annotate(image, 0,0,0,20, top_text)
+            draw_text.gravity = Magick::SouthGravity
+            draw_text.annotate(image, 0,0,0,20, bottom_text)
             
             RMagickBlend::FileUtils::save_image(image, "assets/images/text_meme_test.jpg")
         end
