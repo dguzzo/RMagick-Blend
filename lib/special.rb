@@ -6,7 +6,8 @@ module RMagickBlend
     module Special
         
         def self.distort
-            image = load_image
+            
+            image = RMagickBlend::FileUtils::load_sample_images.first
             
             # UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion PolarDistortion DePolarDistortion BarrelDistortion BilinearDistortion BilinearForwardDistortion BilinearReverseDistortion PerspectiveDistortion PerspectiveProjectionDistortion PolynomialDistortion ScaleRotateTranslateDistortion ShepardsDistortion BarrelInverseDistortion
             
@@ -27,7 +28,7 @@ module RMagickBlend
         
         def self.distort_arc(variants, options = {})
             options = {arc_angle: 60, rotate_angle: 0, top_radius: 100, bottom_radius: 100}.merge(options)
-            image = load_image
+            image = RMagickBlend::FileUtils::load_sample_images.first
             
             variants.times do |i|
                 arc_angle = options[:arc_angle] || 60
@@ -44,9 +45,40 @@ module RMagickBlend
         end
    
         def self.swirl(deg)
-            image = load_image
+            image = RMagickBlend::FileUtils::load_sample_images.first
             mod_image = image.swirl(clamp_degrees(deg))
             save_image(mod_image, "assets/images/swirl_test.jpg")
+        end
+        
+        def self.preview
+            image = RMagickBlend::FileUtils::load_sample_images.first
+            Magick::PreviewType.values.each do |op|
+                mod_image = image.dup.preview(op)
+                save_image(mod_image, "assets/images/preview_ops/preview_#{op}_test.jpg")
+            end
+        end
+        
+        def self.stereo
+            images = RMagickBlend::FileUtils::load_sample_images
+            image_left = images.first
+            image_right = images[1]
+            mod_image = image_left.stereo(image_right)
+            save_image(mod_image, "assets/images/stereo_test.jpg")
+        end
+        
+        def self.contrast(times)
+            image = RMagickBlend::FileUtils::load_sample_images.first
+            times.times do
+                image = image.contrast(true)
+            end
+            save_image(image, "assets/images/contrast_test.jpg")
+        end
+        
+        def self.fill_white_pixels
+            puts 'searching white pixels...'
+            pixel_with_coord = RMagickBlend::PixelLevelOps::find_first_pixel_of_color
+            puts pixel_with_coord
+            # puts "#{pixel} :: #{pixel.to_color}"
         end
         
         private
@@ -57,10 +89,6 @@ module RMagickBlend
             return max if deg > max #heuristic
             return min if deg < min
             deg
-        end
-        
-        def self.load_image
-            Magick::Image.read('assets/images/batch-8-source/9252445443_5c5c679774_c.jpg').first
         end
         
         def self.save_image(image, path)
