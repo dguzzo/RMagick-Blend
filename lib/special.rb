@@ -91,6 +91,13 @@ module RMagickBlend
             RMagickBlend::FileUtils::save_image(image, "assets/images/floodfill_test.jpg")
         end
         
+        def self.tile
+            image = RMagickBlend::FileUtils::load_sample_images[1]
+            tile_image = Magick::Image.read('assets/images/ruby_text_image.gif').first
+            image.composite_tiled!(tile_image, Magick::DisplaceCompositeOp)
+            image.write("assets/images/composite_tiled_test.jpg")
+        end
+        
         private
 
         def self.clamp_degrees(deg)
