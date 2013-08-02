@@ -1,6 +1,8 @@
-### TODO: there is a major memory leak somewhere, possibly in the RMagick read() or write() functions. running even a few
-### cycles of compositing on ~3-4MB files will quickly chew up 1.5GB of RAM, which isn't free'd until irb is quit.
-###  this memory is of course freed when the program finishes when run directly with the 'ruby' command
+=begin
+TODO: there is a major memory leak somewhere, possibly in the RMagick read() or write() functions. running even a few
+cycles of compositing on ~3-4MB files will quickly chew up 1.5GB of RAM, which isn't free'd until irb is quit.
+this memory is of course freed when the program finishes when run directly with the 'ruby' command
+=end
 
 require 'RMagick'
 require './lib/utils.rb'

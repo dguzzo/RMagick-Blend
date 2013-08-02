@@ -9,7 +9,9 @@ module RMagickBlend
             
             image = RMagickBlend::FileUtils::load_sample_images.first
             
-            # UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion PolarDistortion DePolarDistortion BarrelDistortion BilinearDistortion BilinearForwardDistortion BilinearReverseDistortion PerspectiveDistortion PerspectiveProjectionDistortion PolynomialDistortion ScaleRotateTranslateDistortion ShepardsDistortion BarrelInverseDistortion
+=begin
+UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion PolarDistortion DePolarDistortion BarrelDistortion BilinearDistortion BilinearForwardDistortion BilinearReverseDistortion PerspectiveDistortion PerspectiveProjectionDistortion PolynomialDistortion ScaleRotateTranslateDistortion ShepardsDistortion BarrelInverseDistortion
+=end
             
             distort_operation = Magick::BilinearReverseDistortion
             points = [0, 0, 26, 0, 128, 0, 114, 23, 128, 128, 128, 100, 0, 128, 0, 123]
