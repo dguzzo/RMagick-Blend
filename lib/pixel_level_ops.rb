@@ -13,7 +13,7 @@ module RMagickBlend
         end
         
         def to_s
-            "#{@pixel.to_color} at [#{@x},#{@y}]"
+            "#@pixel.to_color at [#@x,#@y]"
         end
         
     end
