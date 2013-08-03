@@ -100,6 +100,27 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             image.write("assets/images/composite_tiled_test.jpg")
         end
         
+        def self.montage(dir, random=false, samples=1)
+            image_names = RMagickBlend::FileUtils::get_all_images_from_dir(dir, 'jpg')
+            
+            samples.times do |index|
+                montage_name = "#{dir}/montage_#{index}.tif"
+                random_label = random ? "random montage" : ""
+                puts "creating #{random_label} #{Utils::ColorPrint::green(montage_name)}..."
+                
+                image_names = image_names.shuffle if random
+                imageList = Magick::ImageList.new(*image_names)
+                montage = imageList.montage do
+                    self.background_color = 'black'
+                    self.fill = 'red'
+                    self.font = 'arial'
+                    self.tile = "5x5"
+                    self.geometry = "180x120+0+0"
+                end
+                montage.write(montage_name)
+            end
+        end
+        
         private
 
         def self.clamp_degrees(deg)
