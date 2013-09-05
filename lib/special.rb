@@ -6,7 +6,6 @@ module RMagickBlend
     module Special
         
         def self.distort
-            
             image = RMagickBlend::FileUtils::load_sample_images.first
             
 =begin
@@ -28,6 +27,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             end
         end
         
+        
         def self.distort_arc(variants, options = {})
             options = {arc_angle: 60, rotate_angle: 0, top_radius: 100, bottom_radius: 100}.merge(options)
             image = RMagickBlend::FileUtils::load_sample_images.first
@@ -40,17 +40,20 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             end
         end
 
+
         def self.animated_gif_of_dir_images(dir)
             image_names = RMagickBlend::FileUtils::get_all_images_from_dir(dir, 'jpg')
             anim = Magick::ImageList.new(*image_names)
             anim.write("#{dir}/animated.gif")
         end
    
+   
         def self.swirl(deg)
             image = RMagickBlend::FileUtils::load_sample_images.first
             mod_image = image.swirl(clamp_degrees(deg))
             RMagickBlend::FileUtils::save_image(mod_image, "assets/images/swirl_test.jpg")
         end
+        
         
         def self.preview
             image = RMagickBlend::FileUtils::load_sample_images.first
@@ -60,6 +63,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             end
         end
         
+        
         def self.stereo
             images = RMagickBlend::FileUtils::load_sample_images
             image_left = images.first
@@ -68,6 +72,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             RMagickBlend::FileUtils::save_image(mod_image, "assets/images/stereo_test.jpg")
         end
         
+        
         def self.contrast(times)
             image = RMagickBlend::FileUtils::load_sample_images.first
             times.times do
@@ -75,6 +80,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             end
             RMagickBlend::FileUtils::save_image(image, "assets/images/contrast_test.jpg")
         end
+        
         
         def self.floodfill_pixels_of_color
             image = RMagickBlend::FileUtils::load_sample_images.first
@@ -93,12 +99,14 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             RMagickBlend::FileUtils::save_image(image, "assets/images/floodfill_test.jpg")
         end
         
+        
         def self.tile
             image = RMagickBlend::FileUtils::load_sample_images[1]
             tile_image = Magick::Image.read('assets/images/ruby_text_image.gif').first
             image.composite_tiled!(tile_image, Magick::DisplaceCompositeOp)
             image.write("assets/images/composite_tiled_test.jpg")
         end
+        
         
         def self.montage(dir, random=false, samples=1)
             image_names = RMagickBlend::FileUtils::get_all_images_from_dir(dir, 'jpg')
@@ -112,14 +120,13 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
                 imageList = Magick::ImageList.new(*image_names)
                 montage = imageList.montage do
                     self.background_color = 'black'
-                    self.fill = 'red'
-                    self.font = 'arial'
                     self.tile = "5x5"
                     self.geometry = "180x120+0+0"
                 end
                 montage.write(montage_name)
             end
         end
+        
         
         private
 

@@ -51,4 +51,21 @@ describe "Batch Runner" do
         
     end
 
+    describe 'open_files_at_end' do
+        
+        it "should return false if suppress option is set" do
+            RMagickBlend::BatchRunner::open_files_at_end?(suppress: true).should be_false
+        end
+
+        it "should return true if force option is set" do
+            Settings = double("directories", directories: { output: '.' }, constant_values: { num_files_before_warn: 10 } )
+            RMagickBlend::BatchRunner::open_files_at_end?(force: true).should be_true
+        end
+        
+        it "suppress option should override force option" do
+            RMagickBlend::BatchRunner::open_files_at_end?(suppress: true, force: true).should be_false
+        end
+        
+    end
+
 end
