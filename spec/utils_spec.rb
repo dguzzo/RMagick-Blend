@@ -81,6 +81,25 @@ describe "RMagickBlend" do
             end
         end
 
+        describe 'get_all_images_from_dir' do
+            
+            after do
+                clean_assets_directories
+            end
+
+            it 'finds one file if one exists' do
+                source = 'source'
+                create_temp_file(source)
+                RMagickBlend::FileUtils::get_all_images_from_dir("#{Dir.getwd}/spec/assets/#{source}", 'jpg').length.should eql 1
+            end
+            
+            it 'finds zero files if none exist' do
+                source = 'source'
+                RMagickBlend::FileUtils::get_all_images_from_dir("#{Dir.getwd}/spec/assets/#{source}", 'jpg').length.should eql 0
+            end
+            
+        end
+
     end
     
 end

@@ -26,7 +26,7 @@ module RMagickBlend
             if options[:force] || open_photos_at_end
                 Dir.chdir(Settings.directories[:output])
 
-                num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i =~ /\.#$output_file_format$/i }.length
+                num_files_created = Dir.entries(Dir.pwd).keep_if{ |i| i.downcase.end_with?(".#$output_file_format") }.length
 
                 if num_files_created > Settings.constant_values[:num_files_before_warn]
                     puts "\n#{num_files_created} files were generated; opening them all could cause the system to hang. proceed? #{Utils::ColorPrint::yellow('y/n')}"
