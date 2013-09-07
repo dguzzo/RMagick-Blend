@@ -14,8 +14,8 @@ default_input_image_format: 'jpg|tif'
 default_output_image_format: 'tif'
 
 behavior:
-    batches_to_run: 1
+    batches_to_run: 4
     delete_last_batch: true
-    open_files_at_end_force: true
-    open_files_at_end_suppress: false
+    open_files_at_end_force: false
+    open_files_at_end_suppress: true
     specific_avoid_ops: "ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp UndefinedCompositeOp OverCompositeOp SrcOverCompositeOp XorCompositeOp AtopCompositeOp CopyBlackCompositeOp DstCompositeOp DstOutCompositeOp InCompositeOp SrcCompositeOp DstInCompositeOp SrcAtopCompositeOp SrcInCompositeOp ReplaceCompositeOp NoCompositeOp CopyCompositeOp"
