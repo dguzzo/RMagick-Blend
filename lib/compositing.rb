@@ -49,8 +49,8 @@ module RMagickBlend
             compositeArray[range].each_with_index do |composite_style, index|
                 next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
 
-                puts "#{(index.to_f/options[:num_operations]*100).round}%" unless $specific_comps_to_run
-                puts "#{Utils::ColorPrint::green(composite_style.to_s)}"
+                print "#{(index.to_f/options[:num_operations]*100).round}% - " unless $specific_comps_to_run
+                print "#{Utils::ColorPrint::green(composite_style.to_s)}\n"
                 append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
                 start_time = Time.now
                 result = dst.composite(src, 0, 0, composite_style)
