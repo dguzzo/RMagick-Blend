@@ -79,7 +79,8 @@ def run_batch
     RMagickBlend::BatchRunner::delete_last_batch if Settings.behavior[:delete_last_batch]
 
     start_time = Time.now
-    Settings.behavior[:batches_to_run].times do 
+    Settings.behavior[:batches_to_run].times do |index|
+        puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run] + 1}..."
         RMagickBlend::Compositing::composite_images(options)
     end
     end_time = Time.now
