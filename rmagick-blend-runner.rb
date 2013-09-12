@@ -61,7 +61,12 @@ end.parse!
 ###
 def run_batch
     options = {
-        directories: { source: Settings.directories[:source], destination: Settings.directories[:destination], output: Settings.directories[:output] },
+        directories: { 
+            source: Settings.directories[:source], 
+            destination: Settings.directories[:destination], 
+            output: Settings.directories[:output],
+            output_catalog_by_time: Settings.directories[:output_catalog_by_time]
+        },
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         input_file_format: $input_file_format,

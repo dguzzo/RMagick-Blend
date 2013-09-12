@@ -44,7 +44,12 @@ module RMagickBlend
             end
 
             puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
-            output_dir = RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output])
+
+            output_dir = if options[:directories][:output_catalog_by_time]
+                RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{Time.now.strftime("%m-%d-%y--%T")}")
+            else
+                RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output])
+            end
 
             compositeArray[range].each_with_index do |composite_style, index|
                 next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
