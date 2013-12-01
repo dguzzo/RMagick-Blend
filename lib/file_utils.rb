@@ -48,13 +48,8 @@ module RMagickBlend
         end
 
         def self.get_image_pair_from_history(options)
-            begin
-                file_path = "#{options[:directories][:output]}/previous_batch.yml"
-                raise "Can't find #{file_path}; exiting." unless File.exists?(file_path) # don't rescue, cuz not sure how i want the program to fail gracefully yet
-            rescue => e
-                puts Utils::ColorPrint.red(e.message)
-                exit
-            end
+            file_path = "#{options[:directories][:output]}/previous_batch.yml"
+            Utils::exit_with_message("Can't find #{file_path}; exiting.") unless File.exists?(file_path) 
 
             history = File.read(file_path)
             history_hash = YAML.load(history)
@@ -82,11 +77,9 @@ module RMagickBlend
             [destination_name, source_name]
             
             rescue Errno::ENOENT => e
-                puts e
-                exit
+                Utils::exit_with_message(e)
             rescue RuntimeError => e
-                puts Utils::ColorPrint.red(e.message)
-                exit
+                Utils::exit_with_message(e.message)
         end
 
         def self.save_history(args)

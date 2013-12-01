@@ -2,11 +2,13 @@ require_relative './file_utils.rb'
 
 module RMagickBlend
     module BatchRunner
-
         YES_REGEX = /^(y|yes)/
 
         def self.load_settings
-            Settings.load!("config/settings.yml")
+            settings_path = "config/settings.yml"
+            Utils::exit_with_message("#{settings_path} does not exist!") unless File.exists?(settings_path)
+            
+            Settings.load!(settings_path)
             Settings.behavior[:open_files_at_end_force] ||= false
             Settings.behavior[:open_files_at_end_suppress] ||= false
             puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"

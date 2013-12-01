@@ -17,5 +17,10 @@ module Utils
         end
     end
     
+    def self.exit_with_message(message)
+        puts ColorPrint.red(message)
+        exit
+    end
+    
 end
 
