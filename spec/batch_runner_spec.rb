@@ -5,31 +5,53 @@ require_relative '../lib/batch_runner.rb'
 describe "Batch Runner" do
 
     describe "large_previous_batch?" do
+        options = { directories: { output: BASE_DIR } }
+        
+        describe "without history file" do
+            before { delete_history_file }
+            
+            it "still returns false with a 'y' as input" do
+                stub_input_for_gets('y')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_false
+            end
 
-        it "returns false with empty input" do
-            stub_input_for_gets('')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_false
+            it "still returns false with a 'yes' as input" do
+                stub_input_for_gets('yes')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_false
+            end
         end
 
-        it "returns true with a 'y' as input" do
-            stub_input_for_gets('y')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_true
-        end
+        describe "with history file" do
+            
+            before :each do create_history_file; end
+            after :each do delete_history_file; end
 
-        it "returns true with a 'yes' as input" do
-            stub_input_for_gets('yes')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_true
-        end
+            it "returns false with empty input" do
+                stub_input_for_gets('')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_false
+            end
+            
+            it "returns true with a 'y' as input" do
+                stub_input_for_gets('y')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_true
+            end
 
-        it "returns false otherwise" do
-            stub_input_for_gets('n')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_false
+            it "returns true with a 'yes' as input" do
+                stub_input_for_gets('yes')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_true
+            end
+            
+            it "returns false otherwise" do
+                stub_input_for_gets('n')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_false
 
-            stub_input_for_gets('no')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_false
+                stub_input_for_gets('no')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_false
 
-            stub_input_for_gets('noyes')
-            RMagickBlend::BatchRunner::large_previous_batch?.should be_false
+                stub_input_for_gets('noyes')
+                RMagickBlend::BatchRunner::large_previous_batch?(options).should be_false
+            end
+            
         end
 
     end

@@ -99,6 +99,13 @@ describe "RMagickBlend" do
             end
             
         end
+        
+        describe "history_file_exists" do
+
+            pending "should return true if file exists"
+            pending "should return false if file does not exist"
+
+        end
 
     end
     

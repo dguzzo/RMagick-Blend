@@ -16,10 +16,12 @@ RSpec.configure do |config|
   config.order = 'random'
 end
 
+BASE_DIR = "#{Dir.getwd}/spec"
+ASSETS_DIR = "#{BASE_DIR}/assets"
+
 def create_temp_file(dir)
-    base_dir = "#{Dir.getwd}/spec/assets"
-    image_name = Dir.entries(base_dir).keep_if{|i| i =~ /\.jpg/}.first
-    File.copy_stream("#{base_dir}/#{image_name}", "#{base_dir}/#{dir}/#{image_name}")
+    image_name = Dir.entries(ASSETS_DIR).keep_if{|i| i =~ /\.jpg/}.first
+    File.copy_stream("#{ASSETS_DIR}/#{image_name}", "#{ASSETS_DIR}/#{dir}/#{image_name}")
 end
 
 def clean_assets_directories
@@ -28,10 +30,21 @@ def clean_assets_directories
 end
 
 def clean_assets_directory(dir)
-    base_dir = "#{Dir.getwd}/spec/assets"
-    File.delete(*Dir["#{base_dir}/#{dir}/*"])
+    File.delete(*Dir["#{ASSETS_DIR}/#{dir}/*"])
 end
 
 def stub_input_for_gets(input)
     RMagickBlend::BatchRunner::stub(:gets).and_return(input)
+end
+
+def create_history_file
+    # todo: simplify
+    File.open("#{BASE_DIR}/previous_batch.yml", 'w') do |file|
+        file.write('')
+    end
+end
+
+def delete_history_file
+    file_path = "#{BASE_DIR}/previous_batch.yml"
+    File.delete(file_path) if File.exists?(file_path)
 end

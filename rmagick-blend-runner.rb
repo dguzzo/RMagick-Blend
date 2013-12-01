@@ -73,7 +73,7 @@ def run_batch
         output_file_format: $output_file_format
     }
 
-    if RMagickBlend::BatchRunner::large_previous_batch?
+    if RMagickBlend::BatchRunner::large_previous_batch?(options)
         options.merge!({
             num_operations: $optimized_num_operation_large,
             use_history: true

@@ -1,3 +1,5 @@
+require_relative './file_utils.rb'
+
 module RMagickBlend
     module BatchRunner
 
@@ -37,7 +39,8 @@ module RMagickBlend
             end
         end
 
-        def self.large_previous_batch?
+        def self.large_previous_batch?(options = {})
+            return false unless history_file_exists?(options)
             puts "\ndo you want to pursue the previous images in depth? (#{Utils::ColorPrint::green('y|yes')})"
             user_input = gets.strip
             !!(user_input =~ YES_REGEX) # || user_input.empty?
@@ -53,7 +56,15 @@ module RMagickBlend
             rescue Errno::ENOENT => e
                 puts Utils::ColorPrint.yellow("can't delete files in #{Settings.directories[:output]}; make sure that that directory exists.")
         end
-
+        
+        def self.history_file_exists?(options = {})
+            return false if options.empty?
+            # DRY this out; it's called in verbatim another method 
+            file_path = "#{options[:directories][:output]}/previous_batch.yml"
+            File.exists?(file_path)
+        end
+        private_class_method :history_file_exists?
+        
     end
     
 end
