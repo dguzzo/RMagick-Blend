@@ -4,7 +4,6 @@ require 'pry-nav'
 module RMagickBlend
 
     module Compositing
-
         OPTIMIZED_NUM_OPERATION_SMALL = 14
         
         def self.composite_images(options={})
