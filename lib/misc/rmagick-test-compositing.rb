@@ -8,7 +8,7 @@ def gradient_compositing_sample
     dst = Magick::Image.new(128, 128, gold_fill)
     src = Magick::Image.new(128, 128, red_fill)
     # src = Magick::Image.read("composite1-src.gif")[0]
-    output_dir = Utils::createDirIfNeeded('images')
+    output_dir = Utils::create_dir_if_needed('images')
     
     print "\nbeginning composites processing"
     Magick::CompositeOperator.values.each_with_index do |composite_style, index|

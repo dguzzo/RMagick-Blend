@@ -2,7 +2,7 @@ module RMagickBlend
 
     module FileUtils
 
-        def self.createDirIfNeeded(image_dir_name)
+        def self.create_dir_if_needed(image_dir_name)
             unless File.directory?(image_dir_name)
                 puts "creating directory '#{image_dir_name}'..."
                 Dir.mkdir(image_dir_name)

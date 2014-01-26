@@ -4,7 +4,7 @@
 require 'RMagick'
 
 image_name = "Bookshelves"
-dest_path = Utils::createDirIfNeeded('images')
+dest_path = Utils::create_dir_if_needed('images')
 test_image = Magick::Image.read("./#{dest_path}/#{image_name}.jpg").first
 cols, rows = test_image.columns, test_image.rows
 

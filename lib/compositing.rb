@@ -45,9 +45,9 @@ module RMagickBlend
             puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
 
             output_dir = if options[:directories][:output_catalog_by_time]
-                RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{Time.now.strftime("%m-%d-%y--%T")}")
+                RMagickBlend::FileUtils::create_dir_if_needed(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{Time.now.strftime("%m-%d-%y--%T")}")
             else
-                RMagickBlend::FileUtils::createDirIfNeeded(options[:directories][:output])
+                RMagickBlend::FileUtils::create_dir_if_needed(options[:directories][:output])
             end
 
             compositeArray[range].each_with_index do |composite_style, index|

@@ -37,7 +37,7 @@ $COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source
 # $specific_comps_to_run = $COMP_SETS[:specific]
 
 OptionParser.new do |opts|
-  opts.banner = "Usage: rmagick-blend.rb [options]"
+  opts.banner = "Usage: rmagick-blend.rb [options]" # todo: is this needed?
 
   opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::Compositing::OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $flags[:num_operations] = v }
   opts.on('-p', '--profile', "show timing profile debug info") { |v| $flags[:perf_profile] = v }
@@ -46,7 +46,7 @@ OptionParser.new do |opts|
       $output_file_format = "jpg"
       $optimized_num_operation_large += 10
   end
-  opts.on('-h', '--help', 'Prints out this very help guide of options. yes, this one.') do |v| 
+  opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
       $flags[:help] = v 
       puts "\n#{opts}"
       exit
