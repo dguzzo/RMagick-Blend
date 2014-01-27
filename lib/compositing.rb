@@ -55,11 +55,7 @@ module RMagickBlend
                 print "#{(index.to_f/options[:num_operations]*100).round}% - " unless $specific_comps_to_run
                 print "#{Utils::ColorPrint::green(composite_style.to_s)}\n"
                 append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
-                start_time = Time.now
                 result = dst.composite(src, 0, 0, composite_style)
-                end_time = Time.now
-                puts "PERF PROFILING .composite(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
-                start_time = Time.now
                 result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{append_string}.#{options[:output_file_format]}") do
                   self.quality = 100 if options[:output_file_format].downcase === 'jpg'
                 end
@@ -68,9 +64,6 @@ module RMagickBlend
                   result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
                   result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{append_string}.jpg"){ self.quality = 46 }
                 end
-                
-                end_time = Time.now
-                puts "PERF PROFILING .write(): #{Utils::ColorPrint::yellow(end_time-start_time)} seconds." if $flags[:perf_profile]
             end
 
             RMagickBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
