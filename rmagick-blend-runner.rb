@@ -16,13 +16,39 @@ require 'optparse'
 require 'pry'
 require 'pry-nav'
 
+$flags = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: rmagick-blend.rb [options]"
+
+  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::Compositing::OPTIMIZED_NUM_OPERATION_SMALL}]") do |v| 
+    $flags[:num_operations] = v
+  end
+  opts.on('-p', '--profile', "show timing profile debug info") do |v| 
+    $flags[:perf_profile] = v
+  end
+  opts.on('-s', '--swap', "swap the destination image and the source image") do |v|
+    $flags[:switch_src_dest] = v
+  end
+  opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file. overrides value in Settings.yml.") do 
+      $output_file_format = "jpg"
+      $optimized_num_operation_large += 10
+  end
+  opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
+      $flags[:help] = v 
+      puts "\n#{opts}"
+      exit
+  end
+end.parse!
+
+# puts "YOUVE ACHIEVED HELP!\n #$flags" if $flags[:help]
+
 RMagickBlend::BatchRunner::load_settings
 
 $batches_ran = 0
 $optimized_num_operation_large = 24
-$input_file_format = Settings.default_input_image_format
-$output_file_format = Settings.default_output_image_format
-$flags = {}
+$input_file_format ||= Settings.default_input_image_format
+$output_file_format ||= Settings.default_output_image_format
+
 $specific_comps_to_run = nil
 $COMP_SETS = {
     copy_color: %w(CopyBlueCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyRedCompositeOp CopyYellowCompositeOp),
@@ -35,28 +61,6 @@ $COMP_SETS = {
 $COMP_SETS[:avoid].clear.push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
 $COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source] == "images/batch-7-source" ### TEMP for blind drawing proj only
 # $specific_comps_to_run = $COMP_SETS[:specific]
-
-OptionParser.new do |opts|
-  opts.banner = "Usage: rmagick-blend.rb [options]" # todo: is this needed?
-
-  opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::Compositing::OPTIMIZED_NUM_OPERATION_SMALL}]") { |v| $flags[:num_operations] = v }
-  opts.on('-p', '--profile', "show timing profile debug info") { |v| $flags[:perf_profile] = v }
-  opts.on('-s', '--swap', "swap the destination image and the source image") { |v| $flags[:switch_src_dest] = v }
-  opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file") do 
-      $output_file_format = "jpg"
-      $optimized_num_operation_large += 10
-  end
-  opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
-      $flags[:help] = v 
-      puts "\n#{opts}"
-      exit
-  end
-  # opts.on('-p', '--sourceport PORT', 'Source port') { |v| $flags[:source_port] = v }
-
-end.parse!
-
-# puts "YOUVE ACHIEVED HELP!\n #$flags" if $flags[:help]
-
 
 ###
 def run_batch
