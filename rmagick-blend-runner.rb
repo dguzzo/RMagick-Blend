@@ -58,7 +58,6 @@ $COMP_SETS = {
 }
 
 $COMP_SETS[:avoid].clear.push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
-$COMP_SETS[:avoid].push *$COMP_SETS[:copy_color] if Settings.directories[:source] == "images/batch-7-source" ### TEMP for blind drawing proj only
 # $specific_comps_to_run = $COMP_SETS[:specific]
 
 ###
