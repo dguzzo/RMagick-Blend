@@ -34,7 +34,6 @@ OptionParser.new do |opts|
       $optimized_num_operation_large += 10
   end
   opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
-      $flags[:help] = v 
       puts "\n#{opts}"
       exit
   end
