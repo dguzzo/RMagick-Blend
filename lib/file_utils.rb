@@ -1,5 +1,4 @@
 module RMagickBlend
-
     module FileUtils
 
         def self.create_dir_if_needed(image_dir_name)
@@ -113,5 +112,4 @@ module RMagickBlend
         end
 
     end
-    
 end
