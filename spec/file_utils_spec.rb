@@ -71,6 +71,9 @@ describe "RMagickBlend" do
             it "pretty_file_name should prettify a proper jpg filename" do
                 image_file = double("image", filename: "/some_dir/cool_image.jpg")
                 RMagickBlend::FileUtils::pretty_file_name(image_file).should eql "cool_image"
+                
+                image_file = double("image", filename: "some_dir/actual_treasure_map.jpg")
+                RMagickBlend::FileUtils::pretty_file_name(image_file).should eql "actual_treasure_map"
             end
 
             it "pretty_file_name should prettify a proper tif filename" do
