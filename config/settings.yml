@@ -1,21 +1,24 @@
 # todo note: can't use reserved words as keys; seems limiting, as i want 'constants' as a top-level container.
 # perhaps could request of the folks that wrote what's in settings.rb to make this possible...
 ---
-preset_name: "batch 9"
+preset_name: "batch 12 creative commons"
 constant_values:
     num_files_before_warn: 40
 
 directories:
-    output: "assets/images/batch-9-output"
-    source: "assets/images/batch-9-source"
-    destination: "assets/images/batch-9-destination"
+    output: "assets/images/batch-12-output"
+    source: "assets/images/batch-12-source"
+    destination: "assets/images/batch-12-destination"
+    output_catalog_by_time: true
 
 default_input_image_format: 'jpg|tif'
 default_output_image_format: 'tif'
 
 behavior:
-    batches_to_run: 4
+    batches_to_run: 6
     delete_last_batch: true
     open_files_at_end_force: false
     open_files_at_end_suppress: true
     specific_avoid_ops: "ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp UndefinedCompositeOp OverCompositeOp SrcOverCompositeOp XorCompositeOp AtopCompositeOp CopyBlackCompositeOp DstCompositeOp DstOutCompositeOp InCompositeOp SrcCompositeOp DstInCompositeOp SrcAtopCompositeOp SrcInCompositeOp ReplaceCompositeOp NoCompositeOp CopyCompositeOp"
+
+low_quality_preview: true
