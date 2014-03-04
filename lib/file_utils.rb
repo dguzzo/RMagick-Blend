@@ -1,3 +1,5 @@
+require 'syslog'
+
 module RMagickBlend
     module FileUtils
 
@@ -33,7 +35,9 @@ module RMagickBlend
             begin
                 image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
             rescue
-                "improper-filename-#{Time.now.asctime}"
+                fallback_string = "improper-filename-#{Time.now.asctime}"
+                Syslog.open { Syslog.notice("#{__FILE__} - #{fallback_string}") }
+                fallback_string
             end
         end
 
