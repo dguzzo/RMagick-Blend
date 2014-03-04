@@ -97,3 +97,7 @@ def run_batch
 end
 
 run_batch
+
+__END__
+
+Don't forget to read and tell stories.

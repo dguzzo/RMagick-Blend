@@ -11,8 +11,19 @@ module RMagickBlend
 
         def self.output_all_composite_ops
             File.open('all_ops.yml', 'w') do |file|
-                all_ops = Magick::CompositeOperator.values.map{|op| op.to_s.force_encoding("UTF-8")}
+                all_ops = Magick::CompositeOperator.values.map do |op| 
+                    op.to_s.force_encoding("UTF-8") # this is necessary for the file to write propoerly
+                end
                 file.write(all_ops.to_yaml)
+            end
+        end
+        
+        def self.output_all_composite_ops_txt
+            File.open('all_ops.txt', 'w') do |file|
+                all_ops = Magick::CompositeOperator.values.map do |op| 
+                    op.to_s.force_encoding("UTF-8") # this is necessary for the file to write propoerly
+                end
+                file.write(all_ops.join("\n"))
             end
         end
 
