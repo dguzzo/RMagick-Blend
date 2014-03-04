@@ -37,6 +37,7 @@ module RMagickBlend
             rescue
                 fallback_string = "improper-filename-#{Time.now.asctime}"
                 Syslog.open { Syslog.notice("#{__FILE__} - #{fallback_string}") }
+                
                 fallback_string
             end
         end
@@ -115,6 +116,7 @@ module RMagickBlend
             image_names.map{|name| "#{dir}/#{name}"}
         end
 
+        # TODO this shouldn't be here; should be generalized or removed.
         def self.load_sample_images
             images = []
             images << Magick::Image.read('assets/images/batch-8-source/9252445443_5c5c679774_c.jpg').first \
