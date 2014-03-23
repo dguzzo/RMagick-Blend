@@ -6,7 +6,7 @@ module RMagickBlend
 
         def self.load_settings
             settings_path = "config/settings.yml"
-            Utils::exit_with_message("#{settings_path} does not exist!") unless File.exists?(settings_path)
+            Utils::exit_with_message("settings file at '#{settings_path}' does not exist!") unless File.exists?(settings_path)
             
             Settings.load!(settings_path)
             Settings.behavior[:open_files_at_end_force] ||= false
