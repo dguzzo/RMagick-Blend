@@ -22,7 +22,6 @@ describe "Batch Runner" do
         end
 
         describe "with history file" do
-            
             before :each do create_history_file; end
             after :each do delete_history_file; end
 
@@ -53,11 +52,9 @@ describe "Batch Runner" do
             end
             
         end
-
     end
 
     describe 'delete_last_batch' do
-        
         it 'returns nil if no files found' do
             Settings = double("directories", directories: { output: '.' } )
             RMagickBlend::BatchRunner.delete_last_batch.should be_nil
@@ -70,11 +67,9 @@ describe "Batch Runner" do
             RMagickBlend::BatchRunner.delete_last_batch.should be_a_kind_of(Fixnum)
             clean_assets_directory('source')
         end
-        
     end
 
     describe 'open_files_at_end' do
-        
         it "should return false if suppress option is set" do
             RMagickBlend::BatchRunner::open_files_at_end?(suppress: true).should be_false
         end
@@ -87,7 +82,23 @@ describe "Batch Runner" do
         it "suppress option should override force option" do
             RMagickBlend::BatchRunner::open_files_at_end?(suppress: true, force: true).should be_false
         end
+    end
+    
+    describe "history_file_exists?" do
+        it "should return false if options hash is empty" do
+            RMagickBlend::BatchRunner.send(:history_file_exists?, {}).should be_false
+        end
+        
+        it "should return false if file does not exist" do
+            RMagickBlend::BatchRunner.send(:history_file_exists?, { directories: {output: 'non-existent-directory'} }).should be_false
+        end
+        
+        it "should return true if file exists" do
+            create_history_file
+            RMagickBlend::BatchRunner.send(:history_file_exists?, { directories: {output: "#{BASE_DIR}"} }).should be_true
+            delete_history_file
+            RMagickBlend::BatchRunner.send(:history_file_exists?, { directories: {output: "#{BASE_DIR}-#{BASE_DIR}"} }).should be_false
+        end
         
     end
-
 end

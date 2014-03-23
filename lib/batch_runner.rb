@@ -64,6 +64,9 @@ module RMagickBlend
             # DRY this out; it's called in verbatim another method 
             file_path = "#{options[:directories][:output]}/previous_batch.yml"
             File.exists?(file_path)
+            rescue NoMethodError => e
+                puts Utils::ColorPrint.yellow("Couldn't find history file: #{e}")
+                return false
         end
         private_class_method :history_file_exists?
         
