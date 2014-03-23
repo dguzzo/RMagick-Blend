@@ -5,10 +5,9 @@ this memory is of course freed when the program finishes when run directly with 
 =end
 
 require 'RMagick'
-require './lib/utils.rb'
-require './lib/file_utils.rb'
-require './lib/compositing.rb'
-require './lib/batch_runner.rb'
+Dir.glob(File.dirname(__FILE__) << "/lib/*.rb" ).each do |file|
+    require file
+end
 require './vendor/deep_symbolize.rb'
 require './vendor/settings.rb'
 require 'yaml'
@@ -100,4 +99,4 @@ run_batch
 
 __END__
 
-Don't forget to read and tell stories.
+Don't forget to read--and tell--stories.
