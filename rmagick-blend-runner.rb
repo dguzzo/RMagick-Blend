@@ -8,8 +8,8 @@ require 'RMagick'
 Dir.glob(File.dirname(__FILE__) << "/lib/*.rb" ).each do |file|
     require file
 end
-require './vendor/deep_symbolize.rb'
-require './vendor/settings.rb'
+require './vendor/deep_symbolize'
+require './vendor/settings'
 require 'yaml'
 require 'optparse'
 require 'pry'
