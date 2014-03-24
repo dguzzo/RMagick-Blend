@@ -8,8 +8,11 @@ require 'RMagick'
 Dir[File.dirname(__FILE__) << "/lib/*.rb"].each do |file|
     require file
 end
-require './vendor/deep_symbolize'
-require './vendor/settings'
+
+$:.unshift(File.expand_path('vendor')) # allow easier inclusion of vendor files
+require 'deep_symbolize'
+require 'settings'
+
 require 'yaml'
 require 'optparse'
 require 'pry'
