@@ -5,7 +5,7 @@ this memory is of course freed when the program finishes when run directly with 
 =end
 
 require 'RMagick'
-Dir.glob(File.dirname(__FILE__) << "/lib/*.rb" ).each do |file|
+Dir[File.dirname(__FILE__) << "/lib/*.rb"].each do |file|
     require file
 end
 require './vendor/deep_symbolize'
