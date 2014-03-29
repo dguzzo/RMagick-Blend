@@ -4,8 +4,8 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
-# saved images fetched from flickr
-/images
+# ignore all image directories for now
+images
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
