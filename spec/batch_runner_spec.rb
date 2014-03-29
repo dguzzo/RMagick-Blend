@@ -1,6 +1,6 @@
 require 'spec_helper'
-require_relative '../lib/utils.rb'
-require_relative '../lib/batch_runner.rb'
+require './lib/rmagick-blend/utils'
+require './lib/rmagick-blend/batch_runner'
 
 describe "Batch Runner" do
 

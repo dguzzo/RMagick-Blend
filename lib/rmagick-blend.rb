@@ -1,0 +1,120 @@
+require 'pry'
+require 'rmagick-blend/version'
+require 'RMagick'
+
+Dir[File.dirname(__FILE__) << "/rmagick-blend/*.rb"].each do |file|
+    require file
+end
+
+$:.unshift(File.expand_path('../../vendor', __FILE__)) # allow easier inclusion of vendor files
+require 'deep_symbolize'
+require 'settings'
+
+require 'yaml'
+require 'optparse'
+require 'pry'
+require 'pry-nav'
+
+module RMagickBlend
+    def self.start
+        $flags = {}
+        OptionParser.new do |opts|
+            opts.banner = "Usage: rmagick-blend.rb [options]"
+
+            opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::Compositing::OPTIMIZED_NUM_OPERATION_SMALL}]") do |v| 
+                $flags[:num_operations] = v
+            end
+            opts.on('-p', '--profile', "show timing profile debug info") do |v| 
+                $flags[:perf_profile] = v
+            end
+            opts.on('-s', '--swap', "swap the destination image and the source image") do |v|
+                $flags[:switch_src_dest] = v
+            end
+            opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file. overrides value in Settings.yml.") do 
+                $output_file_format = "jpg"
+                $optimized_num_operation_large += 10
+            end
+            opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
+                puts "\n#{opts}"
+                exit
+            end
+        end.parse!
+
+        # puts "YOUVE ACHIEVED HELP!\n #$flags" if $flags[:help]
+
+        load_settings
+
+        $batches_ran = 0
+        $optimized_num_operation_large = 24
+        $input_file_format ||= Settings.default_input_image_format
+        $output_file_format ||= Settings.default_output_image_format
+
+        $specific_comps_to_run = nil
+        $COMP_SETS = {
+            copy_color: %w(CopyBlueCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyRedCompositeOp CopyYellowCompositeOp),
+            reliable_quality: %w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp DarkenCompositeOp),
+            crazy: %w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp),
+            specific: %w(OverlayCompositeOp),
+            avoid: %w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp)
+        }
+
+        $COMP_SETS[:avoid].clear.push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
+        # $specific_comps_to_run = $COMP_SETS[:specific]
+
+        ###
+        run_batch
+    end
+
+    def self.run_batch
+        options = {
+            directories: { 
+                source: Settings.directories[:source], 
+                destination: Settings.directories[:destination], 
+                output: Settings.directories[:output],
+                output_catalog_by_time: Settings.directories[:output_catalog_by_time]
+            },
+            append_operation_to_filename: true, 
+            shuffle_composite_operations: true,
+            input_file_format: $input_file_format,
+            output_file_format: $output_file_format
+        }
+
+        if RMagickBlend::BatchRunner::large_previous_batch?(options)
+            options.merge!({
+                num_operations: $optimized_num_operation_large,
+                use_history: true
+            })
+            puts "running large batch using history file"
+        end
+
+        RMagickBlend::BatchRunner::delete_last_batch if Settings.behavior[:delete_last_batch]
+
+        start_time = Time.now
+        Settings.behavior[:batches_to_run].times do |index|
+            puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
+            RMagickBlend::Compositing::composite_images(options)
+        end
+        end_time = Time.now
+        puts "ran #$batches_ran batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
+
+        RMagickBlend::BatchRunner::open_files
+    end
+    private_class_method :run_batch
+    
+    def self.load_settings
+        puts 'yaayy'
+        settings_path = File.expand_path("../../config/settings.yml", __FILE__)
+        Utils::exit_with_message("settings file at '#{settings_path}' does not exist!") unless File.exists?(settings_path)
+        
+        Settings.load!(settings_path)
+        Settings.behavior[:open_files_at_end_force] ||= false
+        Settings.behavior[:open_files_at_end_suppress] ||= false
+        puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
+    end
+    private_class_method :load_settings
+    
+end
+
+__END__
+
+Don't forget to read--and tell--stories.
