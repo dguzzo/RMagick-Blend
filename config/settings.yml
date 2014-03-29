@@ -1,21 +1,20 @@
-# todo note: can't use reserved words as keys; seems limiting, as i want 'constants' as a top-level container.
-# perhaps could request of the folks that wrote what's in settings.rb to make this possible...
+# Sample config file
 ---
-preset_name: "batch 11 TEST"
+preset_name: "default batch"
 constant_values:
     num_files_before_warn: 40
 
 directories:
-    output: "assets/images/batch-11-output"
-    source: "assets/images/batch-11-source"
-    destination: "assets/images/batch-11-destination"
+    output: "assets/images/output"
+    source: "assets/images/source"
+    destination: "assets/images/destination"
     output_catalog_by_time: true
 
 default_input_image_format: 'jpg|tif'
 default_output_image_format: 'tif'
 
 behavior:
-    batches_to_run: 6
+    batches_to_run: 3
     delete_last_batch: true
     open_files_at_end_force: false
     open_files_at_end_suppress: true

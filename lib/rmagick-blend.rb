@@ -6,7 +6,7 @@ Dir[File.dirname(__FILE__) << "/rmagick-blend/*.rb"].each do |file|
     require file
 end
 
-$:.unshift(File.expand_path('../../vendor', __FILE__)) # allow easier inclusion of vendor files
+$:.unshift(File.expand_path('../vendor', File.dirname(__FILE__))) # allow easier inclusion of vendor files
 require 'deep_symbolize'
 require 'settings'
 
@@ -102,17 +102,25 @@ module RMagickBlend
     private_class_method :run_batch
     
     def self.load_settings
-        puts 'yaayy'
-        settings_path = File.expand_path("../../config/settings.yml", __FILE__)
-        Utils::exit_with_message("settings file at '#{settings_path}' does not exist!") unless File.exists?(settings_path)
+        # check for gem's default config 
+        default_settings = File.expand_path("../config/settings.yml", File.dirname(__FILE__))
+        Utils::exit_with_message("default file at '#{default_settings}' does not exist!") unless File.exists?(default_settings)
         
+        settings_path = File.expand_path("config/settings.yml")
+
+        settings_path = if File.exists?(settings_path)
+            settings_path
+        else
+            puts Utils::ColorPrint.yellow("Couldn't find custom settings file at #{settings_path}; using default rmagick-blend settings file")
+            default_settings
+        end
+            
         Settings.load!(settings_path)
         Settings.behavior[:open_files_at_end_force] ||= false
         Settings.behavior[:open_files_at_end_suppress] ||= false
         puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
     end
     private_class_method :load_settings
-    
 end
 
 __END__

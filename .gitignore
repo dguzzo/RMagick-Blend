@@ -5,7 +5,7 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 # saved images fetched from flickr
-images
+/images
 
 # Ignore all logfiles and tempfiles.
 /log/*.log

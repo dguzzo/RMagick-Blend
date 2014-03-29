@@ -1,15 +1,24 @@
 # RMagick-Blend
 
-A small program that uses RMagick—a gem that acts as a wrapper around the classic ImageMagick library—to run various composite operations on source images, producing a composite output.
+A small gem that uses RMagick—a gem that acts as a wrapper around the classic ImageMagick library—to run various composite operations on source images, producing a composite output.
 
 [Examples here](http://www.flickr.com/photos/dominicotine/collections/72157633447005928/)
 
 ## Table of Contents
-   * [Running blending script](#running-blending)
-   * [List of composite operations](#list-of-composite-operations)
+    * [Installation](#installation)
+    * [Running blending script](#running-blending)
+    * [List of composite operations](#list-of-composite-operations)
    
+## installation
+    ### building & installing from source
+        git clone https://github.com/dguzzo/RMagick-Blend.git
+        gem build rmagick-blend.gemspec
+        gem install rmagick-blend[version].gem
+        
 ## running-blending
-		ruby rmagick-blend.rb
+	    require 'rmagick-blend'
+	    
+	    RMagickBlend::start
 		
 ## List of composite operations
 [link to outputted file](all_ops.txt)
