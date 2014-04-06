@@ -18,3 +18,4 @@ images
 /config
 
 .DS_Store
+/pkg

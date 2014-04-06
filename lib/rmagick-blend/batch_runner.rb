@@ -31,6 +31,7 @@ module RMagickBlend
 
         def self.large_previous_batch?(options = {})
             return false unless history_file_exists?(options)
+            return false if Settings.behavior[:large_previous_batch_suppress]
             puts "\ndo you want to pursue the previous images in depth? (#{Utils::ColorPrint::green('y|yes')})"
             user_input = gets.strip
             !!(user_input =~ YES_REGEX) # || user_input.empty?

@@ -40,8 +40,6 @@ module RMagickBlend
             end
         end.parse!
 
-        # puts "YOUVE ACHIEVED HELP!\n #$flags" if $flags[:help]
-
         load_settings
 
         $batches_ran = 0
