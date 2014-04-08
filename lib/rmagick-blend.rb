@@ -16,12 +16,13 @@ require 'pry'
 require 'pry-nav'
 
 module RMagickBlend
+    OPTIMIZED_NUM_OPERATION_SMALL = 14
     def self.start
         $flags = {}
         OptionParser.new do |opts|
             opts.banner = "Usage: rmagick-blend.rb [options]"
 
-            opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{RMagickBlend::Compositing::OPTIMIZED_NUM_OPERATION_SMALL}]") do |v| 
+            opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") do |v| 
                 $flags[:num_operations] = v
             end
             opts.on('-p', '--profile', "show timing profile debug info") do |v| 
@@ -42,8 +43,10 @@ module RMagickBlend
 
         load_settings
 
+        # TODO clean up all these globals/flags; it's madness now that the program is a gem
         $batches_ran = 0
         $optimized_num_operation_large = 24
+        $num_operations ||= Settings.constant_values[:num_operations] || $flags[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL
         $input_file_format ||= Settings.default_input_image_format
         $output_file_format ||= Settings.default_output_image_format
 

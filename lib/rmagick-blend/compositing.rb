@@ -1,10 +1,8 @@
 module RMagickBlend
     module Compositing
-        OPTIMIZED_NUM_OPERATION_SMALL = 14
-        
         def self.composite_images(options={})
             defaults = {
-                num_operations: OPTIMIZED_NUM_OPERATION_SMALL, 
+                num_operations: $num_operations, 
                 append_operation_to_filename: false, 
                 shuffle_composite_operations: false,
                 directories: { output: 'images/image-composites' },
@@ -16,7 +14,6 @@ module RMagickBlend
             }
 
             options = defaults.merge(options)
-            options[:num_operations] = $flags[:num_operations].to_i if $flags[:num_operations]
             options[:switch_src_dest] = $flags[:switch_src_dest] if $flags[:switch_src_dest]
 
             if options[:use_history]

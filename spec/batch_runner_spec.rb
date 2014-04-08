@@ -22,7 +22,11 @@ describe "Batch Runner" do
         end
 
         describe "with history file" do
-            before :each do create_history_file; end
+            before :each do 
+                create_history_file
+                Settings = double("behavior", behavior: {  } )
+            end
+            
             after :each do delete_history_file; end
 
             it "returns false with empty input" do
