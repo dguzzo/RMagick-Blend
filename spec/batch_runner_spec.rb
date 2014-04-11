@@ -1,6 +1,6 @@
 require 'spec_helper'
-require './lib/rmagick-blend/utils'
-require './lib/rmagick-blend/batch_runner'
+require 'rmagick-blend/utils'
+require 'rmagick-blend/batch_runner'
 
 describe "Batch Runner" do
 
