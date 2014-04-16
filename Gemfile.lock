@@ -1,7 +1,13 @@
+GIT
+  remote: git://github.com/dguzzo/dguzzo-utils.git
+  revision: 5737f089c2f5bf0542a6a5ec478106ed965b0977
+  specs:
+    dguzzo-utils (0.0.1)
+
 PATH
   remote: .
   specs:
-    rmagick-blend (1.0.0)
+    rmagick-blend (1.2.0)
       rmagick
 
 GEM
@@ -31,6 +37,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dguzzo-utils!
   pry
   pry-nav
   rmagick-blend!

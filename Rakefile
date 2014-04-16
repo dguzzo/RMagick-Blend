@@ -1,5 +1,7 @@
 require 'rmagick-blend'
 
+###
+
 namespace :batch do
     desc "make blends"
     task :run do
