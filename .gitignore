@@ -21,6 +21,4 @@ images
 /pkg
 /assets
 
-Gemfile.lock
-
 *.lock
