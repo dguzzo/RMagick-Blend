@@ -20,3 +20,5 @@ images
 .DS_Store
 /pkg
 /assets
+
+Gemfile.lock
