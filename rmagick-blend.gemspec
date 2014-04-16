@@ -1,4 +1,4 @@
-require './lib/rmagick-blend/version'
+require 'rmagick-blend/version'
 
 Gem::Specification.new do |s|
     s.name = 'rmagick-blend'
@@ -9,6 +9,7 @@ Gem::Specification.new do |s|
     s.files = Dir['lib/**/*.rb', 'vendor/*.rb', 'config/settings.yml']
     
     s.add_dependency 'rmagick'
+    s.add_dependency 'dguzzo-util'
     
     s.add_development_dependency 'rspec'
     s.add_development_dependency 'pry'

@@ -1,14 +1,8 @@
 require 'syslog'
+require 'dguzzo-utils'
 
 module RMagickBlend
     module FileUtils
-        def self.create_dir_if_needed(image_dir_name)
-            unless File.directory?(image_dir_name)
-                puts "creating directory '#{image_dir_name}'..."
-                Dir.mkdir(image_dir_name)
-            end
-            image_dir_name
-        end
 
         def self.output_all_composite_ops
             File.open('all_ops.yml', 'w') do |file|
@@ -63,20 +57,20 @@ module RMagickBlend
 
         def self.get_image_pair_from_history(options)
             file_path = "#{options[:directories][:output]}/previous_batch.yml"
-            Utils::exit_with_message("Can't find #{file_path}; exiting.") unless File.exists?(file_path) 
+            DguzzoUtils::exit_with_message("Can't find #{file_path}; exiting.") unless File.exists?(file_path) 
 
             history = File.read(file_path)
             history_hash = YAML.load(history)
             source, destination = history_hash[:src_name], history_hash[:dst_name]
 
-            puts "loading source: #{Utils::ColorPrint::yellow( source )}\nloading destination: #{Utils::ColorPrint::yellow( destination )}"
+            puts "loading source: #{DguzzoUtils::ColorPrint::yellow( source )}\nloading destination: #{DguzzoUtils::ColorPrint::yellow( destination )}"
             source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
 
             [source, destination]
         end
 
         def self.swap_directories(src, dst)
-            puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
+            puts "#{DguzzoUtils::ColorPrint::yellow('swapping')} source and destination files..."
             src, dst = dst, src
             [src, dst]
         end
@@ -91,9 +85,9 @@ module RMagickBlend
             [destination_name, source_name]
             
             rescue Errno::ENOENT => e
-                Utils::exit_with_message(e)
+                DguzzoUtils::exit_with_message(e)
             rescue RuntimeError => e
-                Utils::exit_with_message(e.message)
+                DguzzoUtils::exit_with_message(e.message)
         end
 
         def self.save_history(args)
@@ -107,7 +101,7 @@ module RMagickBlend
             end
 
             rescue => e
-                puts Utils::ColorPrint::red("error in save_history #{e.message}")
+                puts DguzzoUtils::ColorPrint::red("error in save_history #{e.message}")
         end
 
         def self.get_all_images_from_dir(dir, file_format)

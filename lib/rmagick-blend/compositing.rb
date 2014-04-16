@@ -1,3 +1,5 @@
+require 'dguzzo-utils'
+
 module RMagickBlend
     module Compositing
         def self.composite_images(options={})
@@ -35,19 +37,19 @@ module RMagickBlend
                 range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
             end
 
-            puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
+            puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(options[:num_operations])} different operations"
 
             output_dir = if options[:directories][:output_catalog_by_time]
-                RMagickBlend::FileUtils::create_dir_if_needed(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{Time.now.strftime("%m-%d-%y--%T")}")
+                DguzzoUtils::create_dir_if_needed(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{Time.now.strftime("%m-%d-%y--%T")}")
             else
-                RMagickBlend::FileUtils::create_dir_if_needed(options[:directories][:output])
+                DguzzoUtils::create_dir_if_needed(options[:directories][:output])
             end
 
             compositeArray[range].each_with_index do |composite_style, index|
                 next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
 
                 print "#{(index.to_f/options[:num_operations]*100).round}% - " unless $specific_comps_to_run
-                print "#{Utils::ColorPrint::green(composite_style.to_s)}\n"
+                print "#{DguzzoUtils::ColorPrint::green(composite_style.to_s)}\n"
                 append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
                 result = dst.composite(src, 0, 0, composite_style)
                 result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dst)}--#{append_string}.#{options[:output_file_format]}") do
@@ -62,7 +64,7 @@ module RMagickBlend
 
             RMagickBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
             $batches_ran += 1
-            puts Utils::ColorPrint::green("done!\n")
+            puts DguzzoUtils::ColorPrint::green("done!\n")
         end
     end
 end
