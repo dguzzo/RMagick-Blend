@@ -1,6 +1,14 @@
-require 'rmagick-blend'
+require './lib/rmagick-blend'
 
 ###
+
+namespace :build do
+  desc "prepare for rspec"
+  task :prepare_rspec do
+    DguzzoUtils::create_dir_if_needed(File.join('spec', 'assets', 'source'))
+    DguzzoUtils::create_dir_if_needed(File.join('spec', 'assets', 'destination'))
+  end
+end
 
 namespace :batch do
     desc "make blends"

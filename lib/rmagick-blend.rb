@@ -1,5 +1,4 @@
 require 'pry'
-require 'rmagick-blend/version'
 require 'RMagick'
 require 'dguzzo-utils'
 

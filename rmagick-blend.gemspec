@@ -1,4 +1,4 @@
-require 'rmagick-blend/version'
+require './lib/rmagick-blend/version'
 
 Gem::Specification.new do |s|
     s.name = 'rmagick-blend'
