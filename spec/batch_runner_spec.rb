@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'dguzzo-utils'
 require 'rmagick-blend/batch_runner'
 
 describe "Batch Runner" do

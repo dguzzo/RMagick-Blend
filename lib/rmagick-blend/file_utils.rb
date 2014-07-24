@@ -1,5 +1,4 @@
 require 'syslog'
-require 'dguzzo-utils'
 
 module RMagickBlend
     module FileUtils
@@ -57,20 +56,20 @@ module RMagickBlend
 
         def self.get_image_pair_from_history(options)
             file_path = "#{options[:directories][:output]}/previous_batch.yml"
-            DguzzoUtils::exit_with_message("Can't find #{file_path}; exiting.") unless File.exists?(file_path) 
+            Utils::exit_with_message("Can't find #{file_path}; exiting.") unless File.exists?(file_path) 
 
             history = File.read(file_path)
             history_hash = YAML.load(history)
             source, destination = history_hash[:src_name], history_hash[:dst_name]
 
-            puts "loading source: #{DguzzoUtils::ColorPrint::yellow( source )}\nloading destination: #{DguzzoUtils::ColorPrint::yellow( destination )}"
+            puts "loading source: #{Utils::ColorPrint::yellow( source )}\nloading destination: #{Utils::ColorPrint::yellow( destination )}"
             source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
 
             [source, destination]
         end
 
         def self.swap_directories(src, dst)
-            puts "#{DguzzoUtils::ColorPrint::yellow('swapping')} source and destination files..."
+            puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
             src, dst = dst, src
             [src, dst]
         end
@@ -85,9 +84,9 @@ module RMagickBlend
             [destination_name, source_name]
             
             rescue Errno::ENOENT => e
-                DguzzoUtils::exit_with_message(e)
+                Utils::exit_with_message(e)
             rescue RuntimeError => e
-                DguzzoUtils::exit_with_message(e.message)
+                Utils::exit_with_message(e.message)
         end
 
         def self.save_history(args)
@@ -101,7 +100,7 @@ module RMagickBlend
             end
 
             rescue => e
-                puts DguzzoUtils::ColorPrint::red("error in save_history #{e.message}")
+                puts Utils::ColorPrint::red("error in save_history #{e.message}")
         end
 
         def self.get_all_images_from_dir(dir, file_format)

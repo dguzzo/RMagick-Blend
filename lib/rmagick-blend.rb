@@ -1,6 +1,4 @@
-require 'pry'
 require 'RMagick'
-require 'dguzzo-utils'
 
 Dir[File.dirname(__FILE__) << "/rmagick-blend/*.rb"].each do |file|
     require file
@@ -96,7 +94,7 @@ module RMagickBlend
             RMagickBlend::Compositing::composite_images(options)
         end
         end_time = Time.now
-        puts "ran #$batches_ran batch(es) in #{DguzzoUtils::ColorPrint::green(end_time-start_time)} seconds."
+        puts "ran #$batches_ran batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
 
         RMagickBlend::BatchRunner::open_files
     end
@@ -105,21 +103,21 @@ module RMagickBlend
     def self.load_settings
         # check for gem's default config 
         default_settings = File.expand_path("../config/settings.yml", File.dirname(__FILE__))
-        DguzzoUtils::exit_with_message("default file at '#{default_settings}' does not exist!") unless File.exists?(default_settings)
+        Utils::exit_with_message("default file at '#{default_settings}' does not exist!") unless File.exists?(default_settings)
         
         settings_path = File.expand_path("config/settings.yml")
 
         settings_path = if File.exists?(settings_path)
             settings_path
         else
-            puts DguzzoUtils::ColorPrint.yellow("Couldn't find custom settings file at #{settings_path}; using default rmagick-blend settings file")
+            puts Utils::ColorPrint.yellow("Couldn't find custom settings file at #{settings_path}; using default rmagick-blend settings file")
             default_settings
         end
             
         Settings.load!(settings_path)
         Settings.behavior[:open_files_at_end_force] ||= false
         Settings.behavior[:open_files_at_end_suppress] ||= false
-        puts "loaded \"#{DguzzoUtils::ColorPrint::green(Settings.preset_name)}\" settings"
+        puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
     end
     private_class_method :load_settings
 end

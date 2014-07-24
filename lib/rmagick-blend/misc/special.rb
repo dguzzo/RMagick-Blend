@@ -2,9 +2,7 @@ require 'pry'
 require 'pry-nav'
 
 module RMagickBlend
-
     module Special
-        
         def self.distort
             image = RMagickBlend::FileUtils::load_sample_images.first
             
@@ -114,7 +112,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
             samples.times do |index|
                 montage_name = "#{dir}/montage_#{index}.tif"
                 random_label = random ? "random montage" : ""
-                puts "creating #{random_label} #{DguzzoUtils::ColorPrint::green(montage_name)}..."
+                puts "creating #{random_label} #{Utils::ColorPrint::green(montage_name)}..."
                 
                 image_names = image_names.shuffle if random
                 imageList = Magick::ImageList.new(*image_names)

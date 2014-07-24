@@ -4,11 +4,17 @@ require 'rmagick-blend'
 
 ###
 
+desc "show rake tasks"
+task :default do
+  puts `rake -T`
+end
+
+
 namespace :build do
   desc "prepare for rspec"
   task :prepare_rspec do
-    DguzzoUtils::create_dir_if_needed(File.join('spec', 'assets', 'source'))
-    DguzzoUtils::create_dir_if_needed(File.join('spec', 'assets', 'destination'))
+    Utils::create_dir_if_needed(File.join('spec', 'assets', 'source'))
+    Utils::create_dir_if_needed(File.join('spec', 'assets', 'destination'))
   end
 end
 
