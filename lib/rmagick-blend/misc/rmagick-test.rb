@@ -13,7 +13,7 @@ test_image[:caption] = "Hi!"
 test_image = test_image.polaroid { self.gravity = Magick::CenterGravity }
 
 test_image.change_geometry!("#{cols}x#{rows}") do |ncols, nrows, img|
-    img.resize!(ncols, nrows)
+  img.resize!(ncols, nrows)
 end
 
 puts "writing processed file..."

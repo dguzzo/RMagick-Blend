@@ -33,9 +33,9 @@ module Utils
     end
     image_dir_name
   end
-  
+
   def self.exit_with_message(message)
-      puts ColorPrint.red(message)
-      exit
+    puts ColorPrint.red(message)
+    exit
   end
 end
