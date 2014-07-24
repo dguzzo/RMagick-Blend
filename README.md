@@ -22,3 +22,6 @@ A small gem that uses RMagick—a gem that acts as a wrapper around the classic 
 		
 ## List of composite operations
 [link to outputted file](all_ops.txt)
+
+# Feedback
+Comments on the sanity of my code—either general or specific—are **extremely** welcomed.
