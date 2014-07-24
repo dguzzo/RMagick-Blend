@@ -59,7 +59,8 @@ module RMagickBlend
         avoid: Set.new(%w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp))
       }
 
-      $COMP_SETS[:avoid].clear.push *Settings.behavior[:specific_avoid_ops].split if Settings.behavior[:specific_avoid_ops]
+      $COMP_SETS[:avoid].clear.merge(Settings.behavior[:specific_avoid_ops].split) if Settings.behavior[:specific_avoid_ops]
+      # TODO
       # $specific_comps_to_run = $COMP_SETS[:specific]
 
       ###
