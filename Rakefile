@@ -1,4 +1,5 @@
-$:.unshift  File.join(File.dirname(__FILE__), "lib")
+# add all files in /lib to path
+$:.unshift File.join(File.dirname(__FILE__), "lib")
 require 'rmagick-blend'
 
 ###
