@@ -10,7 +10,7 @@ module RMagickBlend
 
     def self.open_files_at_end?(options = {})
       options = { force: false, suppress: false }.merge(options)
-      return if options[:suppress]
+      return false if options[:suppress]
 
       unless options[:force]
         puts "\ndo you want to open the files in Preview? #{Utils::ColorPrint::green('y/n')}"

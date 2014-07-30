@@ -42,16 +42,16 @@ describe "RMagickBlend" do
       it "works with file paths" do
         a, b = "/some/path/to/first", "/some/path/to/second"
         c, d = RMagickBlend::FileUtils::swap_directories(a,b)
-        c.should eq b
-        d.should eq a
+        expect(c).to eq b
+        expect(d).to eq a
       end
 
       it "works with RMagick image objects" do
         a, b = Magick::Image.new(32,32), Magick::Image.new(16,16)
         c, d = a.dup, b.dup
         a, b = RMagickBlend::FileUtils::swap_directories(a,b)
-        a.should eq d
-        b.should eq c
+        expect(a).to eq d
+        expect(b).to eq c
       end
     end
 
@@ -63,15 +63,15 @@ describe "RMagickBlend" do
 
       it "pretty_file_name should prettify a proper jpg filename" do
         image_file = double("image", filename: "/some_dir/cool_image.jpg")
-        RMagickBlend::FileUtils::pretty_file_name(image_file).should eql "cool_image"
+        expect(RMagickBlend::FileUtils::pretty_file_name(image_file)).to eq "cool_image"
 
         image_file = double("image", filename: "some_dir/actual_treasure_map.jpg")
-        RMagickBlend::FileUtils::pretty_file_name(image_file).should eql "actual_treasure_map"
+        expect(RMagickBlend::FileUtils::pretty_file_name(image_file)).to eq "actual_treasure_map"
       end
 
       it "pretty_file_name should prettify a proper tif filename" do
         image_file = double("image", filename: "/some_dir/cool_image.tif")
-        RMagickBlend::FileUtils::pretty_file_name(image_file).should eql "cool_image"
+        expect(RMagickBlend::FileUtils::pretty_file_name(image_file)).to eql "cool_image"
       end
     end
 
@@ -83,12 +83,12 @@ describe "RMagickBlend" do
       it 'finds one file if one exists' do
         source = 'source'
         create_temp_file(source)
-        RMagickBlend::FileUtils::get_all_images_from_dir("#{Dir.getwd}/spec/assets/#{source}", 'jpg').length.should eql 1
+        expect(RMagickBlend::FileUtils::get_all_images_from_dir("#{Dir.getwd}/spec/assets/#{source}", 'jpg').length).to eq 1
       end
 
       it 'finds zero files if none exist' do
         source = 'source'
-        RMagickBlend::FileUtils::get_all_images_from_dir("#{Dir.getwd}/spec/assets/#{source}", 'jpg').length.should eql 0
+        expect(RMagickBlend::FileUtils::get_all_images_from_dir("#{Dir.getwd}/spec/assets/#{source}", 'jpg').length).to eq 0
       end
 
     end
