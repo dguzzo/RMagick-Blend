@@ -11,8 +11,6 @@ require 'settings'
 
 require 'yaml'
 require 'optparse'
-require 'pry'
-require 'pry-nav'
 
 module RMagickBlend
   OPTIMIZED_NUM_OPERATION_SMALL = 14

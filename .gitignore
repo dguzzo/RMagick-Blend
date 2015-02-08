@@ -22,3 +22,5 @@ images
 /assets
 
 *.lock
+*.swp
+
