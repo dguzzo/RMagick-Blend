@@ -62,10 +62,10 @@ module RMagickBlend
     # $specific_comps_to_run = $COMP_SETS[:specific]
 
     ###
-    run_batch
+    create_blends
   end
 
-  def self.run_batch
+  def self.create_blends
     options = {
       directories: { 
         source: Settings.directories[:source], 
@@ -99,7 +99,7 @@ module RMagickBlend
 
     RMagickBlend::BatchRunner::open_files
   end
-  private_class_method :run_batch
+  private_class_method :create_blends
   
   def self.load_settings
     # check for gem's default config 
