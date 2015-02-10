@@ -20,6 +20,12 @@ namespace :build do
     Utils::create_dir_if_needed(File.join('spec', 'assets', 'source'))
     Utils::create_dir_if_needed(File.join('spec', 'assets', 'destination'))
   end
+
+	desc "generate default config file"
+	task :generate_config do
+		puts "generating default config file..."
+		#TODO
+	end
 end
 
 namespace :batch do

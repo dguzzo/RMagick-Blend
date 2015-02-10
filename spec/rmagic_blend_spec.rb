@@ -2,23 +2,45 @@ require 'spec_helper'
 require 'rmagick-blend'
 
 describe "rmagic-blend" do
-	describe "load_settings" do
-			
-		it "can create a Blend object" do
+	describe "Blend object" do
+
+		it "can be created" do
 			expect(RMagickBlend::Blend.new).to_not be_nil
 		end
+	end
 
-		it "has a Settings object" do
-			expect(Settings).to_not be_nil
+	describe "configure_options" do
+		blend = nil
+
+		before :each do
+			blend = RMagickBlend::Blend.new
+			blend.send(:load_settings_from_file)
+		end	
+
+		it "uses one directory if only source is set" do
+			Settings.directories[:destination] = ""
+			Settings.directories[:source] = "some-source-dir"
+			blend.send(:configure_options)
+			expect(blend.options[:directories][:destination]).to eq(blend.options[:directories][:source])
 		end
 
-		xit "uses one directory if either source or destination is not set" do
-			Settings = double("directories", directories: { output: "some-output-dir", source: "some-source-dir" } )
+		it "uses one directory if only destination is set" do
+			Settings.directories[:source] = ""
+			Settings.directories[:destination] = "some-dest-dir"
+			blend.send(:configure_options)
+			expect(blend.options[:directories][:source]).to eq(blend.options[:directories][:destination])
 		end
 			
-		xit "uses both directories if both are set" do
-			Settings = double("directories", directories: { output: "some-output-dir", source: "some-source-dir", destination: "some-dest-dir" } )
+		it "uses both directories if both are set" do
+			blend.send(:configure_options)
+			expect(blend.options[:directories][:source]).to eq("assets/images/source")
+			expect(blend.options[:directories][:destination]).to eq("assets/images/destination")
 		end
+	end
 
+	describe "load_settings_from_file" do
+		it "has a configured Settings object" do
+			expect(Settings).to_not be_nil
+		end
 	end
 end

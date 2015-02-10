@@ -63,8 +63,8 @@ module RMagickBlend
       end
 
       RMagickBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
-      $batches_ran += 1
       puts Utils::ColorPrint::green("done!\n")
     end
   end
 end
+
