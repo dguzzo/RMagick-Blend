@@ -4,6 +4,10 @@ require 'rmagick-blend'
 describe "rmagic-blend" do
 	describe "load_settings" do
 			
+		it "can create a Blend object" do
+			expect(RMagickBlend::Blend.new).to_not be_nil
+		end
+
 		it "has a Settings object" do
 			expect(Settings).to_not be_nil
 		end
