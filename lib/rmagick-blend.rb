@@ -113,8 +113,19 @@ module RMagickBlend
 
     def load_settings_from_file
       # check for gem's default config 
-      settings_path = File.expand_path("../config/settings.yml", File.dirname(__FILE__))
-      Utils::exit_with_message("default file at '#{settings_path}' does not exist!\n run 'rake build:generate_config.'") unless File.exists?(settings_path)
+      default_settings_path = File.expand_path("../config/settings.yml", File.dirname(__FILE__))
+      Utils::exit_with_message("default file at '#{default_settings_path}' does not exist!\n run 'rake build:generate_config.'") unless File.exists?(default_settings_path)
+      
+      # check for user settings
+      user_settings_path = File.expand_path("config/settings.yml")
+      
+      settings_path = if File.exists?(user_settings_path)
+        user_settings_path
+      else
+        puts Utils::ColorPrint.yellow("Couldn't find custom settings file at #{user_settings_path}; using default rmagick-blend settings file")
+        default_settings_path
+      end
+      
       Settings.load!(settings_path)
       Settings.behavior[:open_files_at_end_force] ||= false
       Settings.behavior[:open_files_at_end_suppress] ||= false
