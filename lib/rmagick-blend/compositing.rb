@@ -4,7 +4,7 @@ module RMagickBlend
   module Compositing
     def self.composite_images(options={})
       defaults = {
-        num_operations: $num_operations, 
+        num_operations: Settings.constant_values[:num_operations] || $flags[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL, 
         append_operation_to_filename: false, 
         shuffle_composite_operations: false,
         directories: { output: 'images/image-composites' },

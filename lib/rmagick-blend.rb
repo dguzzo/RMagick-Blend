@@ -17,6 +17,7 @@ module RMagickBlend
   
 	class Blend
 		@options = {}
+    @optimized_num_operation_large = 24
 
 		attr_reader :options
 
@@ -37,7 +38,7 @@ module RMagickBlend
         end
         opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file. overrides value in Settings.yml.") do 
           $output_file_format = "jpg"
-          $optimized_num_operation_large += 10
+          @optimized_num_operation_large += 10
         end
         opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
           puts "\n#{opts}"
@@ -48,8 +49,6 @@ module RMagickBlend
       load_settings_from_file
 
       # TODO clean up all these globals/flags; it's madness now that the program is a gem
-      $optimized_num_operation_large = 24
-      $num_operations ||= Settings.constant_values[:num_operations] || $flags[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL
       $input_file_format ||= Settings.default_input_image_format
       $output_file_format ||= Settings.default_output_image_format
 
@@ -75,7 +74,7 @@ module RMagickBlend
     def create_blends
       if RMagickBlend::BatchRunner::large_previous_batch?(@options)
         @options.merge!({
-          num_operations: $optimized_num_operation_large,
+          num_operations: @optimized_num_operation_large,
           use_history: true
         })
         puts "running large batch using history file"
