@@ -4,19 +4,20 @@ module RMagickBlend
   module Compositing
     def self.composite_images(options={})
       defaults = {
-        num_operations: Settings.constant_values[:num_operations] || $flags[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL, 
+        num_operations: Settings.constant_values[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL, 
         append_operation_to_filename: false, 
         shuffle_composite_operations: false,
         directories: { output: 'images/image-composites' },
+				behavior: {
+        	switch_src_dest: false
+		 		},
         input_file_format: 'jpg',
         output_file_format: 'jpg',
         save_history: true,
         use_history: false,
-        switch_src_dest: false
       }
 
       options = defaults.merge(options)
-      options[:switch_src_dest] = $flags[:switch_src_dest] if $flags[:switch_src_dest]
 
       if options[:use_history]
         src, dst = RMagickBlend::FileUtils::get_image_pair_from_history(options)

@@ -10,7 +10,6 @@ require 'deep_symbolize'
 require 'settings'
 
 require 'yaml'
-require 'optparse'
 
 module RMagickBlend
   OPTIMIZED_NUM_OPERATION_SMALL = 14
@@ -22,35 +21,7 @@ module RMagickBlend
 		attr_reader :options
 
 		def start
-			$flags = {}
-    	
-			OptionParser.new do |opts|
-      	opts.banner = "Usage: rmagick-blend.rb [options]"
-
-        opts.on('-o', '--operations NUM', "number of blend operations to run [default is #{OPTIMIZED_NUM_OPERATION_SMALL}]") do |v| 
-          $flags[:num_operations] = v
-        end
-        opts.on('-p', '--profile', "show timing profile debug info") do |v| 
-          $flags[:perf_profile] = v
-        end
-        opts.on('-s', '--swap', "swap the destination image and the source image") do |v|
-          $flags[:switch_src_dest] = v
-        end
-        opts.on('-j', '--jpeg', "use jpg instead of bmp for composite output file. overrides value in Settings.yml.") do 
-          $output_file_format = "jpg"
-          @optimized_num_operation_large += 10
-        end
-        opts.on('-h', '--help', 'prints out this very help guide of options. yes, this one.') do |v| 
-          puts "\n#{opts}"
-          exit
-        end
-      end.parse!
-
-      load_settings_from_file
-
-      # TODO clean up all these globals/flags; it's madness now that the program is a gem
-      $input_file_format ||= Settings.default_input_image_format
-      $output_file_format ||= Settings.default_output_image_format
+			load_settings_from_file
 
       $specific_comps_to_run = nil
       $COMP_SETS = {
@@ -101,10 +72,13 @@ module RMagickBlend
           output: Settings.directories[:output],
           output_catalog_by_time: Settings.directories[:output_catalog_by_time]
         },
+				behavior: {
+      		switch_src_dest: Settings.behavior[:switch_src_dest]
+				},
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
-        input_file_format: $input_file_format,
-        output_file_format: $output_file_format
+        input_file_format: Settings.default_input_image_format,
+        output_file_format: Settings.default_output_image_format
       }
 
 			normalize_options
