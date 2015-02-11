@@ -33,7 +33,7 @@ def clean_assets_directory(dir)
 end
 
 def stub_input_for_gets(input)
-  RMagickBlend::BatchRunner::stub(:gets).and_return(input)
+  allow(RMagickBlend::BatchRunner).to receive_messages(:gets => input)
 end
 
 def create_history_file
