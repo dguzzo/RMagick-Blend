@@ -29,12 +29,12 @@ module RMagickBlend
       compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
       compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
 
-      if $specific_comps_to_run
-        range = 0...compositeArray.length
+      range = if $specific_comps_to_run
         options[:num_operations] = $specific_comps_to_run.length
+        0...compositeArray.length
       else
         # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
-        range = 2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
+        2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
       end
 
       puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
