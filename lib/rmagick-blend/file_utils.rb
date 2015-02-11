@@ -2,6 +2,8 @@ require 'syslog'
 
 module RMagickBlend
     module FileUtils
+        EXTENSION_REGEX = /\.[a-zA-Z]+$/i
+        FILENAME_REGEX = /\/([^\/]*)$/i
 
         def self.output_all_composite_ops
             File.open('all_ops.yml', 'w') do |file|
@@ -22,10 +24,8 @@ module RMagickBlend
         end
 
         def self.pretty_file_name(image_file)
-            extension_regex = /\.[a-zA-Z]+$/i
-            filename_regex = /\/([^\/]*)$/i
             begin
-                image_file.filename.gsub(extension_regex, '').match(filename_regex)[1]
+                image_file.filename.gsub(EXTENSION_REGEX, '').match(FILENAME_REGEX)[1]
             rescue
                 fallback_string = "improper-filename-#{Time.now.asctime}"
                 Syslog.open { Syslog.notice("#{__FILE__} - #{fallback_string}") }
