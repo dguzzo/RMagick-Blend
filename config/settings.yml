@@ -19,6 +19,7 @@ behavior:
     open_files_at_end_force: false
     open_files_at_end_suppress: true
     swap_src_dest: false
+    match_image_sizes: true
     specific_avoid_ops: "ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp UndefinedCompositeOp OverCompositeOp SrcOverCompositeOp XorCompositeOp AtopCompositeOp CopyBlackCompositeOp DstCompositeOp DstOutCompositeOp InCompositeOp SrcCompositeOp DstInCompositeOp SrcAtopCompositeOp SrcInCompositeOp ReplaceCompositeOp NoCompositeOp CopyCompositeOp"
 
 low_quality_preview: true

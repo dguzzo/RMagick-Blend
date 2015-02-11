@@ -48,6 +48,8 @@ module RMagickBlend
         Utils::create_dir_if_needed(options[:directories][:output])
       end
 
+      src, dest = RMagickBlend::Compositing::match_image_sizes(src, dest) if Settings[:behavior][:match_image_sizes]
+
       compositeArray[range].each_with_index do |composite_style, index|
         next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
 
@@ -68,6 +70,19 @@ module RMagickBlend
       RMagickBlend::FileUtils::save_history(src: src, dst: dst, options: options) if options[:save_history]
       puts Utils::ColorPrint::green("done!\n")
     end
+    # end composite_images
+
+    
+    def self.match_image_sizes(src, dest)
+      # based on width
+      if src.bounding_box.x >= dest.bounding_box.x 
+        src = src.resize(dest.bounding_box.x, dest.bounding_box.y)
+      else
+        dest = dest.resize(src.bounding_box.x, src.bounding_box.y)
+      end
+      [src, dest]
+    end
+
   end
 end
 
