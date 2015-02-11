@@ -32,6 +32,8 @@ module RMagickBlend
       range = if $specific_comps_to_run
         options[:num_operations] = $specific_comps_to_run.length
         0...compositeArray.length
+			elsif options[:shuffle_composite_operations]
+				0...compositeArray.length
       else
         # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
         2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
