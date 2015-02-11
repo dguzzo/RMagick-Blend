@@ -14,7 +14,7 @@ module RMagickBlend
         input_file_format: 'jpg',
         output_file_format: 'jpg',
         save_history: true,
-        use_history: false,
+        use_history: false
       }
 
       options = defaults.merge(options)
