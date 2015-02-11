@@ -34,7 +34,7 @@ module RMagickBlend
             end
         end
 
-        def self.get_image_magick_pair(directories, file_format)
+        def self.get_imagemagick_pair(directories, file_format)
             destination_name, source_name = get_image_pair_via_directories(directories, file_format)
             source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
 

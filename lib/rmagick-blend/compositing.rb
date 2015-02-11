@@ -22,7 +22,7 @@ module RMagickBlend
       src, dst = if options[:use_history]
          RMagickBlend::FileUtils::get_image_pair_from_history(options)
       else
-        options[:directories] ? RMagickBlend::FileUtils::get_image_magick_pair(options[:directories], $input_file_format) : RMagickBlend::FileUtils::get_image_pair_via_image_pool($input_file_format, 'images')
+        options[:directories] ? RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], $input_file_format) : RMagickBlend::FileUtils::get_image_pair_via_image_pool($input_file_format, 'images')
       end
 
       src, dst = RMagickBlend::FileUtils::swap_directories(src, dst) if options[:behavior][:switch_src_dest]
