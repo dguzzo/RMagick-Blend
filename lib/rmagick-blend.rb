@@ -24,7 +24,8 @@ module RMagickBlend
 			load_settings_from_file
 
       $specific_comps_to_run = nil
-      $COMP_SETS = {
+
+      @comp_sets = {
         copy_color: Set.new(%w(CopyBlueCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyRedCompositeOp CopyYellowCompositeOp)),
         reliable_quality: Set.new(%w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp DarkenCompositeOp)),
         crazy: Set.new(%w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp)),
@@ -32,7 +33,7 @@ module RMagickBlend
         avoid: Set.new(%w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp))
       }
 
-      $COMP_SETS[:avoid].clear.merge(Settings.behavior[:specific_avoid_ops].split) if Settings.behavior[:specific_avoid_ops]
+      @comp_sets[:avoid].clear.merge(Settings.behavior[:specific_avoid_ops].split) if Settings.behavior[:specific_avoid_ops]
       # TODO
       # $specific_comps_to_run = $COMP_SETS[:specific]
 
@@ -56,7 +57,7 @@ module RMagickBlend
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
-        RMagickBlend::Compositing::composite_images(@options)
+        RMagickBlend::Compositing::composite_images(@options, @comp_sets)
       end
       end_time = Time.now
       puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."

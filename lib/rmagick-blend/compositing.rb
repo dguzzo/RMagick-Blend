@@ -2,7 +2,7 @@ require 'rmagick-blend/utils'
 
 module RMagickBlend
   module Compositing
-    def self.composite_images(options={})
+    def self.composite_images(options={}, comp_sets)
       defaults = {
         num_operations: Settings.constant_values[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL, 
         append_operation_to_filename: false, 
@@ -28,7 +28,7 @@ module RMagickBlend
       src, dest = RMagickBlend::FileUtils::swap_directories(src, dest) if options[:behavior][:switch_src_dest]
 
       compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
-      compositeArray.delete_if { |op| $COMP_SETS[:avoid].include?(op.to_s) }
+      compositeArray.delete_if { |op| comp_sets[:avoid].include?(op.to_s) }
 
       range = if $specific_comps_to_run
         options[:num_operations] = $specific_comps_to_run.length
