@@ -24,7 +24,7 @@ module RMagickBlend
 			load_settings_from_file
 
       @comp_sets = {}
-      @comp_sets[:avoid].clear.merge(Settings.op_presets[:avoid_ops].split) if Settings.op_presets[:avoid_ops]
+      @comp_sets[:avoid].clear.merge(Settings.op_presets[:avoid].split) if Settings.op_presets[:avoid]
       # TODO
       # $specific_comps_to_run = $COMP_SETS[:specific]
 
