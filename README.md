@@ -19,7 +19,7 @@ A small gem that uses RMagick—a gem that acts as a wrapper around the classic 
 	    require 'rmagick-blend'
 
       blender = RMagickBlend::Blend.new
-      blender.start
+      blender.create_blends
 		
 ## List of composite operations
 [link to outputted file](all_ops.txt)

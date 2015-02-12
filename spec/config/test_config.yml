@@ -20,6 +20,13 @@ behavior:
     open_files_at_end_suppress: true
     swap_src_dest: false
     match_image_sizes: true
-    specific_avoid_ops: "ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp UndefinedCompositeOp OverCompositeOp SrcOverCompositeOp XorCompositeOp AtopCompositeOp CopyBlackCompositeOp DstCompositeOp DstOutCompositeOp InCompositeOp SrcCompositeOp DstInCompositeOp SrcAtopCompositeOp SrcInCompositeOp ReplaceCompositeOp NoCompositeOp CopyCompositeOp"
 
 low_quality_preview: true
+
+op_presets:
+    copy_color: "CopyBlueCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyRedCompositeOp CopyYellowCompositeOp"
+    reliable_quality: "BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp DarkenCompositeOp"
+    crazy: "DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp"
+    specific: "OverlayCompositeOp"
+    avoid: "NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp"
+

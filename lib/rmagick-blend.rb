@@ -20,29 +20,18 @@ module RMagickBlend
 
 		attr_reader :options
 
-		def start
+    def initialize
 			load_settings_from_file
 
-      $specific_comps_to_run = nil
-
-      @comp_sets = {
-        copy_color: Set.new(%w(CopyBlueCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyRedCompositeOp CopyYellowCompositeOp)),
-        reliable_quality: Set.new(%w(BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp DarkenCompositeOp)),
-        crazy: Set.new(%w(DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp)),
-        specific: Set.new(%w(OverlayCompositeOp)),
-        avoid: Set.new(%w(NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp))
-      }
-
-      @comp_sets[:avoid].clear.merge(Settings.behavior[:specific_avoid_ops].split) if Settings.behavior[:specific_avoid_ops]
+      @comp_sets = {}
+      @comp_sets[:avoid].clear.merge(Settings.op_presets[:avoid_ops].split) if Settings.op_presets[:avoid_ops]
       # TODO
       # $specific_comps_to_run = $COMP_SETS[:specific]
 
       ###
 			configure_options
-      create_blends
     end
-    
-    :private
+
     def create_blends
       if RMagickBlend::BatchRunner::large_previous_batch?(@options)
         @options.merge!({
@@ -65,6 +54,7 @@ module RMagickBlend
       RMagickBlend::BatchRunner::open_files
     end
 
+    :private
 		def configure_options
       @options = {
         directories: { 
