@@ -1,6 +1,6 @@
 # RMagick-Blend
 
-A small gem that uses RMagick—a gem that acts as a wrapper around the classic ImageMagick library—to run various composite operations on source images, producing a composite output.
+A small gem that uses RMagick—a gem that acts as a wrapper around the classic [ImageMagick](http://www.imagemagick.org/) library—to run various composite operations on source images, producing a composite output.
 
 [Examples here](http://www.flickr.com/photos/dominicotine/collections/72157633447005928/)
 
