@@ -59,7 +59,7 @@ module RMagickBlend
 
       history = File.read(file_path)
       history_hash = YAML.load(history)
-      source, destination = history_hash[:src_name], history_hash[:dst_name]
+      source, destination = history_hash[:src_name], history_hash[:dest_name]
 
       puts "loading source: #{Utils::ColorPrint::yellow( source )}\nloading destination: #{Utils::ColorPrint::yellow( destination )}"
       source, destination = Magick::Image.read(source).first, Magick::Image.read(destination).first
@@ -67,10 +67,10 @@ module RMagickBlend
       [source, destination]
     end
 
-    def self.swap_directories(src, dst)
+    def self.swap_directories(src, dest)
       puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
-      src, dst = dst, src
-      [src, dst]
+      src, dest = dest, src
+      [src, dest]
     end
 
     def self.get_image_pair_via_directories(directories, file_format)
@@ -89,12 +89,12 @@ module RMagickBlend
     end
 
     def self.save_history(args)
-      src_name, dst_name = [ args[:src], args[:dst] ].map{ |file| file.filename.force_encoding("UTF-8") }
+      src_name, dest_name = [ args[:src], args[:dest] ].map{ |file| file.filename.force_encoding("UTF-8") }
       save_path = "#{args[:options][:directories][:output]}/previous_batch.yml"
       puts "writing history file: #{save_path}"
 
       File.open(save_path, 'w') do |file|
-        values = { src_name: src_name, dst_name: dst_name, options: args[:options] }
+        values = { src_name: src_name, dest_name: dest_name, options: args[:options] }
         file.write(values.to_yaml)
       end
 
