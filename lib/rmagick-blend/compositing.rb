@@ -20,7 +20,7 @@ module RMagickBlend
       options = defaults.merge(options)
 
       src, dest = if options[:use_history]
-         RMagickBlend::FileUtils::get_image_pair_from_history(options)
+        RMagickBlend::FileUtils::get_image_pair_from_history(options)
       else
         options[:directories] ? RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], options[:input_file_format]) : RMagickBlend::FileUtils::get_image_pair_via_image_pool(options[:input_file_format], 'images')
       end
@@ -43,7 +43,7 @@ module RMagickBlend
       puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
 
       output_dir = if options[:directories][:output_catalog_by_time]
-          Utils::create_dir_if_needed(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{Time.now.strftime("%m-%d-%y--%T")}")
+        Utils::create_dir_if_needed(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{Time.now.strftime("%m-%d-%y--%T")}")
       else
         Utils::create_dir_if_needed(options[:directories][:output])
       end
