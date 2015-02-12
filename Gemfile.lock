@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rmagick-blend (3.0.3)
+    rmagick-blend (3.0.4)
       rmagick
 
 GEM

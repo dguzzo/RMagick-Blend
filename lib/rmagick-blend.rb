@@ -15,14 +15,13 @@ module RMagickBlend
   OPTIMIZED_NUM_OPERATION_SMALL = 14
   
 	class Blend
-		@options = {}
-    @optimized_num_operation_large = 24
-
 		attr_reader :options
 
     def initialize
+      @options = {}
+      @optimized_num_operation_large = 24
+			
 			load_settings_from_file
-
       @comp_sets = {}
       @comp_sets[:avoid] = Settings.op_presets[:avoid].split if Settings.op_presets[:avoid]
       
