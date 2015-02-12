@@ -28,9 +28,8 @@ module RMagickBlend
         image_file.filename.gsub(EXTENSION_REGEX, '').match(FILENAME_REGEX)[1]
       rescue
         fallback_string = "improper-filename-#{Time.now.asctime}"
-          Syslog.open { Syslog.notice("#{__FILE__} - #{fallback_string}") }
-
-                                      fallback_string
+        Syslog.open { Syslog.notice("#{__FILE__} - #{fallback_string}") }
+        fallback_string
       end
     end
 
@@ -105,7 +104,7 @@ module RMagickBlend
 
     def self.get_all_images_from_dir(dir, file_format)
       image_names = Dir.entries("#{dir}").keep_if{ |i| i =~ /\.#{file_format}$/i }
-                                image_names.map{|name| "#{dir}/#{name}"}
+      image_names.map{|name| "#{dir}/#{name}"}
     end
 
     # TODO this shouldn't be here; should be generalized or removed.
