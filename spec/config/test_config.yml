@@ -1,0 +1,25 @@
+# Test config file
+---
+preset_name: "test batch"
+constant_values:
+    num_files_before_warn: 40
+
+directories:
+    output: "assets/images/output"
+    source: "assets/images/source"
+    destination: "assets/images/destination"
+    output_catalog_by_time: true
+
+default_input_image_format: 'jpg|tif'
+default_output_image_format: 'tif'
+
+behavior:
+    batches_to_run: 3
+    delete_last_batch: true
+    open_files_at_end_force: false
+    open_files_at_end_suppress: true
+    swap_src_dest: false
+    match_image_sizes: true
+    specific_avoid_ops: "ChangeMaskCompositeOp ClearCompositeOp CopyOpacityCompositeOp DissolveCompositeOp DstAtopCompositeOp DstOverCompositeOp OutCompositeOp SrcOutCompositeOp UndefinedCompositeOp OverCompositeOp SrcOverCompositeOp XorCompositeOp AtopCompositeOp CopyBlackCompositeOp DstCompositeOp DstOutCompositeOp InCompositeOp SrcCompositeOp DstInCompositeOp SrcAtopCompositeOp SrcInCompositeOp ReplaceCompositeOp NoCompositeOp CopyCompositeOp"
+
+low_quality_preview: true

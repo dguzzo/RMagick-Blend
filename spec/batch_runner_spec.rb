@@ -2,9 +2,12 @@ require 'spec_helper'
 require 'rmagick-blend/batch_runner'
 
 describe "Batch Runner" do
-  describe "large_previous_batch?" do
-    options = { directories: { output: BASE_DIR } }
+  before {load_test_config}
 
+  options = { directories: { output: BASE_DIR } }
+  
+  describe "large_previous_batch?" do
+    
     describe "without history file" do
       before { delete_history_file }
 
@@ -20,11 +23,7 @@ describe "Batch Runner" do
     end
 
     describe "with history file" do
-      before :each do 
-        create_history_file
-        Settings = double("behavior", behavior: {  } )
-      end
-
+      before :each do create_history_file; end
       after :each do delete_history_file; end
 
       it "returns false with empty input" do
@@ -58,13 +57,13 @@ describe "Batch Runner" do
 
   describe 'delete_last_batch' do
     it 'returns nil if no files found' do
-      Settings = double("directories", directories: { output: '.' } )
+      Settings.directories[:output] = '.'
       expect(RMagickBlend::BatchRunner.delete_last_batch).to be nil
     end
 
     it 'returns an integer if files are found and then deleted' do
       dir = "#{Dir.getwd}/spec/assets/source"
-      Settings = double("directories", directories: { output: dir } )
+      Settings.directories[:output] = dir
       create_temp_file('source')
       expect(RMagickBlend::BatchRunner.delete_last_batch).to be_a_kind_of(Fixnum)
       clean_assets_directory('source')
@@ -77,7 +76,8 @@ describe "Batch Runner" do
     end
 
     it "should return true if force option is set" do
-      Settings = double("directories", directories: { output: '.' }, constant_values: { num_files_before_warn: 10 } )
+      Settings.directories[:output] = '.'
+      Settings.constant_values[:num_files_before_warn] = 10
       expect(RMagickBlend::BatchRunner::open_files_at_end?(force: true)).to be true
     end
 
@@ -103,4 +103,10 @@ describe "Batch Runner" do
     end
 
   end
+
+  def load_test_config
+    test_settings_path = File.expand_path('config/test_config.yml', File.dirname(__FILE__))
+    Settings.load!(test_settings_path)
+  end
+
 end

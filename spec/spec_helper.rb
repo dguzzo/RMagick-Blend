@@ -18,6 +18,11 @@ end
 BASE_DIR = "#{Dir.getwd}/spec"
 ASSETS_DIR = "#{BASE_DIR}/assets"
 
+$:.unshift(File.expand_path('../vendor', File.dirname(__FILE__))) # allow easier inclusion of vendor files
+require 'deep_symbolize'
+require 'settings'
+require 'yaml'
+
 def create_temp_file(dir)
   image_name = Dir.entries(ASSETS_DIR).keep_if{|i| i =~ /\.jpg/}.first
   File.copy_stream("#{ASSETS_DIR}/#{image_name}", "#{ASSETS_DIR}/#{dir}/#{image_name}")
