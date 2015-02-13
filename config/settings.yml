@@ -20,6 +20,7 @@ behavior:
     open_files_at_end_suppress: true
     swap_src_dest: false
     match_image_sizes: true
+    save_orig_files_to_output: true
 
 low_quality_preview: true
 

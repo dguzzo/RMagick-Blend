@@ -65,6 +65,11 @@ module RMagickBlend
           result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
           result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = 46 }
         end
+
+        if Settings.behavior[:save_orig_files_to_output]
+          src.write("./#{output_dir}/ORIG-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = 50 }
+          dest.write("./#{output_dir}/ORIG-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = 50 }
+        end
       end
 
       RMagickBlend::FileUtils::save_history(src: src, dest: dest, options: options) if options[:save_history]
