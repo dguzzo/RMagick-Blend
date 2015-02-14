@@ -39,8 +39,12 @@ end
 namespace :get_material do
   desc "get faves"
   task :get_flickr_faves do
-    require 'ruby-flickr'
-    ruby_flickr = RubyFlickr.new
-    ruby_flickr.get_creative_common_faves
+    begin
+      require 'ruby-flickr'
+      ruby_flickr = RubyFlickr.new
+      ruby_flickr.get_creative_common_faves
+    rescue LoadError
+      Utils::exit_with_message("RubyFlickr not found -- visit https://github.com/dguzzo/ruby-flickr to get the gem")
+    end
   end
 end
