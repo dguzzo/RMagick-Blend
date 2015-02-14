@@ -18,7 +18,6 @@ behavior:
     delete_last_batch: true
     open_files_at_end_force: false
     open_files_at_end_suppress: true
-    swap_src_dest: false
     match_image_sizes: true
     save_orig_files_to_output: true
 
