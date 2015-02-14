@@ -2,6 +2,8 @@ require 'rmagick-blend/utils'
 
 module RMagickBlend
   module Compositing
+    ORIG_FILES_TO_OUTPUT_QUALITY = 30
+    
     def self.composite_images(options={}, comp_sets)
       defaults = {
         num_operations: Settings.constant_values[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL, 
@@ -65,11 +67,11 @@ module RMagickBlend
           result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
           result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = 46 }
         end
+      end
 
-        if Settings.behavior[:save_orig_files_to_output]
-          src.write("./#{output_dir}/ORIG-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = 50 }
-          dest.write("./#{output_dir}/ORIG-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = 50 }
-        end
+      if Settings.behavior[:save_orig_files_to_output]
+        src.write("./#{output_dir}/ORIG-SRC-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = ORIG_FILES_TO_OUTPUT_QUALITY }
+        dest.write("./#{output_dir}/ORIG-DEST-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = ORIG_FILES_TO_OUTPUT_QUALITY }
       end
 
       RMagickBlend::FileUtils::save_history(src: src, dest: dest, options: options) if options[:save_history]
