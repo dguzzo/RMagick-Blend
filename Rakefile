@@ -31,7 +31,8 @@ end
 namespace :batch do
   desc "make blends"
   task :run do
-    RMagickBlend::start
+    blender = RMagickBlend::Blend.new
+    blender.create_blends
   end
 end
 
