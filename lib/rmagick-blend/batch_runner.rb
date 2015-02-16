@@ -30,35 +30,5 @@ module RMagickBlend
         true
       end
     end
-
-    def self.large_previous_batch?(options = {})
-      return false unless history_file_exists?(options)
-      return false if Settings.behavior[:large_previous_batch_suppress]
-      puts "\ndo you want to pursue the previous images in depth? (#{Utils::ColorPrint::green('y|yes')})"
-      user_input = gets.strip
-      !!(user_input =~ YES_REGEX) # || user_input.empty?
-    end
-
-    def self.delete_last_batch
-      image_names = Dir.entries(Settings.directories[:output]).keep_if{|i| i =~ /\.(jpg|bmp|tif)$/i}
-      return if image_names.empty?
-      image_names.map! {|name| "#{Settings.directories[:output]}/#{name}" }
-      puts "deleting all #{Utils::ColorPrint.red(image_names.length)} images of the last batch..."
-
-      File.delete(*image_names)
-      rescue Errno::ENOENT => e
-        puts Utils::ColorPrint.yellow("can't delete files in #{Settings.directories[:output]}; make sure that that directory exists.")
-    end
-    
-    def self.history_file_exists?(options = {})
-      return false if options.empty?
-      # DRY this out; it's called in verbatim another method 
-      file_path = "#{options[:directories][:output]}/previous_batch.yml"
-      File.exists?(file_path)
-      rescue NoMethodError => e
-        puts Utils::ColorPrint.yellow("Couldn't find history file: #{e}")
-        return false
-    end
-    private_class_method :history_file_exists?
-  end
+	end
 end

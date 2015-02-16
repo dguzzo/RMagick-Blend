@@ -41,14 +41,3 @@ def stub_input_for_gets(input)
   allow(RMagickBlend::BatchRunner).to receive_messages(:gets => input)
 end
 
-def create_history_file
-  # todo: simplify
-  File.open("#{BASE_DIR}/previous_batch.yml", 'w') do |file|
-    file.write('')
-  end
-end
-
-def delete_history_file
-  file_path = "#{BASE_DIR}/previous_batch.yml"
-  File.delete(file_path) if File.exists?(file_path)
-end

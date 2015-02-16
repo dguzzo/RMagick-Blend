@@ -33,16 +33,6 @@ module RMagickBlend
     end
 
     def create_blends
-      if RMagickBlend::BatchRunner::large_previous_batch?(@options)
-        @options.merge!({
-          num_operations: @optimized_num_operation_large,
-          use_history: true
-        })
-        puts "running large batch using history file"
-      end
-
-      RMagickBlend::BatchRunner::delete_last_batch if Settings.behavior[:delete_last_batch]
-
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."

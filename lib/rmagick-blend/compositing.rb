@@ -14,18 +14,12 @@ module RMagickBlend
         	switch_src_dest: false
 		 		},
         input_file_format: 'jpg',
-        output_file_format: 'jpg',
-        save_history: true,
-        use_history: false
+        output_file_format: 'jpg'
       }
 
       options = defaults.merge(options)
 
-      src, dest = if options[:use_history]
-        RMagickBlend::FileUtils::get_image_pair_from_history(options)
-      else
-        options[:directories] ? RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], options[:input_file_format]) : RMagickBlend::FileUtils::get_image_pair_via_image_pool(options[:input_file_format], 'images')
-      end
+      src, dest = options[:directories] ? RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], options[:input_file_format]) : RMagickBlend::FileUtils::get_image_pair_via_image_pool(options[:input_file_format], 'images')
 
       src, dest = RMagickBlend::FileUtils::swap_directories(src, dest) if options[:behavior][:switch_src_dest]
 
@@ -74,7 +68,6 @@ module RMagickBlend
         dest.write("./#{output_dir}/ORIG-DEST-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = ORIG_FILES_TO_OUTPUT_QUALITY }
       end
 
-      RMagickBlend::FileUtils::save_history(src: src, dest: dest, options: options) if options[:save_history]
       puts Utils::ColorPrint::green("done!\n")
     end
     # end composite_images
