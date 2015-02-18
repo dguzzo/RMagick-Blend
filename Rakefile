@@ -48,3 +48,13 @@ namespace :get_material do
     end
   end
 end
+
+desc "console"
+task :console do
+  require 'irb'
+  require 'irb/completion'
+  #require 'rmagick-blend' already required here at the top of this rakefile
+  ARGV.clear
+  IRB.start
+end
+
