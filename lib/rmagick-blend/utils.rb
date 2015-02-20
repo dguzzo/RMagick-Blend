@@ -1,4 +1,4 @@
-require 'FileUtils' unless FileUtils
+require 'FileUtils' unless defined?(FileUtils)
 
 module Utils
   module ColorPrint
