@@ -33,6 +33,7 @@ module RMagickBlend
     end
 
     def create_blends
+      Utils::ColorPrint::green_out("~~~~~ABOUT TO BLEND~~~~~")
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
