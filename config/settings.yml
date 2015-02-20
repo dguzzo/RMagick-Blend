@@ -3,6 +3,7 @@
 preset_name: "default batch"
 constant_values:
     num_files_before_warn: 40
+    preview_quality: 40
 
 directories:
     output: "assets/images/output"

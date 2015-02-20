@@ -5,6 +5,8 @@ module RMagickBlend
     ORIG_FILES_TO_OUTPUT_QUALITY = 30
     
     def self.composite_images(options={}, comp_sets)
+      preview_quality = Settings.constant_values[:preview_quality] rescue 50
+
       defaults = {
         num_operations: Settings.constant_values[:num_operations] || OPTIMIZED_NUM_OPERATION_SMALL, 
         append_operation_to_filename: false, 
@@ -59,7 +61,7 @@ module RMagickBlend
         
         if Settings.low_quality_preview
           result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
-          result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = 46 }
+          result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = preview_quality }
         end
       end
 
