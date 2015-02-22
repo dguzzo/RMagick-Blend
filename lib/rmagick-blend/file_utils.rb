@@ -2,7 +2,7 @@ require 'syslog'
 
 module RMagickBlend
   module FileUtils
-    EXTENSION_REGEX = /\.[a-zA-Z]+$/i
+    EXTENSION_REGEX = /\.[[:alpha:]]+$/i
     FILENAME_REGEX = /\/([^\/]*)$/i
 
     def self.output_all_composite_ops
