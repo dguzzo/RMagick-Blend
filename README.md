@@ -12,8 +12,8 @@ A small gem that uses RMagick—a gem that acts as a wrapper around the classic 
 ## installation
 ### building & installing from source
 	git clone https://github.com/dguzzo/RMagick-Blend.git
-        gem build rmagick-blend.gemspec
-        gem install rmagick-blend[version].gem
+	gem build rmagick-blend.gemspec
+	gem install rmagick-blend[version].gem
         
 ## running-blending
 	require 'rmagick-blend'
