@@ -5,9 +5,9 @@ A small gem that uses RMagick—a gem that acts as a wrapper around the classic 
 [Examples here](http://www.flickr.com/photos/dominicotine/collections/72157633447005928/)
 
 ## Table of Contents
-    * [Installation](#installation)
-    * [Running blending script](#running-blending)
-    * [List of composite operations](#list-of-composite-operations)
+* [Installation](#installation)
+* [Running blending script](#running-blending)
+* [List of composite operations](#list-of-composite-operations)
    
 ## installation
     ### building & installing from source
