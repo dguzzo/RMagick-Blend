@@ -10,16 +10,16 @@ A small gem that uses RMagick—a gem that acts as a wrapper around the classic 
 * [List of composite operations](#list-of-composite-operations)
    
 ## installation
-    ### building & installing from source
-        git clone https://github.com/dguzzo/RMagick-Blend.git
+### building & installing from source
+	git clone https://github.com/dguzzo/RMagick-Blend.git
         gem build rmagick-blend.gemspec
         gem install rmagick-blend[version].gem
         
 ## running-blending
-	    require 'rmagick-blend'
+	require 'rmagick-blend'
 
-      blender = RMagickBlend::Blend.new
-      blender.create_blends
+	blender = RMagickBlend::Blend.new
+	blender.create_blends
 		
 ## List of composite operations
 [link to outputted file](all_ops.txt)
