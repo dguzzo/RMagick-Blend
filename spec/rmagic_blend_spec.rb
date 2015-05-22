@@ -9,7 +9,7 @@ describe "rmagic-blend" do
 		end
 	end
 
-	describe "configure_options" do
+	describe "normalize_options" do
 		blend = nil
 
 		before :each do
