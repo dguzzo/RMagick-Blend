@@ -42,7 +42,6 @@ module RMagickBlend
 
     end
 
-    :private
 		def configure_options
       @options = {
         directories: { 
@@ -63,6 +62,7 @@ module RMagickBlend
 			normalize_options
 		end
 
+    :private
     def load_settings_from_file
       # check for gem's default config 
       default_settings_path = File.expand_path("../config/settings.yml", File.dirname(__FILE__))
