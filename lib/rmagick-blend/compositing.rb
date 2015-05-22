@@ -2,7 +2,7 @@ require 'rmagick-blend/utils'
 
 module RMagickBlend
   module Compositing
-    ORIG_FILES_TO_OUTPUT_QUALITY = 30
+    ORIG_FILES_OUTPUT_QUALITY = 30
     
     def self.composite_images(options={}, comp_sets)
       preview_quality = Settings.constant_values[:preview_quality] rescue 50
@@ -61,8 +61,8 @@ module RMagickBlend
       end
 
       if Settings.behavior[:save_orig_files_to_output]
-        src.write("./#{output_dir}/ORIG-SRC-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = ORIG_FILES_TO_OUTPUT_QUALITY }
-        dest.write("./#{output_dir}/ORIG-DEST-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = ORIG_FILES_TO_OUTPUT_QUALITY }
+        src.write("./#{output_dir}/ORIG-SRC-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = ORIG_FILES_OUTPUT_QUALITY }
+        dest.write("./#{output_dir}/ORIG-DEST-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = ORIG_FILES_OUTPUT_QUALITY }
       end
 
       puts Utils::ColorPrint::green("done!\n")
