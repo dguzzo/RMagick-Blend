@@ -25,10 +25,6 @@ module RMagickBlend
       @comp_sets = {}
       @comp_sets[:avoid] = Settings.op_presets[:avoid].split if Settings.op_presets[:avoid]
       
-      # TODO
-      # $specific_comps_to_run = $COMP_SETS[:specific]
-
-      ###
 			configure_options
     end
 

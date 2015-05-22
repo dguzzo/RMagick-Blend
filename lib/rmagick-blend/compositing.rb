@@ -28,10 +28,7 @@ module RMagickBlend
       compositeArray = options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
       compositeArray.delete_if { |op| comp_sets[:avoid].include?(op.to_s) }
 
-      range = if $specific_comps_to_run
-        options[:num_operations] = $specific_comps_to_run.length
-        0...compositeArray.length
-			elsif options[:shuffle_composite_operations]
+      range = if options[:shuffle_composite_operations]
 				0...[options[:num_operations], Magick::CompositeOperator.values.length].min
       else
         # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
@@ -49,9 +46,7 @@ module RMagickBlend
       src, dest = RMagickBlend::ImageUtils::match_image_sizes(src, dest) if Settings.behavior[:match_image_sizes]
 
       compositeArray[range].each_with_index do |composite_style, index|
-        next if $specific_comps_to_run && !$specific_comps_to_run.include?(composite_style.to_s)
-
-        print "#{(index.to_f/options[:num_operations]*100).round}% - " unless $specific_comps_to_run
+        print "#{(index.to_f/options[:num_operations]*100).round}% - "
         print "#{Utils::ColorPrint::green(composite_style.to_s)}\n"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         result = dest.composite(src, 0, 0, composite_style)
