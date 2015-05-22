@@ -12,8 +12,6 @@ require 'settings'
 require 'yaml'
 
 module RMagickBlend
-  OPTIMIZED_NUM_OPERATION_SMALL = 14
-  
 	class Blend
 		attr_reader :options
 
@@ -53,6 +51,7 @@ module RMagickBlend
 				behavior: {
       		switch_src_dest: Settings.behavior[:switch_src_dest]
 				},
+        num_operations: Settings.constant_values[:num_operations],
         append_operation_to_filename: true, 
         shuffle_composite_operations: true,
         input_file_format: Settings.default_input_image_format,
