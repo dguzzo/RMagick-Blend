@@ -16,8 +16,6 @@ default_output_image_format: 'tif'
 
 behavior:
     batches_to_run: 3
-    open_files_at_end_force: false
-    open_files_at_end_suppress: true
     match_image_sizes: true
     save_orig_files_to_output: true
 

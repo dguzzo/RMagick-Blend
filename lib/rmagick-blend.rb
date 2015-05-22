@@ -30,15 +30,16 @@ module RMagickBlend
 
     def create_blends
       Utils::ColorPrint::green_out("~~~~~ABOUT TO BLEND~~~~~")
+      
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
         RMagickBlend::Compositing::composite_images(@options, @comp_sets)
       end
       end_time = Time.now
+      
       puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
 
-      RMagickBlend::BatchRunner::open_files
     end
 
     :private
@@ -62,7 +63,6 @@ module RMagickBlend
 			normalize_options
 		end
 
-
     def load_settings_from_file
       # check for gem's default config 
       default_settings_path = File.expand_path("../config/settings.yml", File.dirname(__FILE__))
@@ -79,8 +79,6 @@ module RMagickBlend
       end
       
       Settings.load!(settings_path)
-      Settings.behavior[:open_files_at_end_force] ||= false
-      Settings.behavior[:open_files_at_end_suppress] ||= false
       puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
     end
 
