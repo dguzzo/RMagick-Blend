@@ -16,14 +16,13 @@ module RMagickBlend
 		attr_reader :options
 
     def initialize
-      @options = {}
       @optimized_num_operation_large = 24
 			
 			load_settings_from_file
       @comp_sets = {}
       @comp_sets[:avoid] = Settings.op_presets[:avoid].split if Settings.op_presets[:avoid]
       
-			configure_options
+			normalize_options
     end
 
     def create_blends
@@ -32,7 +31,7 @@ module RMagickBlend
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
-        RMagickBlend::Compositing::composite_images(@options, @comp_sets)
+        RMagickBlend::Compositing::composite_images(Settings, @comp_sets)
       end
       end_time = Time.now
       
@@ -40,25 +39,11 @@ module RMagickBlend
 
     end
 
-		def configure_options
-      @options = {
-        directories: { 
-          source: Settings.directories[:source], 
-          destination: Settings.directories[:destination], 
-          output: Settings.directories[:output],
-          output_catalog_by_time: Settings.directories[:output_catalog_by_time]
-        },
-				behavior: {
-      		switch_src_dest: Settings.behavior[:switch_src_dest]
-				},
-        num_operations: Settings.constant_values[:num_operations],
-        append_operation_to_filename: true, 
-        shuffle_composite_operations: true,
-        input_file_format: Settings.default_input_image_format,
-        output_file_format: Settings.default_output_image_format
-      }
-
-			normalize_options
+		def normalize_options
+	    Utils::exit_with_message("both source and destinations directories are empty!") if Settings.directories[:source].empty? && Settings.directories[:destination].empty? 
+			# if only one of source or destination directories is specified, it's implied that the same directory of images will be used for both pools
+			Settings.directories[:source] = Settings.directories[:destination] if Settings.directories[:source].empty?
+			Settings.directories[:destination] = Settings.directories[:source] if Settings.directories[:destination].empty?
 		end
 
     :private
@@ -81,13 +66,6 @@ module RMagickBlend
       puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
     end
 
-		def normalize_options
-	    Utils::exit_with_message("both source and destinations directories are empty!") if @options[:directories][:source].empty? && @options[:directories][:destination].empty? 
-			# if only one of source or destination directories is specified, it's implied that the same directory of images will be used for both pools
-			@options[:directories][:source] = @options[:directories][:destination] if @options[:directories][:source].empty?
-			@options[:directories][:destination] = @options[:directories][:source] if @options[:directories][:destination].empty?
-		end
-    
 	end
 
 end

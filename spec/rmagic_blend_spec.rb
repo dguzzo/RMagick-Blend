@@ -20,21 +20,21 @@ describe "rmagic-blend" do
 		it "uses one directory if only source is set" do
 			Settings.directories[:destination] = ""
 			Settings.directories[:source] = "some-source-dir"
-			blend.configure_options
-			expect(blend.options[:directories][:destination]).to eq(blend.options[:directories][:source])
+			blend.normalize_options
+			expect(Settings.directories[:destination]).to eq(Settings.directories[:source])
 		end
 
 		it "uses one directory if only destination is set" do
 			Settings.directories[:source] = ""
 			Settings.directories[:destination] = "some-dest-dir"
-			blend.configure_options
-			expect(blend.options[:directories][:source]).to eq(blend.options[:directories][:destination])
+			blend.normalize_options
+			expect(Settings.directories[:source]).to eq(Settings.directories[:destination])
 		end
 			
 		it "uses both directories if both are set" do
-			blend.configure_options
-			expect(blend.options[:directories][:source]).to eq("assets/images/source")
-			expect(blend.options[:directories][:destination]).to eq("assets/images/destination")
+			blend.normalize_options
+			expect(Settings.directories[:source]).to eq("assets/images/source")
+			expect(Settings.directories[:destination]).to eq("assets/images/destination")
 		end
 	end
 

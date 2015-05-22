@@ -9,17 +9,20 @@ module RMagickBlend
       append_operation_to_filename: false, 
       shuffle_composite_operations: false,
       directories: { output: 'images/image-composites' },
+      constant_values: {
+        preview_quality: 50
+      },
 			behavior: {
-      	switch_src_dest: false
+      	switch_src_dest: false,
+        match_image_sizes: false
 	 		},
       input_file_format: 'jpg',
-      output_file_format: 'jpg'
+      output_file_format: 'jpg',
+      low_quality_preview: true
     }
     
     
     def self.composite_images(options={}, comp_sets)
-      preview_quality = Settings.constant_values[:preview_quality] rescue 50
-
       options = DEFAULTS.merge(options)
 
       src, dest = options[:directories] ? RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], options[:input_file_format]) : RMagickBlend::FileUtils::get_image_pair_via_image_pool(options[:input_file_format], 'images')
@@ -41,7 +44,7 @@ module RMagickBlend
       create_output_dir(src, dest)
 
       # scale images to match
-      src, dest = RMagickBlend::ImageUtils::match_image_sizes(src, dest) if Settings.behavior[:match_image_sizes]
+      src, dest = RMagickBlend::ImageUtils::match_image_sizes(src, dest) if options[:behavior][:match_image_sizes]
 
       # run composite operation (the meat of the program)
       compositeArray[range].each_with_index do |composite_style, index|
@@ -51,10 +54,10 @@ module RMagickBlend
         result = dest.composite(src, 0, 0, composite_style)
         
         write_result(result, src, dest)
-        write_low_quality_preview(result) if Settings.low_quality_preview
+        write_low_quality_preview(result) if options[:low_quality_preview]
       end
 
-      save_orig_files_to_output(src, dest) if Settings.behavior[:save_orig_files_to_output]
+      save_orig_files_to_output(src, dest) if options[:behavior][:save_orig_files_to_output]
 
       puts Utils::ColorPrint::green("done!\n")
     end
@@ -83,7 +86,7 @@ module RMagickBlend
 
     def write_low_quality_preview(result)
       result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
-      result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = preview_quality }
+      result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = options[:constant_values][:preview_quality] }
     end
 
   end
