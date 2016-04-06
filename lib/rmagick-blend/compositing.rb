@@ -1,4 +1,5 @@
 require 'rmagick-blend/utils'
+require 'dguzzo-utils'
 
 module RMagickBlend
   module Compositing
@@ -39,7 +40,7 @@ module RMagickBlend
         2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
       end
 
-      puts "\nbeginning composites processing, using #{Utils::ColorPrint::green(options[:num_operations])} different operations"
+      puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(options[:num_operations])} different operations"
 
       create_output_dir(src, dest)
 
@@ -49,7 +50,7 @@ module RMagickBlend
       # run composite operation (the meat of the program)
       compositeArray[range].each_with_index do |composite_style, index|
         print "#{(index.to_f/options[:num_operations]*100).round}% - "
-        print "#{Utils::ColorPrint::green(composite_style.to_s)}\n"
+        print "#{DguzzoUtils::ColorPrint::green(composite_style.to_s)}\n"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         result = dest.composite(src, 0, 0, composite_style)
         
@@ -59,7 +60,7 @@ module RMagickBlend
 
       save_orig_files_to_output(src, dest) if options[:behavior][:save_orig_files_to_output]
 
-      puts Utils::ColorPrint::green("done!\n")
+      puts DguzzoUtils::ColorPrint::green("done!\n")
     end
     # end composite_images
 

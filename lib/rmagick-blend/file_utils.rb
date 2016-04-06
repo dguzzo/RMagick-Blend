@@ -1,4 +1,5 @@
 require 'syslog'
+require 'dguzzo-utils'
 
 module RMagickBlend
   module FileUtils
@@ -54,7 +55,7 @@ module RMagickBlend
     end
 
    def self.swap_directories(src, dest)
-      puts "#{Utils::ColorPrint::yellow('swapping')} source and destination files..."
+      puts "#{DguzzoUtils::ColorPrint::yellow('swapping')} source and destination files..."
       src, dest = dest, src
       [src, dest]
     end

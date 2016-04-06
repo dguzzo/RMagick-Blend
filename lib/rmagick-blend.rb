@@ -1,5 +1,6 @@
 require 'RMagick'
 require 'Set'
+require 'dguzzo-utils'
 
 Dir[File.dirname(__FILE__) << "/rmagick-blend/*.rb"].each do |file|
   require file
@@ -26,7 +27,7 @@ module RMagickBlend
     end
 
     def create_blends
-      Utils::ColorPrint::green_out("~~~~~ABOUT TO BLEND~~~~~")
+      DguzzoUtils::ColorPrint::green_out("~~~~~ABOUT TO BLEND~~~~~")
       
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
@@ -35,7 +36,7 @@ module RMagickBlend
       end
       end_time = Time.now
       
-      puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{Utils::ColorPrint::green(end_time-start_time)} seconds."
+      puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{DguzzoUtils::ColorPrint::green(end_time-start_time)} seconds."
 
     end
 
@@ -58,12 +59,12 @@ module RMagickBlend
       settings_path = if File.exists?(user_settings_path)
         user_settings_path
       else
-        puts Utils::ColorPrint.yellow("Couldn't find custom settings file at #{user_settings_path}; using default rmagick-blend settings file")
+        puts DguzzoUtils::ColorPrint.yellow("Couldn't find custom settings file at #{user_settings_path}; using default rmagick-blend settings file")
         default_settings_path
       end
       
       Settings.load!(settings_path)
-      puts "loaded \"#{Utils::ColorPrint::green(Settings.preset_name)}\" settings"
+      puts "loaded \"#{DguzzoUtils::ColorPrint::green(Settings.preset_name)}\" settings"
     end
 
 	end
