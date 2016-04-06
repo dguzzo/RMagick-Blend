@@ -25,3 +25,5 @@ images
 *.swp
 *.swo
 
+
+Gemfile.lock
