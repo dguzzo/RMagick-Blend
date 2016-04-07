@@ -2,6 +2,10 @@ require 'RMagick'
 require 'Set'
 require 'dguzzo-utils'
 
+require 'action_view'
+require 'action_view/helpers'
+include ActionView::Helpers::DateHelper
+
 Dir[File.dirname(__FILE__) << "/rmagick-blend/*.rb"].each do |file|
   require file
 end
@@ -34,9 +38,9 @@ module RMagickBlend
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
         RMagickBlend::Compositing::composite_images(Settings._settings, @comp_sets)
       end
-      end_time = Time.now
       
-      puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{DguzzoUtils::ColorPrint::green(end_time-start_time)} seconds."
+      duration = Time.now - (Time.now - start_time) # must be of Time type for time_ago_in_words()
+      puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{DguzzoUtils::ColorPrint::green(time_ago_in_words(duration))}."
 
     end
 
