@@ -58,7 +58,7 @@ module RMagickBlend
         write_low_quality_preview(options, result, output_dir, append_string, src, dest) if options[:low_quality_preview]
       end
 
-      save_orig_files_to_output(src, dest) if options[:behavior][:save_orig_files_to_output]
+      save_orig_files_to_output(result, output_dir, src, dest) if options[:behavior][:save_orig_files_to_output]
 
       puts DguzzoUtils::ColorPrint::green("done!\n")
     end
@@ -79,7 +79,7 @@ module RMagickBlend
       end
     end
 
-    def self.save_orig_files_to_output(src, dest)
+    def self.save_orig_files_to_output(result, output_dir, src, dest)
       src.write("./#{output_dir}/ORIG-SRC-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = ORIG_FILES_OUTPUT_QUALITY }
       dest.write("./#{output_dir}/ORIG-DEST-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = ORIG_FILES_OUTPUT_QUALITY }
     end
