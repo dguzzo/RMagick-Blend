@@ -42,7 +42,7 @@ module RMagickBlend
 
       puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(options[:num_operations])} different operations"
 
-      create_output_dir(src, dest)
+      output_dir = create_output_dir(options, src, dest)
 
       # scale images to match
       src, dest = RMagickBlend::ImageUtils::match_image_sizes(src, dest) if options[:behavior][:match_image_sizes]
@@ -54,8 +54,8 @@ module RMagickBlend
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         result = dest.composite(src, 0, 0, composite_style)
         
-        write_result(result, src, dest)
-        write_low_quality_preview(result) if options[:low_quality_preview]
+        write_result(options, result, output_dir, append_string, src, dest)
+        write_low_quality_preview(options, result, output_dir, append_string, src, dest) if options[:low_quality_preview]
       end
 
       save_orig_files_to_output(src, dest) if options[:behavior][:save_orig_files_to_output]
@@ -64,28 +64,27 @@ module RMagickBlend
     end
     # end composite_images
 
-    :private
-    def create_output_dir
+    def self.create_output_dir(options, src, dest)
       # create & name output dir
-      output_dir = if options[:directories][:output_catalog_by_time]
+      if options[:directories][:output_catalog_by_time]
         Utils::create_dir_if_needed(options[:directories][:output] + "/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{Time.now.strftime("%m-%d-%y--%T")}")
       else
         Utils::create_dir_if_needed(options[:directories][:output])
       end
     end
     
-    def write_result(result, src, dest) 
+    def self.write_result(options, result, output_dir, append_string, src, dest) 
       result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.#{options[:output_file_format]}") do
         self.quality = 100 if options[:output_file_format].downcase === 'jpg'
       end
     end
 
-    def save_orig_files_to_output(src, dest)
+    def self.save_orig_files_to_output(src, dest)
       src.write("./#{output_dir}/ORIG-SRC-#{RMagickBlend::FileUtils::pretty_file_name(src)}.jpg"){ self.quality = ORIG_FILES_OUTPUT_QUALITY }
       dest.write("./#{output_dir}/ORIG-DEST-#{RMagickBlend::FileUtils::pretty_file_name(dest)}.jpg"){ self.quality = ORIG_FILES_OUTPUT_QUALITY }
     end
 
-    def write_low_quality_preview(result)
+    def self.write_low_quality_preview(options, result, output_dir, append_string, src, dest)
       result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
       result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = options[:constant_values][:preview_quality] }
     end
