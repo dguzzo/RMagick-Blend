@@ -32,7 +32,7 @@ module RMagickBlend
       start_time = Time.now
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
-        RMagickBlend::Compositing::composite_images(Settings, @comp_sets)
+        RMagickBlend::Compositing::composite_images(Settings._settings, @comp_sets)
       end
       end_time = Time.now
       
