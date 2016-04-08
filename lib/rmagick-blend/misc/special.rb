@@ -1,9 +1,10 @@
 require 'dguzzo-utils'
+require 'misc-utils'
 
 module RMagickBlend
   module Special
     def self.distort
-      image = RMagickBlend::FileUtils::load_sample_images.first
+      image = RMagickBlend::MiscUtils::load_sample_images.first
         
 =begin
 UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion PolarDistortion DePolarDistortion BarrelDistortion BilinearDistortion BilinearForwardDistortion BilinearReverseDistortion PerspectiveDistortion PerspectiveProjectionDistortion PolynomialDistortion ScaleRotateTranslateDistortion ShepardsDistortion BarrelInverseDistortion
@@ -27,7 +28,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
     
     def self.distort_arc(variants, options = {})
       options = {arc_angle: 60, rotate_angle: 0, top_radius: 100, bottom_radius: 100}.merge(options)
-      image = RMagickBlend::FileUtils::load_sample_images.first
+      image = RMagickBlend::MiscUtils::load_sample_images.first
 
       variants.times do |i|
         arc_angle = options[:arc_angle] || 60
@@ -46,14 +47,14 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
 
 
     def self.swirl(deg)
-      image = RMagickBlend::FileUtils::load_sample_images.first
+      image = RMagickBlend::MiscUtils::load_sample_images.first
       mod_image = image.swirl(clamp_degrees(deg))
       RMagickBlend::FileUtils::save_image(mod_image, "assets/images/swirl_test.jpg")
     end
 
 
     def self.preview
-      image = RMagickBlend::FileUtils::load_sample_images.first
+      image = RMagickBlend::MiscUtils::load_sample_images.first
       Magick::PreviewType.values.each do |op|
         mod_image = image.dup.preview(op)
         RMagickBlend::FileUtils::save_image(mod_image, "assets/images/preview_ops/preview_#{op}_test.jpg")
@@ -71,7 +72,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
 
 
     def self.contrast(times)
-      image = RMagickBlend::FileUtils::load_sample_images.first
+      image = RMagickBlend::MiscUtils::load_sample_images.first
       times.times do
         image = image.contrast(true)
       end
@@ -80,7 +81,7 @@ UndefinedDistortion AffineDistortion AffineProjectionDistortion ArcDistortion Po
 
 
     def self.floodfill_pixels_of_color
-      image = RMagickBlend::FileUtils::load_sample_images.first
+      image = RMagickBlend::MiscUtils::load_sample_images.first
 
       6.times do
         image = image.contrast(true)

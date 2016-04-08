@@ -4,7 +4,7 @@ require 'pry-nav'
 module RMagickBlend
   module Text
     def self.bottom_center_title(text)
-      image = RMagickBlend::FileUtils::load_sample_images[1]
+      image = RMagickBlend::MiscUtils::load_sample_images[1]
 
       title = Magick::Draw.new
 
@@ -25,7 +25,7 @@ module RMagickBlend
 
 
     def self.meme_title(top_text, bottom_text, pointsize=50)
-      image = RMagickBlend::FileUtils::load_sample_images[1]
+      image = RMagickBlend::MiscUtils::load_sample_images[1]
 
       draw_text = Magick::Draw.new
       draw_text.fill = 'white'
