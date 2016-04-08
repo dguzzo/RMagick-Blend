@@ -1,4 +1,5 @@
 require 'FileUtils' unless defined?(FileUtils)
+require 'dguzzo-utils'
 
 module Utils
   def self.create_dir_if_needed(image_dir_name)
@@ -10,7 +11,7 @@ module Utils
   end
 
   def self.exit_with_message(message)
-    puts ColorPrint.red(message)
+    puts DguzzoUtils::ColorPrint.red(message)
     exit
   end
 end
