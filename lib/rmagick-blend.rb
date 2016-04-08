@@ -27,13 +27,14 @@ module RMagickBlend
       @comp_sets = {}
       @comp_sets[:avoid] = Settings.op_presets[:avoid].split if Settings.op_presets[:avoid]
       
-			normalize_options
+			normalize_image_dirs
     end
 
     def create_blends
       DguzzoUtils::ColorPrint::green_out("~~~~~ABOUT TO BLEND~~~~~")
       
       start_time = Time.now
+
       Settings.behavior[:batches_to_run].times do |index|
         puts "running batch #{index + 1} of #{Settings.behavior[:batches_to_run]}..."
         RMagickBlend::Compositing::composite_images(Settings._settings, @comp_sets)
@@ -41,12 +42,12 @@ module RMagickBlend
       
       duration = Time.now - (Time.now - start_time) # must be of Time type for time_ago_in_words()
       puts "ran #{Settings.behavior[:batches_to_run]} batch(es) in #{DguzzoUtils::ColorPrint::green(time_ago_in_words(duration))}."
-
     end
 
-		def normalize_options
+    # if only one of source or destination directories is specified, it's implied that the same directory of images will be used for both pools
+		def normalize_image_dirs
 	    Utils::exit_with_message("both source and destinations directories are empty!") if Settings.directories[:source].empty? && Settings.directories[:destination].empty? 
-			# if only one of source or destination directories is specified, it's implied that the same directory of images will be used for both pools
+			
 			Settings.directories[:source] = Settings.directories[:destination] if Settings.directories[:source].empty?
 			Settings.directories[:destination] = Settings.directories[:source] if Settings.directories[:destination].empty?
 		end

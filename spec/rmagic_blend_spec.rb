@@ -9,7 +9,7 @@ describe "rmagic-blend" do
 		end
 	end
 
-	describe "normalize_options" do
+	describe "normalize_image_dirs" do
 		blend = nil
 
 		before :each do
@@ -20,19 +20,19 @@ describe "rmagic-blend" do
 		it "uses one directory if only source is set" do
 			Settings.directories[:destination] = ""
 			Settings.directories[:source] = "some-source-dir"
-			blend.normalize_options
+			blend.normalize_image_dirs
 			expect(Settings.directories[:destination]).to eq(Settings.directories[:source])
 		end
 
 		it "uses one directory if only destination is set" do
 			Settings.directories[:source] = ""
 			Settings.directories[:destination] = "some-dest-dir"
-			blend.normalize_options
+			blend.normalize_image_dirs
 			expect(Settings.directories[:source]).to eq(Settings.directories[:destination])
 		end
 			
 		it "uses both directories if both are set" do
-			blend.normalize_options
+			blend.normalize_image_dirs
 			expect(Settings.directories[:source]).to eq("assets/images/source")
 			expect(Settings.directories[:destination]).to eq("assets/images/destination")
 		end
