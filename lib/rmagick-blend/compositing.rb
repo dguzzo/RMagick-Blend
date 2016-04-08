@@ -6,16 +6,17 @@ module RMagickBlend
     ORIG_FILES_OUTPUT_QUALITY = 30
     
     DEFAULTS = {
-      num_operations: 14, 
       append_operation_to_filename: false, 
       shuffle_composite_operations: false,
       directories: { output: 'images/image-composites' },
       constant_values: {
-        preview_quality: 50
+        preview_quality: 50,
+        num_operations: 14
       },
 			behavior: {
       	switch_src_dest: false,
-        match_image_sizes: false
+        match_image_sizes: false,
+        output_html: false
 	 		},
       input_file_format: 'jpg',
       output_file_format: 'jpg',
@@ -25,6 +26,7 @@ module RMagickBlend
     
     def self.composite_images(options={}, comp_sets)
       options = DEFAULTS.merge(options)
+      preview_image_paths = []
 
       src, dest = options[:directories] ? RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], options[:input_file_format]) : RMagickBlend::FileUtils::get_image_pair_via_image_pool(options[:input_file_format], 'images')
 
@@ -34,13 +36,13 @@ module RMagickBlend
       compositeArray.delete_if { |op| comp_sets[:avoid].include?(op.to_s) }
 
       range = if options[:shuffle_composite_operations]
-				0...[options[:num_operations], Magick::CompositeOperator.values.length].min
+				0...[Settings.constant_values[:num_operations], Magick::CompositeOperator.values.length].min
       else
         # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
-        2...[options[:num_operations] + 2, Magick::CompositeOperator.values.length].min
+        2...[Settings.constant_values[:num_operations] + 2, Magick::CompositeOperator.values.length].min
       end
 
-      puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(options[:num_operations])} different operations"
+      puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(Settings.constant_values[:num_operations])} different operations"
 
       output_dir = create_output_dir(options, src, dest)
 
@@ -49,16 +51,18 @@ module RMagickBlend
 
       # run composite operation (the meat of the program)
       compositeArray[range].each_with_index do |composite_style, index|
-        print "#{(index.to_f/options[:num_operations]*100).round}% - "
+        print "#{(index.to_f/Settings.constant_values[:num_operations]*100).round}% - "
         print "#{DguzzoUtils::ColorPrint::green(composite_style.to_s)}\n"
         append_string = options[:append_operation_to_filename] ? composite_style.to_s : index
         result = dest.composite(src, 0, 0, composite_style)
         
         write_result(options, result, output_dir, append_string, src, dest)
-        write_low_quality_preview(options, result, output_dir, append_string, src, dest) if options[:low_quality_preview]
+        preview_image_paths << write_low_quality_preview(options, result, output_dir, append_string, src, dest) if options[:low_quality_preview]
       end
 
       save_orig_files_to_output(output_dir, src, dest) if options[:behavior][:save_orig_files_to_output]
+
+      RMagickBlend::FileUtils::write_html(output_dir, preview_image_paths) if Settings.behavior[:output_html]
 
       puts DguzzoUtils::ColorPrint::green("done!\n")
     end
@@ -86,7 +90,9 @@ module RMagickBlend
 
     def self.write_low_quality_preview(options, result, output_dir, append_string, src, dest)
       result.resize!(0.6) if result.x_resolution.to_i > 3000 # heuristic
-      result.write("./#{output_dir}/PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"){ self.quality = options[:constant_values][:preview_quality] }
+      filename = "PREVIEW-#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.jpg"
+      result.write("./#{output_dir}/#{filename}"){ self.quality = options[:constant_values][:preview_quality] }
+      filename
     end
 
   end

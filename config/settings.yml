@@ -18,6 +18,7 @@ behavior:
     batches_to_run: 3
     match_image_sizes: true
     save_orig_files_to_output: true
+    output_html: false
 
 low_quality_preview: true
 
