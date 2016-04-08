@@ -12,6 +12,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'actionview', '~> 4.2'
 
   s.add_development_dependency 'rspec', '~> 3.4'
-  s.add_development_dependency 'pry', '~> 0.10'
+  s.add_development_dependency 'pry', '~> 0.9'
   s.add_development_dependency 'pry-nav', '0.2'
 end
