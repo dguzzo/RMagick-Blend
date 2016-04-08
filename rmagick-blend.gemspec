@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
 
   s.files = Dir['lib/**/*.rb', 'vendor/*.rb', 'config/settings.yml']
 
-  s.add_dependency 'rmagick'
-  s.add_dependency 'actionview'
+  s.add_runtime_dependency 'rmagick', '~> 2.15'
+  s.add_runtime_dependency 'actionview', '~> 4.2'
 
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'pry'
-  s.add_development_dependency 'pry-nav'
+  s.add_development_dependency 'rspec', '~> 3.4'
+  s.add_development_dependency 'pry', '~> 0.10'
+  s.add_development_dependency 'pry-nav', '0.2'
 end
