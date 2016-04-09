@@ -18,8 +18,8 @@ module RMagickBlend
         match_image_sizes: false,
         output_html: false
 	 		},
-      input_file_format: 'jpg',
-      output_file_format: 'jpg',
+      input_image_format: 'jpg',
+      output_image_format: 'jpg',
       low_quality_preview: true
     }
     
@@ -83,8 +83,8 @@ module RMagickBlend
     end
     
     def self.write_result(options, result, output_dir, append_string, src, dest) 
-      result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.#{options[:output_file_format]}") do
-        self.quality = 100 if options[:output_file_format].downcase === 'jpg'
+      result.write("./#{output_dir}/#{RMagickBlend::FileUtils::pretty_file_name(src)}--#{RMagickBlend::FileUtils::pretty_file_name(dest)}--#{append_string}.#{options[:output_image_format]}") do
+        self.quality = 100 if options[:output_image_format].downcase === 'jpg'
       end
     end
 
