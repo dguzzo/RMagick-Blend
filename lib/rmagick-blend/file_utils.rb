@@ -44,7 +44,7 @@ module RMagickBlend
 
     # provided a directory containing at least two images, pick two separate ones randomly as source image & destination image
     def self.get_image_pair_via_image_pool(file_format, dir = '.')
-      image_names = Dir.entries("#{dir}").keep_if{ |i| i.downcase.end_with?(".#{file_format}") }
+      image_names = Dir.entries("#{dir}").keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
       raise "need at least two images to begin!" if image_names.length < 2
 
       destination_name = image_names.shuffle!.sample
@@ -53,6 +53,11 @@ module RMagickBlend
       source, destination = Magick::Image.read("#{dir}/#{source_name}").first, Magick::Image.read("#{dir}/#{destination_name}").first
 
       [source, destination]
+      
+      rescue RuntimeError => e
+        Utils::exit_with_message(e.message)
+      rescue Magick::ImageMagickError => e
+        Utils::exit_with_message(e.message + "\n#{dir}/#{source_name}")
     end
 
    def self.swap_directories(src, dest)
@@ -62,9 +67,9 @@ module RMagickBlend
     end
 
     def self.get_image_pair_via_directories(directories, file_format)
-      source_images = Dir.entries(directories[:source]).keep_if{ |i| i =~ /\.#{file_format}$/i }
+      source_images = Dir.entries(directories[:source]).keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
       raise RuntimeError, "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
-      destination_images = Dir.entries(directories[:destination]).keep_if{ |i| i =~ /\.#{file_format}$/i }
+      destination_images = Dir.entries(directories[:destination]).keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
       raise RuntimeError, "need at least one destination image in #{directories[:destination]} to begin!" if destination_images.length < 1
 
       destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
