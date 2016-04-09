@@ -11,8 +11,8 @@ directories:
     destination: "assets/images/destination"
     output_catalog_by_time: true
 
-default_input_image_format: 'jpg|tif'
-default_output_image_format: 'tif'
+input_image_format: 'jpg|tif'
+output_image_format: 'tif'
 
 behavior:
     batches_to_run: 3
