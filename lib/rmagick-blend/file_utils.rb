@@ -36,7 +36,7 @@ module RMagickBlend
     end
 
     def self.get_imagemagick_pair(directories, file_format)
-      destination_name, source_name = get_image_pair_via_directories(directories, file_format)
+      source_name, destination_name = get_image_pair_via_directories(directories, file_format)
       source, destination = Magick::Image.read("./#{directories[:source]}/#{source_name}").first, Magick::Image.read("./#{directories[:destination]}/#{destination_name}").first
 
       [source, destination]
@@ -72,8 +72,8 @@ module RMagickBlend
       destination_images = Dir.entries(directories[:destination]).keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
       raise RuntimeError, "need at least one destination image in #{directories[:destination]} to begin!" if destination_images.length < 1
 
-      destination_name, source_name = destination_images.shuffle!.sample, source_images.shuffle!.sample
-      [destination_name, source_name]
+      source_name, destination_name = source_images.shuffle!.sample, destination_images.shuffle!.sample
+      [source_name, destination_name]
 
     rescue Errno::ENOENT => e
       Utils::exit_with_message(e)
