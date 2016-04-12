@@ -5,69 +5,47 @@ module RMagickBlend
   module Compositing
     ORIG_FILES_OUTPUT_QUALITY = 30
     
-    DEFAULTS = {
-      append_operation_to_filename: false, 
-      shuffle_composite_operations: false,
-      directories: { output: 'images/image-composites' },
-      constant_values: {
-        preview_quality: 50,
-        num_operations: 14
-      },
-			behavior: {
-      	switch_src_dest: false,
-        match_image_sizes: false,
-        output_html: false
-	 		},
-      input_image_format: 'jpg',
-      output_image_format: 'jpg',
-      low_quality_preview: true
-    }
-    
-    
     def self.composite_images(options={}, comp_sets)
-      merged_options = DEFAULTS.dup
-      Settings::deep_merge!(merged_options, options)
-      
       preview_image_paths = []
 
       # TODO simplify
-      src, dest = merged_options[:directories][:source] == merged_options[:directories][:destination] ? 
-        RMagickBlend::FileUtils::get_image_pair_via_image_pool(merged_options[:input_image_format], merged_options[:directories][:source]) : 
-        RMagickBlend::FileUtils::get_imagemagick_pair(merged_options[:directories], merged_options[:input_image_format])
+      src, dest = options[:directories][:source] == options[:directories][:destination] ? 
+        RMagickBlend::FileUtils::get_image_pair_via_image_pool(options[:input_image_format], options[:directories][:source]) : 
+        RMagickBlend::FileUtils::get_imagemagick_pair(options[:directories], options[:input_image_format])
 
-      src, dest = RMagickBlend::FileUtils::swap_directories(src, dest) if merged_options[:behavior][:switch_src_dest]
+      src, dest = RMagickBlend::FileUtils::swap_directories(src, dest) if options[:behavior][:switch_src_dest]
 
-      compositeArray = merged_options[:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
+      compositeArray = options[:behavior][:shuffle_composite_operations] ? Magick::CompositeOperator.values.dup.shuffle : Magick::CompositeOperator.values.dup
       compositeArray.delete_if { |op| comp_sets[:avoid].include?(op.to_s) }
 
-      range = if merged_options[:shuffle_composite_operations]
-				0...[merged_options[:constant_values][:num_operations], Magick::CompositeOperator.values.length].min
+      range = if options[:behavior][:shuffle_composite_operations]
+				0...[options[:constant_values][:num_operations], Magick::CompositeOperator.values.length].min
       else
         # first two CompositeOperator are basically no-ops, so skip 'em. also, don't go out of bounds with the index
-        2...[merged_options[:constant_values][:num_operations] + 2, Magick::CompositeOperator.values.length].min
+        2...[options[:constant_values][:num_operations] + 2, Magick::CompositeOperator.values.length].min
       end
 
-      puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(merged_options[:constant_values][:num_operations])} different operations"
+      puts "\nbeginning composites processing, using #{DguzzoUtils::ColorPrint::green(options[:constant_values][:num_operations])} different operations"
 
-      output_dir = create_output_dir(merged_options, src, dest)
+      output_dir = create_output_dir(options, src, dest)
 
       # scale images to match
-      src, dest = RMagickBlend::ImageUtils::match_image_sizes(src, dest) if merged_options[:behavior][:match_image_sizes]
+      src, dest = RMagickBlend::ImageUtils::match_image_sizes(src, dest) if options[:behavior][:match_image_sizes]
 
       # run composite operation (the meat of the program)
       compositeArray[range].each_with_index do |composite_style, index|
-        print "#{(index.to_f/merged_options[:constant_values][:num_operations]*100).round}% - "
+        print "#{(index.to_f/options[:constant_values][:num_operations]*100).round}% - "
         print "#{DguzzoUtils::ColorPrint::green(composite_style.to_s)}\n"
-        append_string = merged_options[:append_operation_to_filename] ? composite_style.to_s : index
+        append_string = options[:behavior][:append_operation_to_filename] ? composite_style.to_s : index
         result = dest.composite(src, 0, 0, composite_style)
         
-        write_result(merged_options, result, output_dir, append_string, src, dest)
-        preview_image_paths << write_low_quality_preview(merged_options, result, output_dir, append_string, src, dest) if merged_options[:low_quality_preview]
+        write_result(options, result, output_dir, append_string, src, dest)
+        preview_image_paths << write_low_quality_preview(options, result, output_dir, append_string, src, dest) if options[:low_quality_preview]
       end
 
-      save_orig_files_to_output(output_dir, src, dest) if merged_options[:behavior][:save_orig_files_to_output]
+      save_orig_files_to_output(output_dir, src, dest) if options[:behavior][:save_orig_files_to_output]
 
-      RMagickBlend::FileUtils::write_html(output_dir, preview_image_paths) if merged_options[:behavior][:output_html]
+      RMagickBlend::FileUtils::write_html(output_dir, preview_image_paths) if options[:behavior][:output_html]
 
       puts DguzzoUtils::ColorPrint::green("done!\n")
     end

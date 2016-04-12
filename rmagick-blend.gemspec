@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.summary = 'A small program that uses RMagick-a gem that acts as a wrapper around the classic ImageMagick library-to run various composite operations on source images, producing a composite output.'
   s.authors = ['Dominick Guzzo']
 
-  s.files = Dir['lib/**/*.rb', 'vendor/*.rb', 'config/settings.yml']
+  s.files = Dir['lib/**/*.rb', 'vendor/*.rb', 'config/default-settings.yml']
 
   s.add_runtime_dependency 'rmagick', '~> 2.15'
   s.add_runtime_dependency 'actionview', '~> 4.2'
