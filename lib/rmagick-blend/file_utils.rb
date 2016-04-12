@@ -7,6 +7,11 @@ module RMagickBlend
     EXTENSION_REGEX = /\.[[:alpha:]]+$/i
     FILENAME_REGEX = /\/([^\/]*)$/i
 
+    def self.img_file_matcher(file_format)
+      # note: ignore directories
+      Proc.new { |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
+    end
+
     def self.output_all_composite_ops
       File.open('all_ops.yml', 'w') do |file|
         all_ops = Magick::CompositeOperator.values.map do |op| 
@@ -44,7 +49,7 @@ module RMagickBlend
 
     # provided a directory containing at least two images, pick two separate ones randomly as source image & destination image
     def self.get_image_pair_via_image_pool(file_format, dir = '.')
-      image_names = Dir.entries("#{dir}").keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
+      image_names = Dir.entries("#{dir}").keep_if( &self.img_file_matcher(file_format) )
       raise "need at least two images to begin!" if image_names.length < 2
 
       destination_name = image_names.shuffle!.sample
@@ -67,9 +72,9 @@ module RMagickBlend
     end
 
     def self.get_image_pair_via_directories(directories, file_format)
-      source_images = Dir.entries(directories[:source]).keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
+      source_images = Dir.entries(directories[:source]).keep_if( &self.img_file_matcher(file_format) )
       raise RuntimeError, "need at least one source image in #{directories[:source]} to begin!" if source_images.length < 1
-      destination_images = Dir.entries(directories[:destination]).keep_if{ |i| !Dir.exist?(i) && i =~ /\.(#{file_format})$/i }
+      destination_images = Dir.entries(directories[:destination]).keep_if( &self.img_file_matcher(file_format) )
       raise RuntimeError, "need at least one destination image in #{directories[:destination]} to begin!" if destination_images.length < 1
 
       source_name, destination_name = source_images.shuffle!.sample, destination_images.shuffle!.sample
@@ -82,7 +87,7 @@ module RMagickBlend
     end
 
     def self.get_all_images_from_dir(dir, file_format)
-      image_names = Dir.entries("#{dir}").keep_if{ |i| i =~ /\.#{file_format}$/i }
+      image_names = Dir.entries("#{dir}").keep_if( &self.img_file_matcher(file_format) )
       image_names.map{|name| "#{dir}/#{name}"}
     end
 
