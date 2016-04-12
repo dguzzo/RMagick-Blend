@@ -18,12 +18,12 @@ require 'yaml'
 
 module RMagickBlend
 	class Blend
-		attr_reader :options
+		attr_reader :settings
 
     def initialize
       @optimized_num_operation_large = 24
 			
-			load_settings_from_file
+			@settings = load_settings_from_file
       @comp_sets = {}
       @comp_sets[:avoid] = Settings.op_presets[:avoid].split if Settings.op_presets[:avoid]
       
@@ -64,6 +64,7 @@ module RMagickBlend
       Settings.load!(user_settings_path) if File.exists?(user_settings_path)
       
       puts "loaded \"#{DguzzoUtils::ColorPrint::green(Settings.preset_name)}\" settings"
+      Settings
     end
 	end
 
