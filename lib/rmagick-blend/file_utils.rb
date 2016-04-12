@@ -91,24 +91,5 @@ module RMagickBlend
       image.write(path)
     end
 
-    def self.write_html(path, images)
-      erb_file = File.expand_path("../../assets/index.html.erb", File.dirname(__FILE__))
-      html_file = File.basename(erb_file, '.erb') #=>"page.html"
-
-      erb_str = File.read(erb_file)
-
-      b = binding
-      b.local_variable_set(:title, path)
-      b.local_variable_set(:images, images)
-      
-      renderer = ERB.new(erb_str)
-      result = renderer.result(b)
-
-      File.open(File.expand_path(html_file, path), 'w') do |f|
-        f.write(result)
-        puts "wrote #{File.expand_path(html_file, path)}"
-      end
-    end
-
   end
 end
