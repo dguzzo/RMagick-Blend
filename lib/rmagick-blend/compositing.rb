@@ -45,8 +45,6 @@ module RMagickBlend
 
       save_orig_files_to_output(output_dir, src, dest) if options[:behavior][:save_orig_files_to_output]
 
-      RMagickBlend::FileUtils::write_html(output_dir, preview_image_paths) if options[:behavior][:output_html]
-
       puts DguzzoUtils::ColorPrint::green("done!\n")
     end
     # end composite_images

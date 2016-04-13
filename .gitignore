@@ -16,6 +16,7 @@ images
 /.rvmrc
 /*.tmproj
 /config
+!/config/default-settings.yml
 
 .DS_Store
 /pkg
@@ -29,3 +30,5 @@ images
 Gemfile.lock
 
 make-blends.rb
+
+

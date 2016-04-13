@@ -1,0 +1,34 @@
+# Sample config file
+---
+preset_name: "default batch"
+constant_values:
+    num_files_before_warn: 40
+    preview_quality: 50
+    num_operations: 14
+
+directories:
+    output: "assets/images/output"
+    source: "assets/images/source"
+    destination: "assets/images/destination"
+    output_catalog_by_time: true
+
+input_image_format: 'jpg|tif'
+output_image_format: 'jpg'
+
+behavior:
+    batches_to_run: 3
+    match_image_sizes: false
+    save_orig_files_to_output: true
+    append_operation_to_filename: false
+    shuffle_composite_operations: false
+    switch_src_dest: false
+
+low_quality_preview: true
+
+op_presets:
+    copy_color: "CopyBlueCompositeOp CopyCyanCompositeOp CopyGreenCompositeOp CopyMagentaCompositeOp CopyRedCompositeOp CopyYellowCompositeOp"
+    reliable_quality: "BlendCompositeOp HardLightCompositeOp LinearLightCompositeOp OverlayCompositeOp DivideCompositeOp DarkenCompositeOp"
+    crazy: "DistortCompositeOp DivideCompositeOp AddCompositeOp SubtractCompositeOp DisplaceCompositeOp"
+    specific: "OverlayCompositeOp"
+    avoid: "NoCompositeOp UndefinedCompositeOp XorCompositeOp SrcCompositeOp SrcOutCompositeOp DstOutCompositeOp OutCompositeOp ClearCompositeOp SrcInCompositeOp DstCompositeOp AtopCompositeOp SrcAtopCompositeOp InCompositeOp BlurCompositeOp DstAtopCompositeOp OverCompositeOp SrcOverCompositeOp ChangeMaskCompositeOp CopyOpacityCompositeOp CopyCompositeOp ReplaceCompositeOp DstOverCompositeOp DstInCompositeOp CopyBlackCompositeOp DissolveCompositeOp"
+
