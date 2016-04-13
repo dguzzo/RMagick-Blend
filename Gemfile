@@ -2,4 +2,4 @@ source "https://rubygems.org"
 
 gemspec
 
-gem 'dguzzo-utils', :git => 'https://github.com/dguzzo/dguzzo-utils.git'
+gem 'dguzzo-utils', github: 'dguzzo/dguzzo-utils'
