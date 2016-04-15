@@ -14,6 +14,11 @@ task :test do
   puts `rspec`
 end
 
+desc "build and install the gem"
+task :install do
+  puts `gem build rmagick-blend.gemspec && mv rmagick-blend-#{RMagickBlend::VERSION}.gem pkg/ && gem install pkg/rmagick-blend-#{RMagickBlend::VERSION}.gem`
+end
+  
 namespace :build do
   desc "prepare for rspec"
   task :prepare_rspec do
