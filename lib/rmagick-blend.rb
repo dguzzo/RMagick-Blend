@@ -56,7 +56,7 @@ module RMagickBlend
     def load_settings_from_file
       # check for the default config within this gem itself
       default_settings_path = File.expand_path("../config/default-settings.yml", File.dirname(__FILE__))
-      Utils::exit_with_message("default file at '#{default_settings_path}' does not exist!\n run 'rake build:generate_config.'") unless File.exists?(default_settings_path)
+      Utils::exit_with_message("default file at '#{default_settings_path}' does not exist!\n run 'rake build:generate_config.' (Also, make sure you don't need to run 'bundle exec' before your script if the gem is installed via Bundler.)") unless File.exists?(default_settings_path)
       Settings.load!(default_settings_path)
       
       # check for user settings in arbitrary directory gem is used from, under hardcoded sub-dir
